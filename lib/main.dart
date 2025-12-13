@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaukitchen_app/core/form/services/sevices_loactor.dart';
+import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/page/authentication/bloc/login_cubit.dart';
 import 'package:restaukitchen_app/page/authentication/login_page.dart';
 

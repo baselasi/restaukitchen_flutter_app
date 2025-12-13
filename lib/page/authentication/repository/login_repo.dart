@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
-import 'package:restaukitchen_app/core/form/services/api_service.dart';
-import 'package:restaukitchen_app/core/form/services/sevices_loactor.dart';
+import 'package:restaukitchen_app/core/services/api_service.dart';
+import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 
 class LoginRepo {
   final ApiService _apiService;

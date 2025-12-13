@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
 
 class DarkTheme {
+  // Main color: rgb(0, 71, 171)
+  static const Color primaryColor = Color(0xFF0047AB);
+  // Second color: rgb(255, 234, 0)
+  static const Color secondaryColor = Color(0xFFFFEA00);
+
   static ThemeData get theme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.deepPurple,
-        brightness: Brightness.dark,
+      colorScheme: ColorScheme.dark(
+        primary: primaryColor,
+        secondary: secondaryColor,
+        tertiary: secondaryColor,
+        surface: Colors.grey[900]!,
+        onPrimary: Colors.white,
+        onSecondary: Colors.black,
+        onSurface: Colors.white,
+        error: Colors.red[400]!,
+        onError: Colors.white,
       ),
       scaffoldBackgroundColor: Colors.grey[900],
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Colors.grey[900],
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       cardTheme: CardThemeData(
         elevation: 2,
@@ -36,7 +48,18 @@ class DarkTheme {
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[700]!),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[700]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: primaryColor, width: 2),
+        ),
+        labelStyle: const TextStyle(color: primaryColor),
+        floatingLabelStyle: const TextStyle(color: primaryColor),
         filled: true,
         fillColor: Colors.grey[800],
       ),

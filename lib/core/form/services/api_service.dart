@@ -2,18 +2,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String _baseUrl;
+  // Hardcoded base URL - Update this with your actual API base URL
+  final String _baseUrl = 'https://your-api-url.com';
 
-  ApiService({String? baseUrl}) : _baseUrl = baseUrl ?? '';
+  ApiService();
 
   // Get base URL
   String get baseUrl => _baseUrl;
-
-  // Set base URL
-  void setBaseUrl(String url) {
-    // Note: Since _baseUrl is final, you might want to make it non-final
-    // or create a new instance. For now, we'll keep it final and require it in constructor.
-  }
 
   // Private method to get headers with token
   Map<String, String> _getHeadersWithToken(String token) {

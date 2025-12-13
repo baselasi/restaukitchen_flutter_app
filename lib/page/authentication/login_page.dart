@@ -114,6 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                         // Email Field
                         InputField(
                           controller: _emailController,
+                          initialValue: 'bassel-assi@live.com',
                           label: 'Email',
                           hint: 'Enter your email',
                           prefixIcon: Icons.email_outlined,
@@ -127,6 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                         // Password Field
                         InputField(
                           controller: _passwordController,
+                          initialValue: 'ziad',
                           label: 'Password',
                           hint: 'Enter your password',
                           prefixIcon: Icons.lock_outlined,

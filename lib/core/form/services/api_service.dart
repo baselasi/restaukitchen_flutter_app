@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Hardcoded base URL - Update this with your actual API base URL
-  final String _baseUrl = 'https://your-api-url.com';
+  final String _baseUrl = 'http://192.168.32.178:8080';
 
   ApiService();
 
@@ -21,20 +21,14 @@ class ApiService {
 
   // Private method to get headers without token
   Map<String, String> _getHeadersWithoutToken() {
-    return {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
+    return {'Content-Type': 'application/json', 'Accept': 'application/json'};
   }
 
   // Public GET - No token required
   Future<http.Response> getPublic(String endpoint) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
-      final response = await http.get(
-        url,
-        headers: _getHeadersWithoutToken(),
-      );
+      final response = await http.get(url, headers: _getHeadersWithoutToken());
       return response;
     } catch (e) {
       rethrow;

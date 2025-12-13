@@ -68,7 +68,7 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       // Call login repository
       final response = await LoginRepo().login(
-        username: username,
+        email: username,
         password: password,
       );
 

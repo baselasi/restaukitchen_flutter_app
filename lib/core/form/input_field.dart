@@ -21,6 +21,7 @@ class InputField extends StatelessWidget {
   final FocusNode? focusNode;
   final TextInputAction? textInputAction;
   final void Function(String)? onSubmitted;
+  final String? initialValue;
 
   const InputField({
     super.key,
@@ -44,6 +45,7 @@ class InputField extends StatelessWidget {
     this.focusNode,
     this.textInputAction,
     this.onSubmitted,
+    this.initialValue,
   });
 
   String? _validateInput(String? value) {
@@ -70,6 +72,15 @@ class InputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Set initial value if provided and controller is empty
+    if (initialValue != null && controller.text.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (controller.text.isEmpty) {
+          controller.text = initialValue!;
+        }
+      });
+    }
 
     return TextFormField(
       controller: controller,

@@ -6,26 +6,22 @@ class LoginRepo {
   final ApiService _apiService;
   final String _loginEndpoint;
 
-  LoginRepo({
-    String? loginEndpoint,
-  })  : _apiService = getIt<ApiService>(),
-        _loginEndpoint = loginEndpoint ?? '/auth/login';
+  LoginRepo({String? loginEndpoint})
+    : _apiService = getIt<ApiService>(),
+      _loginEndpoint = loginEndpoint ?? '/api/login';
 
   /// Login method that takes username and password
   /// Returns a Future with the response data
   Future<Map<String, dynamic>> login({
-    required String username,
+    required String email,
     required String password,
   }) async {
     try {
       // Make POST request to login endpoint
-      final response = await _apiService.postPublic(
-        _loginEndpoint,
-        {
-          'username': username,
-          'password': password,
-        },
-      );
+      final response = await _apiService.postPublic(_loginEndpoint, {
+        'email': email,
+        'password': password,
+      });
 
       // Check if request was successful
       if (_apiService.isSuccess(response)) {
@@ -46,17 +42,14 @@ class LoginRepo {
   /// Alternative login method that returns the full HTTP response
   /// Useful if you need access to headers or status code
   Future<http.Response> loginRaw({
-    required String username,
+    required String email,
     required String password,
   }) async {
     try {
-      return await _apiService.postPublic(
-        _loginEndpoint,
-        {
-          'username': username,
-          'password': password,
-        },
-      );
+      return await _apiService.postPublic(_loginEndpoint, {
+        'email': email,
+        'password': password,
+      });
     } catch (e) {
       throw Exception('Login error: $e');
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/components/form/appBar/main_app_bar.dart';
 import 'package:restaukitchen_app/core/routes.dart';
 import 'package:restaukitchen_app/page/mainPage/bloc/main_page_cubit.dart';
 
@@ -17,7 +18,10 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<MainPageCubit, MainPageState>(
       builder: (context, state) {
-        return buildPage(state.page);
+        return Scaffold(
+          appBar: MainAppBar(page: state.page),
+          body: buildPage(state.page),
+        );
       },
       listener: (context, state) {},
     );

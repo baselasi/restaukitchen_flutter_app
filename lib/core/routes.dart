@@ -14,3 +14,10 @@ Widget buildPage(Pages page) {
       return const HomePage();
   }
 }
+
+Widget getPageTitle(Pages page) {
+  switch (page) {
+    case Pages.home:
+      return const Text('Home Page');
+  }
+}

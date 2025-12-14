@@ -18,10 +18,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          bottom: BorderSide(
-            color: LightTheme.primaryColor,
-            width: 1,
-          ),
+          bottom: BorderSide(color: LightTheme.primaryColor, width: 1),
         ),
         boxShadow: [
           BoxShadow(

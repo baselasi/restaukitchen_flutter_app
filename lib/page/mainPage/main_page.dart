@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/appBar/main_app_bar.dart';
 import 'package:restaukitchen_app/core/routes.dart';
 import 'package:restaukitchen_app/page/mainPage/bloc/main_page_cubit.dart';
+import 'package:restaukitchen_app/page/mainPage/components/main_drawer.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -20,6 +21,7 @@ class _MainPageState extends State<MainPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: MainAppBar(page: state.page),
+          drawer: const MainDrawer(),
           body: buildPage(state.page),
         );
       },

@@ -38,22 +38,6 @@ class SecureStorageService {
     return await _storage.containsKey(key: _tokenKey);
   }
 
-  // User Data Methods
-
-  /// Save user data as JSON string
-  Future<void> saveUserData(String userData) async {
-    await _storage.write(key: _userKey, value: userData);
-  }
-
-  /// Get user data
-  Future<String?> getUserData() async {
-    return await _storage.read(key: _userKey);
-  }
-
-  /// Delete user data
-  Future<void> deleteUserData() async {
-    await _storage.delete(key: _userKey);
-  }
 
   // Generic Methods
 
@@ -85,7 +69,6 @@ class SecureStorageService {
   /// Clear all authentication data (token and user)
   Future<void> clearAuthData() async {
     await deleteToken();
-    await deleteUserData();
   }
 }
 

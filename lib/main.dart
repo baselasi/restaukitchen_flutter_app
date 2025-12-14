@@ -4,6 +4,8 @@ import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/page/authentication/bloc/login_cubit.dart';
 import 'package:restaukitchen_app/page/authentication/login_page.dart';
+import 'package:restaukitchen_app/page/mainPage/bloc/main_page_cubit.dart';
+import 'package:restaukitchen_app/page/mainPage/main_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +36,10 @@ class MyApp extends StatelessWidget {
               return const LoginPage();
             }
             if (state.status == AuthStatus.authenticated) {
-              return const Text('Authenticated');
+              return BlocProvider<MainPageCubit>(
+                create: (context) => MainPageCubit(),
+                child: const MainPage(),
+              );
             }
             return const SizedBox.shrink();
           },

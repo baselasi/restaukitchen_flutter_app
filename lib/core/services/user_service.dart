@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:restaukitchen_app/core/models/user.dart';
 import 'package:restaukitchen_app/core/services/secure_storage_service.dart';
@@ -78,7 +77,6 @@ class UserService {
 
     // Save token securely
     await _secureStorage.saveToken(token);
-
 
     _user = user;
   }

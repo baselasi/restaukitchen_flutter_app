@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:restaukitchen_app/core/services/secure_storage_service.dart';
+import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 
 class ApiService {
   // Hardcoded base URL - Update this with your actual API base URL
@@ -10,12 +12,16 @@ class ApiService {
   // Get base URL
   String get baseUrl => _baseUrl;
 
+  Future<String?> get token async {
+    return await getIt<SecureStorageService>().getToken();
+  }
+
   // Private method to get headers with token
-  Map<String, String> _getHeadersWithToken(String token) {
+  Future<Map<String, String>> _getHeadersWithToken() async {
     return {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
+      'Authorization': 'Bearer ${await token}',
     };
   }
 
@@ -36,13 +42,11 @@ class ApiService {
   }
 
   // Private GET - Token required
-  Future<http.Response> getPrivate(String endpoint, String token) async {
+  Future<http.Response> getPrivate(String endpoint) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
-      final response = await http.get(
-        url,
-        headers: _getHeadersWithToken(token),
-      );
+      final headers = await _getHeadersWithToken();
+      final response = await http.get(url, headers: headers);
       return response;
     } catch (e) {
       rethrow;
@@ -71,13 +75,13 @@ class ApiService {
   Future<http.Response> postPrivate(
     String endpoint,
     Map<String, dynamic> body,
-    String token,
   ) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
+      final headers = await _getHeadersWithToken();
       final response = await http.post(
         url,
-        headers: _getHeadersWithToken(token),
+        headers: headers,
         body: jsonEncode(body),
       );
       return response;
@@ -90,13 +94,13 @@ class ApiService {
   Future<http.Response> putPrivate(
     String endpoint,
     Map<String, dynamic> body,
-    String token,
   ) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
+      final headers = await _getHeadersWithToken();
       final response = await http.put(
         url,
-        headers: _getHeadersWithToken(token),
+        headers: headers,
         body: jsonEncode(body),
       );
       return response;
@@ -106,13 +110,11 @@ class ApiService {
   }
 
   // Private DELETE - Token required
-  Future<http.Response> deletePrivate(String endpoint, String token) async {
+  Future<http.Response> deletePrivate(String endpoint) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
-      final response = await http.delete(
-        url,
-        headers: _getHeadersWithToken(token),
-      );
+      final headers = await _getHeadersWithToken();
+      final response = await http.delete(url, headers: headers);
       return response;
     } catch (e) {
       rethrow;

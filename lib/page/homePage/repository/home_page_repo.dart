@@ -8,7 +8,7 @@ class HomePageRepo {
 
   Future<Map<String,dynamic>> getTablesCount() async {
     try {
-      final response = await _apiService.getPublic("/api/order/count");
+      final response = await _apiService.getPrivate("/api/dinner-table/count");
       return jsonDecode(response.body);
     } catch (e) {
       rethrow;
@@ -16,10 +16,14 @@ class HomePageRepo {
   }
 
 
-  Future<int> getOrdersCount() async {
+  Future<int?> getOrdersCount() async {
     try {
-      final response = await _apiService.getPublic("/api/order/count");
-      return jsonDecode(response.body);
+      final response = await _apiService.getPrivate("/api/order/count");
+      if(response.body.isNotEmpty) {
+        return int.parse(response.body);
+      } else {
+        throw Exception("Failed to get orders count");
+      }
     } catch (e) {
       rethrow;
     }

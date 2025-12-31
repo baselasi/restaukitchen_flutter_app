@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Hardcoded base URL - Update this with your actual API base URL
-  final String _baseUrl = 'http://192.168.32.178:8080';
+  final String _baseUrl = 'http://192.168.2.178:8080';
 
   ApiService();
 

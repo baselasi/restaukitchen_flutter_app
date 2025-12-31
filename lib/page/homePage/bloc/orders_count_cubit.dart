@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/page/homePage/repository/home_page_repo.dart';
 
 class OrdersCountCubit extends Cubit<OrdersCountState> {
   OrdersCountCubit()
@@ -8,8 +9,13 @@ class OrdersCountCubit extends Cubit<OrdersCountState> {
   Future<void> getOrdersCount() async {
     try {
       emit(OrdersCountState(status: OrdersCountStatus.loading));
-      Future.delayed(Duration(seconds: 2));
-      emit(OrdersCountState(status: OrdersCountStatus.loaded, ordersCount: 10));
+      final ordersCount = await HomePageRepo().getOrdersCount();
+      emit(
+        OrdersCountState(
+          status: OrdersCountStatus.loaded,
+          ordersCount: ordersCount,
+        ),
+      );
     } catch (e) {
       emit(OrdersCountState(status: OrdersCountStatus.error));
     }

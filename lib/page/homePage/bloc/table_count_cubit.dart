@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/page/homePage/repository/home_page_repo.dart';
 
 class TableCountCubit extends Cubit<TableCountState> {
   TableCountCubit() : super(TableCountState(status: TableCountStatus.initial));
@@ -7,18 +8,9 @@ class TableCountCubit extends Cubit<TableCountState> {
   Future<void> getTableCount() async {
     try {
       emit(TableCountState(status: TableCountStatus.loading));
-      Future.delayed(Duration(seconds: 2));
-      emit(
-        TableCountState(
-          status: TableCountStatus.loaded,
-          tableCount: TableCount(
-            totalTables: 10,
-            occupiedTable: 5,
-            reservedTable: 2,
-            freeTable: 3,
-          ),
-        ),
-      );
+      final response = await HomePageRepo().getTablesCount();
+      TableCount count = TableCount.fromJson(response);
+      emit(TableCountState(status: TableCountStatus.loaded, tableCount: count));
     } catch (e) {
       emit(TableCountState(status: TableCountStatus.error));
     }
@@ -31,7 +23,7 @@ class TableCountState extends Equatable {
   const TableCountState({this.tableCount, required this.status});
 
   @override
-  List<Object?> get props => [tableCount];
+  List<Object?> get props => [tableCount,status];
 }
 
 enum TableCountStatus { initial, loading, loaded, error }

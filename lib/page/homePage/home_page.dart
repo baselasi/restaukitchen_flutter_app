@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/page/homePage/bloc/orders_count_cubit.dart';
+import 'package:restaukitchen_app/page/homePage/bloc/table_count_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class HomePage extends StatelessWidget {
@@ -79,9 +82,7 @@ class HomePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Row(
             children: [
               Icon(icon, color: textColor, size: 28),
@@ -104,9 +105,7 @@ class HomePage extends StatelessWidget {
   Widget _buildTavoliCard(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -140,65 +139,8 @@ class HomePage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            // Free Tables
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.green[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Liberi:',
-                    style: TextStyle(
-                      color: Colors.green[700],
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    '4',
-                    style: TextStyle(
-                      color: Colors.green[700],
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            // Occupied Tables
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.red[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Occupati:',
-                    style: TextStyle(
-                      color: Colors.red[700],
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    '0',
-                    style: TextStyle(
-                      color: Colors.red[700],
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Tables Count (Free and Occupied)
+            const TablesCountWidget(),
           ],
         ),
       ),
@@ -208,9 +150,7 @@ class HomePage extends StatelessWidget {
   Widget _buildOrdineCard(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -245,34 +185,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             // Order Count
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              decoration: BoxDecoration(
-                color: Colors.orange[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    '0',
-                    style: TextStyle(
-                      color: Colors.orange[700],
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Aperti',
-                    style: TextStyle(
-                      color: Colors.orange[700],
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            const OrderCountWidget(),
           ],
         ),
       ),
@@ -282,9 +195,7 @@ class HomePage extends StatelessWidget {
   Widget _buildStaffCard(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -346,6 +257,168 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// Tables Count Widget (Free and Occupied)
+class TablesCountWidget extends StatefulWidget {
+  const TablesCountWidget({super.key});
+
+  @override
+  State<TablesCountWidget> createState() => _TablesCountWidgetState();
+}
+
+class _TablesCountWidgetState extends State<TablesCountWidget> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<TableCountCubit>().getTableCount();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TableCountCubit, TableCountState>(
+      builder: (context, state) {
+        final freeCount = state.tableCount?.freeTable ?? 0;
+        final occupiedCount = state.tableCount?.occupiedTable ?? 0;
+        final isLoading = state.status == TableCountStatus.loading;
+
+        return Column(
+          children: [
+            // Free Tables
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.green[50],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Liberi:',
+                    style: TextStyle(
+                      color: Colors.green[700],
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (isLoading)
+                    const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  else
+                    Text(
+                      '$freeCount',
+                      style: TextStyle(
+                        color: Colors.green[700],
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Occupied Tables
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Occupati:',
+                    style: TextStyle(
+                      color: Colors.red[700],
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (isLoading)
+                    const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  else
+                    Text(
+                      '$occupiedCount',
+                      style: TextStyle(
+                        color: Colors.red[700],
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// Order Count Widget
+class OrderCountWidget extends StatefulWidget {
+  const OrderCountWidget({super.key});
+
+  @override
+  State<OrderCountWidget> createState() => _OrderCountWidgetState();
+}
+
+class _OrderCountWidgetState extends State<OrderCountWidget> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OrdersCountCubit>().getOrdersCount();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<OrdersCountCubit, OrdersCountState>(
+      builder: (context, state) {
+        final ordersCount = state.ordersCount ?? 0;
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          decoration: BoxDecoration(
+            color: Colors.orange[50],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            children: [
+              if (state.status == OrdersCountStatus.loading)
+                const CircularProgressIndicator()
+              else
+                Text(
+                  '$ordersCount',
+                  style: TextStyle(
+                    color: Colors.orange[700],
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              const SizedBox(height: 4),
+              Text(
+                'Aperti',
+                style: TextStyle(
+                  color: Colors.orange[700],
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

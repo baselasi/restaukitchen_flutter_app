@@ -393,8 +393,18 @@ class _OrderCountWidgetState extends State<OrderCountWidget> {
             color: Colors.orange[50],
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Text(
+                'Aperti:',
+                style: TextStyle(
+                  color: Colors.orange[700],
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
               if (state.status == OrdersCountStatus.loading)
                 const CircularProgressIndicator()
               else
@@ -402,19 +412,10 @@ class _OrderCountWidgetState extends State<OrderCountWidget> {
                   '$ordersCount',
                   style: TextStyle(
                     color: Colors.orange[700],
-                    fontSize: 48,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              const SizedBox(height: 4),
-              Text(
-                'Aperti',
-                style: TextStyle(
-                  color: Colors.orange[700],
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
             ],
           ),
         );

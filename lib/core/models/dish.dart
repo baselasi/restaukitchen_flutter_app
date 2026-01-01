@@ -8,16 +8,16 @@ class Dish extends Equatable {
   final Map<String, dynamic>? ingredients;
   final double? price;
   final String? restaurantId;
-  final String menuId;
+  // final String? menuId;
   final String? description;
   final List<String>? dishImagesId;
   final bool? isAvailable;
   final String name;
   final int? position;
-  final String descriptionIt;
-  final String descriptionAr;
-  final String descriptionFr;
-  final String descriptionEs;
+  final String? descriptionIt;
+  final String? descriptionAr;
+  final String? descriptionFr;
+  final String? descriptionEs;
   final List<DimensionAssignment>? dimensionAssignments;
 
   const Dish({
@@ -25,17 +25,17 @@ class Dish extends Equatable {
     this.ingredients,
     this.price,
     this.restaurantId,
-    required this.menuId,
+    // required this.menuId,
     this.description,
     this.dishImagesId,
     this.isAvailable,
     required this.name,
     this.dimensionAssignments,
     required this.position,
-    required this.descriptionIt,
-    required this.descriptionAr,
-    required this.descriptionFr,
-    required this.descriptionEs,
+    this.descriptionIt,
+    this.descriptionAr,
+    this.descriptionFr,
+    this.descriptionEs,
   });
 
   // Factory constructor to create Dish from JSON
@@ -45,7 +45,7 @@ class Dish extends Equatable {
       ingredients: json['ingredients'] as Map<String, dynamic>?,
       price: json['price'] != null ? (json['price'] as num).toDouble() : null,
       restaurantId: json['restaurantId'] as String?,
-      menuId: json['menuId'] as String,
+      // menuId: json['menuId'] as String,
       description: json['description'] as String?,
       dishImagesId: json['dishImagesId'] != null
           ? List<String>.from(json['dishImagesId'] as List)
@@ -53,13 +53,13 @@ class Dish extends Equatable {
       isAvailable: json['isAvailable'] as bool?,
       name: json['name'] as String,
       position: json['position'] as int?,
-      descriptionIt: json['descriptionIt'] as String,
-      descriptionAr: json['descriptionAr'] as String,
-      descriptionFr: json['descriptionFr'] as String,
-      descriptionEs: json['descriptionEs'] as String,
+      descriptionIt: json['descriptionIt'] as String?,
+      descriptionAr: json['descriptionAr'] as String?,
+      descriptionFr: json['descriptionFr'] as String?,
+      descriptionEs: json['descriptionEs'] as String?,
       dimensionAssignments: json['dimensionAssignments'] != null
-          ? (jsonDecode(json['dimensionAssignments']) as List)
-                .map((dimension) => DimensionAssignment.fromJson(jsonDecode(dimension)))
+          ? (json['dimensionAssignments'] as List)
+                .map((dimension) => DimensionAssignment.fromJson(dimension))
                 .toList()
           : [],
     );
@@ -72,16 +72,16 @@ class Dish extends Equatable {
       'ingredients': ingredients,
       'price': price,
       'restaurantId': restaurantId,
-      'menuId': menuId,
+      // 'menuId': menuId,
       'description': description,
       'dishImagesId': dishImagesId,
       'isAvailable': isAvailable,
       'name': name,
       'position': position,
-      'descriptionIt': descriptionIt,
-      'descriptionAr': descriptionAr,
-      'descriptionFr': descriptionFr,
-      'descriptionEs': descriptionEs,
+      'descriptionIt': descriptionIt ?? '',
+      'descriptionAr': descriptionAr ?? '',
+      'descriptionFr': descriptionFr ?? '',
+      'descriptionEs': descriptionEs ?? '',
       // 'dimensionAssignments': jsonEncode(dimensionAssignments?.map((dimension) => dimension.toJson()).toList()),
     };
   }
@@ -92,7 +92,7 @@ class Dish extends Equatable {
     Map<String, dynamic>? ingredients,
     double? price,
     String? restaurantId,
-    String? menuId,
+    // String? menuId,
     String? description,
     List<String>? dishImagesId,
     bool? isAvailable,
@@ -109,7 +109,7 @@ class Dish extends Equatable {
       ingredients: ingredients ?? this.ingredients,
       price: price ?? this.price,
       restaurantId: restaurantId ?? this.restaurantId,
-      menuId: menuId ?? this.menuId,
+      // menuId: menuId ?? this.menuId,
       description: description ?? this.description,
       dishImagesId: dishImagesId ?? this.dishImagesId,
       isAvailable: isAvailable ?? this.isAvailable,
@@ -129,7 +129,7 @@ class Dish extends Equatable {
     ingredients,
     price,
     restaurantId,
-    menuId,
+    //  menuId,
     description,
     dishImagesId,
     isAvailable,

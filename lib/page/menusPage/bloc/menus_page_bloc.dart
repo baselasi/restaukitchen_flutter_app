@@ -19,8 +19,10 @@ class MenusPageBloc extends Bloc<MenusPageEvent, MenusPageState> {
         emit(MenusPageError(error: "Restaurant not found"));
         return;
       }
-      await MenusPageRepo().getMenus("");
-      emit(MenusPageLoaded(menus: [], selectedMenu: event.menuIndex));
+      final response = await MenusPageRepo().getMenus(restaurantId);
+      emit(
+        MenusPageLoaded(menus: response.menus, selectedMenu: event.menuIndex),
+      );
     } catch (e) {
       emit(MenusPageError(error: e.toString()));
     }

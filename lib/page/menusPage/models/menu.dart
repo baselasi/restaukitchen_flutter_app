@@ -21,10 +21,8 @@ class Menu extends Equatable {
       id: json['id'] as String,
       name: json['name'] as String,
       combination: json['combination'] as bool,
-      dishes: json['dishes'] != null
-          ? (jsonDecode(json['dishes']) as List)
-                .map((dish) => Dish.fromJson(jsonDecode(dish)))
-                .toList()
+      dishes: json['dish'] != null
+          ? (json['dish'] as List).map((dish) => Dish.fromJson(dish)).toList()
           : [],
     );
   }
@@ -35,7 +33,7 @@ class Menu extends Equatable {
       'id': id,
       'name': name,
       'combination': combination,
-      'dishes': dishes.map((dish) => dish.toJson()).toList(),
+      'dish': dishes.map((dish) => dish.toJson()).toList(),
     };
   }
 
@@ -43,13 +41,10 @@ class Menu extends Equatable {
   List<Object?> get props => [id, name, combination, dishes];
 }
 
-
 class MenuResponse extends Equatable {
   final List<Menu> menus;
 
-  const MenuResponse({
-    required this.menus,
-  });
+  const MenuResponse({required this.menus});
 
   // Factory constructor to create MenuResponse from JSON array
   factory MenuResponse.fromJson(List<dynamic> json) {
@@ -66,12 +61,8 @@ class MenuResponse extends Equatable {
   }
 
   // Copy with method for immutable updates
-  MenuResponse copyWith({
-    List<Menu>? menus,
-  }) {
-    return MenuResponse(
-      menus: menus ?? this.menus,
-    );
+  MenuResponse copyWith({List<Menu>? menus}) {
+    return MenuResponse(menus: menus ?? this.menus);
   }
 
   @override

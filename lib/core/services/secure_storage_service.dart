@@ -2,7 +2,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorageService {
   static const String _tokenKey = 'access_token';
-  static const String _userKey = 'user_data';
 
   final FlutterSecureStorage _storage;
 

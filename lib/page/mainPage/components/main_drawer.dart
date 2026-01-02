@@ -13,6 +13,8 @@ class MainDrawer extends StatelessWidget {
     switch (page) {
       case Pages.home:
         return Icons.home;
+      case Pages.menus:
+        return Icons.menu;
     }
   }
 
@@ -21,6 +23,8 @@ class MainDrawer extends StatelessWidget {
     switch (page) {
       case Pages.home:
         return 'Home';
+      case Pages.menus:
+        return 'Menus';
     }
   }
 

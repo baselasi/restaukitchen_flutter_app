@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_events.dart';
@@ -80,12 +79,11 @@ class _MenusPageState extends State<MenusPage> {
     return Scaffold(
       body: BlocBuilder<MenusPageBloc, MenusPageState>(
         builder: (context, state) {
-          if (state is MenusPageLoaded) {
-            return RefreshIndicator(
-              onRefresh: _onRefresh,
-              child: CustomScrollView(
-                slivers: [
-                  // SliverAppBar (top bar)
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: CustomScrollView(
+              slivers: [
+                if (state is MenusPageLoaded) ...[
                   SliverAppBar(
                     pinned: true,
                     floating: false,
@@ -104,14 +102,16 @@ class _MenusPageState extends State<MenusPage> {
                   // SliverList (dishes content)
                   _buildDishesList(state),
                 ],
-              ),
-            );
-          } else if (state is MenusPageLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is MenusPageError) {
-            return Center(child: Text('Error: ${state.error}'));
-          }
-          return const Center(child: CircularProgressIndicator());
+                if (state is MenusPageLoading)
+                  SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                // SliverAppBar (top bar)
+                if (state is MenusPageError)
+                  SliverFillRemaining(child: Center(child: Text(state.error))),
+              ],
+            ),
+          );
         },
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_events.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_state.dart';
@@ -47,34 +49,29 @@ class _MenusPageState extends State<MenusPage> {
         child: const Center(
           child: Text(
             'No dishes available',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
       );
     }
 
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final dish = dishes[index];
-          return DishCard(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final dish = dishes[index];
+        return BlocProvider<DeleteDishCubit>(
+          create: (context) => DeleteDishCubit(),
+          child: DishCard(
             dish: dish,
-            onEdit: () {
-              // TODO: Handle edit dish
+            onEdit: () {},
+            onDelete: () async {
+              context.read<MenusPageBloc>().add(
+                GetMenus(showSucess: true, menuIndex: state.selectedMenu),
+              );
             },
-            onDelete: () {
-              // TODO: Handle delete dish
-            },
-            onEditPhoto: () {
-              // TODO: Handle edit photo
-            },
-          );
-        },
-        childCount: dishes.length,
-      ),
+            onEditPhoto: () {},
+          ),
+        );
+      }, childCount: dishes.length),
     );
   }
 

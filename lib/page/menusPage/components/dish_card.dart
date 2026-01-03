@@ -1,10 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/core/dialogs/loading_overlay.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/core/widgets/public_image.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
+import 'package:restaukitchen_app/page/menusPage/repository/menus_page_repo.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class DishCard extends StatefulWidget {
@@ -75,23 +76,23 @@ class _DishCardState extends State<DishCard> {
                     ),
                     color: Colors.grey[200],
                   ),
-                  child:
-                      widget.dish.dishImagesId != null &&
-                          widget.dish.dishImagesId!.isNotEmpty
-                      ? ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            topRight: Radius.circular(12),
-                          ),
-                          child: Image.network(
-                            widget.dish.dishImagesId!.first,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                    ),
+                    child:
+                        widget.dish.dishImagesId != null &&
+                            widget.dish.dishImagesId!.isNotEmpty
+                        ? PublicImage(
+                            imageUrl:
+                                "/api/public/dish-image/${widget.dish.dishImagesId!.first}",
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return _buildPlaceholderImage();
-                            },
-                          ),
-                        )
-                      : _buildPlaceholderImage(),
+                            placeholder: _buildPlaceholderImage(),
+                            errorWidget: _buildPlaceholderImage(),
+                          )
+                        : _buildPlaceholderImage(),
+                  ),
                 ),
                 // Edit photo button
                 Positioned(

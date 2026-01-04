@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
+import 'package:restaukitchen_app/page/menusPage/models/image.dart';
 import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
 
 class MenusPageRepo {
@@ -26,6 +28,42 @@ class MenusPageRepo {
       }
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  Future<ImageResponse> uploadDishImage(String dishId, File image) async {
+    try {
+      final ApiService apiService = getIt<ApiService>();
+      final response = await apiService.postFilePrivate(
+        '/api/dish-image',
+        image,
+        fields: {'id': dishId},
+      );
+
+      if (!apiService.isSuccess(response)) {
+        throw Exception('Failed to upload dish image: ${response.statusCode}');
+      }
+      return ImageResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Error uploading dish image: $e');
+    }
+  }
+
+  Future<ImageResponse> updateDishImage(String dishId, File image) async {
+    try {
+      final ApiService apiService = getIt<ApiService>();
+      final response = await apiService.patchFilePrivate(
+        '/api/dish-image',
+        image,
+        fields: {'id': dishId},
+      );
+
+      if (!apiService.isSuccess(response)) {
+        throw Exception('Failed to upload dish image: ${response.statusCode}');
+      }
+      return ImageResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Error uploading dish image: $e');
     }
   }
 }

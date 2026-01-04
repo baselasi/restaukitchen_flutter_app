@@ -20,30 +20,32 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<LoginCubit>(create: (context) => LoginCubit()),
-        BlocProvider<AuthCubit>(create: (context) => AuthCubit()),
-      ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        ),
-        home: BlocConsumer<AuthCubit, AuthState>(
-          builder: (context, state) {
-            if (state.status == AuthStatus.unauthenticated) {
-              return const LoginPage();
-            }
-            if (state.status == AuthStatus.authenticated) {
-              return BlocProvider<MainPageCubit>(
-                create: (context) => MainPageCubit(),
-                child: const MainPage(),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-          listener: (context, state) {},
+    return SafeArea(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<LoginCubit>(create: (context) => LoginCubit()),
+          BlocProvider<AuthCubit>(create: (context) => AuthCubit()),
+        ],
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          ),
+          home: BlocConsumer<AuthCubit, AuthState>(
+            builder: (context, state) {
+              if (state.status == AuthStatus.unauthenticated) {
+                return const LoginPage();
+              }
+              if (state.status == AuthStatus.authenticated) {
+                return BlocProvider<MainPageCubit>(
+                  create: (context) => MainPageCubit(),
+                  child: const MainPage(),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+            listener: (context, state) {},
+          ),
         ),
       ),
     );

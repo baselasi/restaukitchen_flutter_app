@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:restaukitchen_app/core/services/secure_storage_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
@@ -127,6 +128,74 @@ class ApiService {
       return {};
     }
     return jsonDecode(response.body) as Map<String, dynamic>;
+  }
+
+  // Private POST file - Token required (multipart/form-data)
+  Future<http.Response> postFilePrivate(
+    String endpoint,
+    File file, {
+    Map<String, String>? fields,
+  }) async {
+    try {
+      final url = Uri.parse('$_baseUrl$endpoint');
+      final token = await this.token;
+      
+      var request = http.MultipartRequest('POST', url);
+      
+      // Add authorization header
+      request.headers['Authorization'] = 'Bearer $token';
+      
+      // Add file
+      request.files.add(
+        await http.MultipartFile.fromPath('image', file.path),
+      );
+      
+      // Add additional fields if provided
+      if (fields != null) {
+        request.fields.addAll(fields);
+      }
+      
+      // Send request
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+   Future<http.Response> patchFilePrivate(
+    String endpoint,
+    File file, {
+    Map<String, String>? fields,
+  }) async {
+    try {
+      final url = Uri.parse('$_baseUrl$endpoint');
+      final token = await this.token;
+      
+      var request = http.MultipartRequest('PUT', url);
+      
+      // Add authorization header
+      request.headers['Authorization'] = 'Bearer $token';
+      
+      // Add file
+      request.files.add(
+        await http.MultipartFile.fromPath('image', file.path),
+      );
+      
+      // Add additional fields if provided
+      if (fields != null) {
+        request.fields.addAll(fields);
+      }
+      
+      // Send request
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // Helper method to check if response is successful

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/dish_image_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_events.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_state.dart';
@@ -57,8 +58,13 @@ class _MenusPageState extends State<MenusPage> {
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
         final dish = dishes[index];
-        return BlocProvider<DeleteDishCubit>(
-          create: (context) => DeleteDishCubit(),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<DeleteDishCubit>(
+              create: (context) => DeleteDishCubit(),
+            ),
+            BlocProvider<DishImageCubit>(create: (context) => DishImageCubit()),
+          ],
           child: DishCard(
             dish: dish,
             onEdit: () {},

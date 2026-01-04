@@ -1,10 +1,14 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/core/dialogs/loading_overlay.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/core/widgets/public_image.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/dish_image_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class DishCard extends StatefulWidget {
@@ -27,6 +31,29 @@ class DishCard extends StatefulWidget {
 
 class _DishCardState extends State<DishCard> {
   OverlayEntry? overlayEntry;
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage(ImageSource source, {bool isUpdate = false}) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 1800, // Optional: Resizes image to save memory
+        maxHeight: 1800,
+        imageQuality: 80, // Optional: Compresses image
+      );
+
+      if (pickedFile != null && mounted) {
+        context.read<DishImageCubit>().uploadDishImage(
+          widget.dish.id ?? "",
+          File(pickedFile.path),
+          isUpdate: isUpdate,
+        );
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,23 +102,17 @@ class _DishCardState extends State<DishCard> {
                     ),
                     color: Colors.grey[200],
                   ),
-                  child:
-                      widget.dish.dishImagesId != null &&
-                          widget.dish.dishImagesId!.isNotEmpty
-                      ? ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            topRight: Radius.circular(12),
-                          ),
-                          child: Image.network(
-                            widget.dish.dishImagesId!.first,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return _buildPlaceholderImage();
-                            },
-                          ),
-                        )
-                      : _buildPlaceholderImage(),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                    ),
+                    child: DishImageWidget(
+                      dish: widget.dish,
+                      key: Key(widget.dish.id ?? ""),
+                      placeholder: _buildPlaceholderImage(),
+                    ),
+                  ),
                 ),
                 // Edit photo button
                 Positioned(
@@ -100,7 +121,13 @@ class _DishCardState extends State<DishCard> {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: widget.onEditPhoto,
+                      onTap: () {
+                        _pickImage(
+                          ImageSource.gallery,
+                          isUpdate:
+                              widget.dish.dishImagesId?.isNotEmpty == true,
+                        );
+                      },
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         padding: const EdgeInsets.all(8),
@@ -236,6 +263,61 @@ class _DishCardState extends State<DishCard> {
         color: Colors.grey[200],
       ),
       child: Icon(Icons.restaurant_menu, size: 64, color: Colors.grey[400]),
+    );
+  }
+}
+
+/// Widget to display dish image or placeholder
+class DishImageWidget extends StatefulWidget {
+  final Dish dish;
+  final Widget placeholder;
+
+  const DishImageWidget({
+    super.key,
+    required this.dish,
+    required this.placeholder,
+  });
+
+  @override
+  State<DishImageWidget> createState() => _DishImageWidgetState();
+}
+
+class _DishImageWidgetState extends State<DishImageWidget> {
+  String? imageId;
+
+  @override
+  void initState() {
+    super.initState();
+    imageId = widget.dish.dishImagesId?.isNotEmpty == true
+        ? widget.dish.dishImagesId!.last
+        : null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<DishImageCubit, DishImageUploadState>(
+      builder: (context, state) {
+        if (state.status == DishImageUploadStatus.loading) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (imageId != null) {
+          return PublicImage(
+            imageUrl: "/api/public/dish-image/$imageId",
+            fit: BoxFit.cover,
+            placeholder: widget.placeholder,
+            errorWidget: widget.placeholder,
+          );
+        }
+        return widget.placeholder;
+      },
+      listener: (context, state) {
+        if (state.status == DishImageUploadStatus.success) {
+          setState(() {
+            imageId = state.imageResponse?.id;
+          });
+        }
+      },
     );
   }
 }

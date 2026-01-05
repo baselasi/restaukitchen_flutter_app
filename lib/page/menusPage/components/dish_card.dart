@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/core/dialogs/loading_overlay.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
+import 'package:restaukitchen_app/page/dishForm/dish_form.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/dish_image_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
@@ -208,7 +210,14 @@ class _DishCardState extends State<DishCard> {
                     children: [
                       // Edit button
                       TextButton.icon(
-                        onPressed: widget.onEdit,
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: DishForm(),
+                            ),
+                          );
+                        },
                         icon: const Icon(Icons.edit, size: 18),
                         label: const Text('Edit'),
                         style: TextButton.styleFrom(

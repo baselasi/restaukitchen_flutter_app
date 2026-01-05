@@ -26,8 +26,9 @@ class _CategorySelectorFieldState extends State<CategorySelectorField> {
           // hint: const Text('Select Category'),
           initialValue:
               state.selectedCategory?.name, // The current value from Cubit
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Select Category',
+            labelStyle: Theme.of(context).textTheme.bodyMedium,
             border: OutlineInputBorder(), // Gives it that "Input Field" look
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           ),

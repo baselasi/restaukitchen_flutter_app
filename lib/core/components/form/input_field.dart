@@ -97,15 +97,14 @@ class InputField extends StatelessWidget {
       focusNode: focusNode,
       textInputAction: textInputAction,
       onFieldSubmitted: onSubmitted,
-      style: TextStyle(
-        color: isDisabled
-            ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
-            : theme.colorScheme.primary,
-      ),
+      style:theme.textTheme.bodyMedium,
       decoration: InputDecoration(
         labelText: label != null ? (isRequired ? '$label *' : label) : null,
+        labelStyle: theme.textTheme.bodyMedium,
         hintText: hint,
+        hintStyle:theme.textTheme.bodyMedium ,
         helperText: helperText,
+        helperStyle: theme.textTheme.bodyMedium,
         prefixIcon: prefixIcon != null
             ? Icon(
                 prefixIcon,

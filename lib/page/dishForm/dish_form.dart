@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_field.dart';
+import 'package:restaukitchen_app/core/components/form/descriptionInput/description_cubit.dart';
+import 'package:restaukitchen_app/core/components/form/descriptionInput/description_input.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 
 class DishForm extends StatefulWidget {
@@ -36,6 +38,11 @@ class _DishFormState extends State<DishForm> {
             BlocProvider(
               create: (context) => CategorySelectorCubit(),
               child: CategorySelectorField(),
+            ),
+            SizedBox(height: 16),
+            BlocProvider(
+              create: (context) => DescriptionCubit(),
+              child: DescriptionInput(),
             ),
             SizedBox(height: 16),
             Row(

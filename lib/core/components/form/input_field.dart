@@ -13,6 +13,8 @@ class InputField extends StatelessWidget {
   final IconData? suffixIcon;
   final Widget? suffixIconWidget;
   final bool obscureText;
+    final Widget? suffixIconButton;
+
   final int? maxLines;
   final int? maxLength;
   final TextInputType? keyboardType;
@@ -36,6 +38,7 @@ class InputField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.suffixIconWidget,
+    this.suffixIconButton,
     this.obscureText = false,
     this.maxLines = 1,
     this.maxLength,
@@ -97,14 +100,24 @@ class InputField extends StatelessWidget {
       focusNode: focusNode,
       textInputAction: textInputAction,
       onFieldSubmitted: onSubmitted,
-      style:theme.textTheme.bodyMedium,
+      style: theme.textTheme.bodyMedium,
       decoration: InputDecoration(
         labelText: label != null ? (isRequired ? '$label *' : label) : null,
         labelStyle: theme.textTheme.bodyMedium,
         hintText: hint,
-        hintStyle:theme.textTheme.bodyMedium ,
+        hintStyle: theme.textTheme.bodyMedium,
         helperText: helperText,
         helperStyle: theme.textTheme.bodyMedium,
+        suffix:
+            suffixIconButton ??
+            (suffixIcon != null
+                ? Icon(
+                    suffixIcon,
+                    color: isDisabled
+                        ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
+                        : theme.colorScheme.primary,
+                  )
+                : null),
         prefixIcon: prefixIcon != null
             ? Icon(
                 prefixIcon,
@@ -113,7 +126,8 @@ class InputField extends StatelessWidget {
                     : theme.colorScheme.primary,
               )
             : null,
-        suffixIcon: suffixIconWidget ??
+        suffixIcon:
+            suffixIconWidget ??
             (suffixIcon != null
                 ? Icon(
                     suffixIcon,

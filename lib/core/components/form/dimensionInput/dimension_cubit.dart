@@ -6,10 +6,12 @@ import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_
 
 class DimensionCubit extends Cubit<DimensionState> {
   DimensionCubit()
-    : super(DimensionState(status: DimensionStateStatus.initial));
+    : super(
+        DimensionState(status: DimensionStateStatus.initial, isEmpty: true),
+      );
 
   Future<void> getDimensions() async {
-    emit(DimensionState(status: DimensionStateStatus.loading));
+    emit(DimensionState(status: DimensionStateStatus.loading, isEmpty: true));
     try {
       final dimensions = await DimensionRepo().getDimensions();
       emit(
@@ -17,10 +19,11 @@ class DimensionCubit extends Cubit<DimensionState> {
           allDimensions: dimensions.dimensions,
           status: DimensionStateStatus.loaded,
           availableDimensions: dimensions.dimensions,
+          isEmpty: true,
         ),
       );
     } catch (e) {
-      emit(DimensionState(status: DimensionStateStatus.error));
+      emit(DimensionState(status: DimensionStateStatus.error, isEmpty: true));
     }
   }
 
@@ -41,6 +44,7 @@ class DimensionCubit extends Cubit<DimensionState> {
         status: DimensionStateStatus.loaded,
         allDimensions: state.allDimensions,
         availableDimensions: availableDimensions,
+        isEmpty: true,
       ),
     );
   }
@@ -56,12 +60,16 @@ class DimensionCubit extends Cubit<DimensionState> {
         price: price,
         deleted: updatedAssignments[index].deleted,
       );
+      
       emit(
         DimensionState(
           dimensionAssignments: updatedAssignments,
           status: DimensionStateStatus.loaded,
           allDimensions: state.allDimensions,
           availableDimensions: state.availableDimensions,
+          isEmpty: updatedAssignments.any(
+            (dimensionAssignment) => dimensionAssignment.price?.isEmpty ?? true,
+          ),
         ),
       );
     }
@@ -86,6 +94,9 @@ class DimensionCubit extends Cubit<DimensionState> {
           status: DimensionStateStatus.loaded,
           allDimensions: state.allDimensions,
           availableDimensions: availableDimensions,
+          isEmpty: !updatedAssignments.any(
+            (dimensionAssignment) => dimensionAssignment.price == null,
+          ),
         ),
       );
     }
@@ -99,11 +110,13 @@ class DimensionState extends Equatable {
   final List<Dimension>? availableDimensions;
   final List<DimensionAssignments>? dimensionAssignments;
   final DimensionStateStatus status;
+  final bool isEmpty;
   const DimensionState({
     this.allDimensions,
     this.availableDimensions,
     this.dimensionAssignments,
     required this.status,
+    required this.isEmpty,
   });
 
   @override
@@ -111,5 +124,6 @@ class DimensionState extends Equatable {
     allDimensions,
     availableDimensions,
     dimensionAssignments,
+    isEmpty,
   ];
 }

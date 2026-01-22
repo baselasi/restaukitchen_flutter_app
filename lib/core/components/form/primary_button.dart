@@ -21,21 +21,21 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     Widget button = ElevatedButton(
       onPressed: isDisabled ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: isDisabled 
-            ? theme.colorScheme.primary.withOpacity(0.5)
+        backgroundColor: isDisabled
+            ? theme.colorScheme.primary.withValues(alpha: 0.5)
             : theme.colorScheme.primary,
         foregroundColor: Colors.white,
         padding: padding ?? const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         elevation: isDisabled ? 0 : 2,
-        disabledBackgroundColor: theme.colorScheme.primary.withOpacity(0.5),
-        disabledForegroundColor: Colors.white.withOpacity(0.7),
+        disabledBackgroundColor: theme.colorScheme.primary.withValues(
+          alpha: 0.5,
+        ),
+        disabledForegroundColor: Colors.white.withValues(alpha: 0.7),
       ),
       child: Text(
         text,
@@ -48,10 +48,7 @@ class PrimaryButton extends StatelessWidget {
     );
 
     if (isFullWidth) {
-      return SizedBox(
-        width: width ?? double.infinity,
-        child: button,
-      );
+      return SizedBox(width: width ?? double.infinity, child: button);
     }
 
     return button;

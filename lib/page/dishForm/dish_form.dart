@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_field.dart';
 import 'package:restaukitchen_app/core/components/form/descriptionInput/description_input.dart';
+import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimesion_input.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
@@ -78,10 +81,44 @@ class _DishFormState extends State<DishForm> {
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
             ),
-            child: PrimaryButton(text: 'Salva', onPressed: () {}),
+            child: SaveButton(dishNameIsEmpty: _nameControllere.text.isEmpty),
           ),
         ],
       ),
+    );
+  }
+}
+
+class SaveButton extends StatefulWidget {
+  final bool dishNameIsEmpty;
+
+  const SaveButton({super.key, required this.dishNameIsEmpty});
+
+  @override
+  State<SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<SaveButton> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    DimensionState dimensionAssignmentState = context
+        .watch<DimensionCubit>()
+        .state;
+    CategorySelectorState categoryState = context
+        .watch<CategorySelectorCubit>()
+        .state;
+    return PrimaryButton(
+      text: 'Salva',
+      onPressed: () {},
+      isDisabled:
+          dimensionAssignmentState.isEmpty ||
+          categoryState.selectedCategory == null ||
+          widget.dishNameIsEmpty,
     );
   }
 }

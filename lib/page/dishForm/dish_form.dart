@@ -81,7 +81,7 @@ class _DishFormState extends State<DishForm> {
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
             ),
-            child: SaveButton(dishNameIsEmpty: _nameControllere.text.isEmpty),
+            child: SaveButton(nameController: _nameControllere),
           ),
         ],
       ),
@@ -90,18 +90,39 @@ class _DishFormState extends State<DishForm> {
 }
 
 class SaveButton extends StatefulWidget {
-  final bool dishNameIsEmpty;
+  final TextEditingController nameController;
 
-  const SaveButton({super.key, required this.dishNameIsEmpty});
+  const SaveButton({super.key, required this.nameController});
 
   @override
   State<SaveButton> createState() => _SaveButtonState();
 }
 
 class _SaveButtonState extends State<SaveButton> {
+  bool _isNameEmpty = true;
+
   @override
   void initState() {
     super.initState();
+    _isNameEmpty = widget.nameController.text.isEmpty;
+    // Listen to name controller changes
+    widget.nameController.addListener(_onNameChanged);
+  }
+
+  @override
+  void dispose() {
+    // Remove listener to prevent memory leaks
+    widget.nameController.removeListener(_onNameChanged);
+    super.dispose();
+  }
+
+  void _onNameChanged() {
+    final isNameEmpty = widget.nameController.text.isEmpty;
+    if (_isNameEmpty != isNameEmpty) {
+      setState(() {
+        _isNameEmpty = isNameEmpty;
+      });
+    }
   }
 
   @override
@@ -118,7 +139,7 @@ class _SaveButtonState extends State<SaveButton> {
       isDisabled:
           dimensionAssignmentState.isEmpty ||
           categoryState.selectedCategory == null ||
-          widget.dishNameIsEmpty,
+          _isNameEmpty,
     );
   }
 }

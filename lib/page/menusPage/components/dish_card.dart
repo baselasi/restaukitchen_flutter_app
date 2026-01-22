@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_cubit.dart';
+import 'package:restaukitchen_app/core/components/form/descriptionInput/description_cubit.dart';
+import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
 import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/core/dialogs/loading_overlay.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
@@ -214,7 +217,21 @@ class _DishCardState extends State<DishCard> {
                           Navigator.of(context).push(
                             PageTransition(
                               type: PageTransitionType.rightToLeft,
-                              child: DishForm(),
+                              child: MultiBlocProvider(
+                                providers: [
+                                  BlocProvider<DimensionCubit>(
+                                    create: (context) => DimensionCubit(),
+                                  ),
+                                  BlocProvider(
+                                    create: (context) =>
+                                        CategorySelectorCubit(),
+                                  ),
+                                  BlocProvider(
+                                    create: (context) => DescriptionCubit(),
+                                  ),
+                                ],
+                                child: DishForm(),
+                              ),
                             ),
                           );
                         },

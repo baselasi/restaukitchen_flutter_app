@@ -13,6 +13,7 @@ class DimensionAssignments extends Equatable {
     required this.dimension,
     this.deleted,
   });
+  
 
   @override
   List<Object?> get props => [id, price, dimension, deleted];

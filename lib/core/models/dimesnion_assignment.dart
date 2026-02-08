@@ -13,6 +13,10 @@ class DimensionAssignment extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'price': price};
+  }
+
   @override
   List<Object?> get props => [id, price];
 }

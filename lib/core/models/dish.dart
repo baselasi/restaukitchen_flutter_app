@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/core/models/dimesnion_assignment.dart';
 
@@ -8,12 +6,14 @@ class Dish extends Equatable {
   final Map<String, dynamic>? ingredients;
   final double? price;
   final String? restaurantId;
-  // final String? menuId;
+  final String? menuId;
   final String? description;
   final List<String>? dishImagesId;
   final bool? isAvailable;
   final String name;
+  final String? categoryId;
   final int? position;
+  
   final String? descriptionIt;
   final String? descriptionAr;
   final String? descriptionFr;
@@ -25,7 +25,8 @@ class Dish extends Equatable {
     this.ingredients,
     this.price,
     this.restaurantId,
-    // required this.menuId,
+    this.categoryId,
+    this.menuId,
     this.description,
     this.dishImagesId,
     this.isAvailable,
@@ -82,9 +83,49 @@ class Dish extends Equatable {
       'descriptionAr': descriptionAr ?? '',
       'descriptionFr': descriptionFr ?? '',
       'descriptionEs': descriptionEs ?? '',
+
       // 'dimensionAssignments': jsonEncode(dimensionAssignments?.map((dimension) => dimension.toJson()).toList()),
     };
   }
+
+  // factory Dish.formFormData(
+  //   String name,
+  //   String categoryId,
+  //   List<DimensionAssignment> dimensionAssignments,
+  //   List<String>? dishImagesId,
+  //   List<String>? ingredients,
+  //   double price,
+  //   bool isAvailable,
+  //   int position,
+  //   List<DescriptionEntity> descriptions,
+  // ) {
+  //   return Dish(
+  //     name: name,
+  //     position: position,
+  //     description: descriptions
+  //         .where((des) => des.language == "English")
+  //         .first
+  //         .value,
+  //     descriptionAr:descriptions
+  //         .where((des) => des.language == "English")
+  //         .first
+  //         .value,
+  //         descriptionEs: descriptions
+  //         .where((des) => des.language == "English")
+  //         .first
+  //         .value,
+  //         descriptionFr: descriptions
+  //         .where((des) => des.language == "English")
+  //         .first
+  //         .value,
+  //         descriptionIt: descriptions
+  //         .where((des) => des.language == "English")
+  //         .first
+  //         .value,
+  //         categoryId: categoryId,
+  //         isAvailable:  isAvailable,
+  //   );
+  // }
 
   // Copy with method for immutable updates
   Dish copyWith({

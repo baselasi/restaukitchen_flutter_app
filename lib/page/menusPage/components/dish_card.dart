@@ -11,6 +11,7 @@ import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/core/dialogs/loading_overlay.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
+import 'package:restaukitchen_app/page/dishForm/bloc/dish_form_cubit.dart';
 import 'package:restaukitchen_app/page/dishForm/dish_form.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/dish_image_cubit.dart';
@@ -18,6 +19,7 @@ import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class DishCard extends StatefulWidget {
   final Dish dish;
+  final String menuId;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final VoidCallback? onEditPhoto;
@@ -25,6 +27,7 @@ class DishCard extends StatefulWidget {
   const DishCard({
     super.key,
     required this.dish,
+    required this.menuId,
     this.onEdit,
     this.onDelete,
     this.onEditPhoto,
@@ -229,8 +232,11 @@ class _DishCardState extends State<DishCard> {
                                   BlocProvider(
                                     create: (context) => DescriptionCubit(),
                                   ),
+                                  BlocProvider(
+                                    create: (context) => DishFormCubit(),
+                                  ),
                                 ],
-                                child: DishForm(),
+                                child: DishForm(menuId: widget.menuId),
                               ),
                             ),
                           );

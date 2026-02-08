@@ -3,14 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_field.dart';
+import 'package:restaukitchen_app/core/components/form/descriptionInput/description_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/descriptionInput/description_input.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimesion_input.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/page/dishForm/bloc/dish_form_cubit.dart';
 
 class DishForm extends StatefulWidget {
-  const DishForm({super.key});
+  final String? menuId;
+  const DishForm({super.key, this.menuId});
 
   @override
   State<DishForm> createState() => _DishFormState();
@@ -81,7 +84,34 @@ class _DishFormState extends State<DishForm> {
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
             ),
-            child: SaveButton(nameController: _nameControllere),
+            child: SaveButton(
+              nameController: _nameControllere,
+              onSavePressed: () {
+                context.read<DishFormCubit>().createDish(
+                  menuId: widget.menuId ?? '',
+                  name: _nameControllere.text,
+                  categoryId:
+                      context
+                          .read<CategorySelectorCubit>()
+                          .state
+                          .selectedCategory
+                          ?.id ??
+                      '',
+                  isAvailable: _isAvailable,
+                  descriptions: context
+                      .read<DescriptionCubit>()
+                      .state
+                      .descriptions,
+                  dimensionAssignments:
+                      context
+                          .read<DimensionCubit>()
+                          .state
+                          .dimensionAssignments ??
+                      [],
+                  position: 0,
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -91,8 +121,12 @@ class _DishFormState extends State<DishForm> {
 
 class SaveButton extends StatefulWidget {
   final TextEditingController nameController;
-
-  const SaveButton({super.key, required this.nameController});
+  final VoidCallback onSavePressed;
+  const SaveButton({
+    super.key,
+    required this.nameController,
+    required this.onSavePressed,
+  });
 
   @override
   State<SaveButton> createState() => _SaveButtonState();
@@ -135,7 +169,8 @@ class _SaveButtonState extends State<SaveButton> {
         .state;
     return PrimaryButton(
       text: 'Salva',
-      onPressed: () {},
+
+      onPressed: widget.onSavePressed,
       isDisabled:
           dimensionAssignmentState.isEmpty ||
           categoryState.selectedCategory == null ||

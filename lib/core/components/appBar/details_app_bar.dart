@@ -6,7 +6,7 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
   const DetailsAppBar({super.key, required this.pageTitle});
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(65);
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +33,20 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
         elevation: 0,
         centerTitle: true,
         title: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
             // Logo
             Image.asset(
               'assets/images/logo.png',
-              height: 30,
+              height: 25,
               fit: BoxFit.contain,
             ),
             DefaultTextStyle(
               style:
                   theme.textTheme.titleSmall?.copyWith(
                     color: Colors.black,
-                    fontSize: 14,
+                    fontSize: 16,
                   ) ??
                   const TextStyle(color: Colors.black, fontSize: 14),
               child: Text(pageTitle),

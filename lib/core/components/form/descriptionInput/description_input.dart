@@ -13,6 +13,8 @@ class DescriptionInput extends StatefulWidget {
 }
 
 class _DescriptionInputState extends State<DescriptionInput> {
+  final Map<String, TextEditingController> _controllers = {};
+
   @override
   void initState() {
     super.initState();
@@ -25,10 +27,50 @@ class _DescriptionInputState extends State<DescriptionInput> {
     );
   }
 
+  /// Creates controllers for new entries and disposes removed ones.
+  void _syncControllers(DescriptionState state) {
+    final currentIds = state.descriptions.map((e) => e.id).toSet();
+
+    // Dispose controllers for entries that were removed
+    final removedIds =
+        _controllers.keys.where((id) => !currentIds.contains(id)).toList();
+    for (final id in removedIds) {
+      _controllers[id]!.dispose();
+      _controllers.remove(id);
+    }
+
+    // Create controllers for newly added entries
+    for (final entry in state.descriptions) {
+      if (!_controllers.containsKey(entry.id)) {
+        _controllers[entry.id] = TextEditingController(text: entry.value);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _controllers.values) {
+      controller.dispose();
+    }
+    _controllers.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DescriptionCubit, DescriptionState>(
+      buildWhen: (prev, curr) {
+        // Only rebuild when entries are added/removed or available languages change.
+        // Text-only changes (from updateText) are handled by the controllers directly.
+        final prevIds = prev.descriptions.map((e) => e.id).toSet();
+        final currIds = curr.descriptions.map((e) => e.id).toSet();
+        return prevIds.length != currIds.length ||
+            !prevIds.containsAll(currIds) ||
+            prev.availableLanguages != curr.availableLanguages;
+      },
       builder: (context, state) {
+        _syncControllers(state);
+
         return Column(
           children: [
             // 1. The Dropdown
@@ -90,7 +132,7 @@ class _DescriptionInputState extends State<DescriptionInput> {
                 final entry = state.descriptions[index];
 
                 return Padding(
-                  key: ValueKey(entry.id), // CRITICAL: Keeps focus/text correct
+                  key: ValueKey(entry.id),
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -111,32 +153,9 @@ class _DescriptionInputState extends State<DescriptionInput> {
                           ),
                         ],
                       ),
-
-                      // IconButton(
-                      //   icon: Icon(Icons.delete, color: Colors.red),
-                      //   onPressed: () {
-                      //     context.read<DescriptionCubit>().removeLanguage(
-                      //       entry.id,
-                      //       entry.language,
-                      //     );
-                      //   },
-                      //   tooltip: 'Remove ${entry.language}',
-                      // ),
                       InputField(
                         maxLines: 5,
-                        controller: TextEditingController(),
-
-                        // label: 'Enter text in ${entry.language}',
-                        // hint: 'Enter text in ${entry.language}',
-                        // suffixIconButton: IconButton(
-                        //   onPressed: () {
-                        //     context.read<DescriptionCubit>().removeLanguage(
-                        //       entry.id,
-                        //       entry.language,
-                        //     );
-                        //   },
-                        //   icon: Icon(Icons.delete, color: Colors.red),
-                        // ),
+                        controller: _controllers[entry.id]!,
                         onChanged: (text) => context
                             .read<DescriptionCubit>()
                             .updateText(entry.id, text),

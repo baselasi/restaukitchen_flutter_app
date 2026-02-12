@@ -6,6 +6,7 @@ import 'package:restaukitchen_app/page/authentication/bloc/login_cubit.dart';
 import 'package:restaukitchen_app/page/authentication/login_page.dart';
 import 'package:restaukitchen_app/page/mainPage/bloc/main_page_cubit.dart';
 import 'package:restaukitchen_app/page/mainPage/main_page.dart';
+import 'package:restaukitchen_app/theme/light_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,9 +29,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          ),
+          theme: LightTheme.theme,
           home: BlocConsumer<AuthCubit, AuthState>(
             builder: (context, state) {
               if (state.status == AuthStatus.unauthenticated) {

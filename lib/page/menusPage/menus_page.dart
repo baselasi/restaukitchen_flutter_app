@@ -66,6 +66,7 @@ class _MenusPageState extends State<MenusPage> {
             BlocProvider<DishImageCubit>(create: (context) => DishImageCubit()),
           ],
           child: DishCard(
+            menuId: selectedMenu.id,
             dish: dish,
             onEdit: () {},
             onDelete: () async {

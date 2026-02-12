@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:restaukitchen_app/core/routes.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
-class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Pages page;
-  const MainAppBar({super.key, required this.page});
+class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String pageTitle;
+  const DetailsAppBar({super.key, required this.pageTitle});
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(65);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final pageTitle = getPageTitle(page);
+    // final pageTitle = getPageTitle(page);
 
     return Container(
       decoration: BoxDecoration(
@@ -34,22 +33,23 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         elevation: 0,
         centerTitle: true,
         title: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
             // Logo
             Image.asset(
               'assets/images/logo.png',
-              height: 30,
+              height: 25,
               fit: BoxFit.contain,
             ),
             DefaultTextStyle(
               style:
                   theme.textTheme.titleSmall?.copyWith(
                     color: Colors.black,
-                    fontSize: 14,
+                    fontSize: 16,
                   ) ??
                   const TextStyle(color: Colors.black, fontSize: 14),
-              child: pageTitle,
+              child: Text(pageTitle),
             ),
           ],
         ),

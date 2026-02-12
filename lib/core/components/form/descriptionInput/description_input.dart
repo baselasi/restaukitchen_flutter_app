@@ -2,9 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/descriptionInput/description_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
+import 'package:restaukitchen_app/core/models/dish.dart';
 
-class DescriptionInput extends StatelessWidget {
-  const DescriptionInput({super.key});
+class DescriptionInput extends StatefulWidget {
+  final Dish? dish;
+  const DescriptionInput({super.key, this.dish});
+
+  @override
+  State<DescriptionInput> createState() => _DescriptionInputState();
+}
+
+class _DescriptionInputState extends State<DescriptionInput> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<DescriptionCubit>().initDescriptions(
+      description: widget.dish?.description,
+      descriptionIt: widget.dish?.descriptionIt,
+      descriptionFr: widget.dish?.descriptionFr,
+      descriptionEs: widget.dish?.descriptionEs,
+      descriptionAr: widget.dish?.descriptionAr,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DescriptionCubit, DescriptionState>(

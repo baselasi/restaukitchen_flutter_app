@@ -4,7 +4,8 @@ import 'package:restaukitchen_app/core/components/form/categorySelector/category
 import 'package:restaukitchen_app/core/models/category.dart';
 
 class CategorySelectorField extends StatefulWidget {
-  const CategorySelectorField({super.key});
+  final Category? selectedCategory;
+  const CategorySelectorField({super.key, this.selectedCategory});
 
   @override
   State<CategorySelectorField> createState() => _CategorySelectorFieldState();
@@ -13,7 +14,9 @@ class CategorySelectorField extends StatefulWidget {
 class _CategorySelectorFieldState extends State<CategorySelectorField> {
   @override
   void initState() {
-    context.read<CategorySelectorCubit>().getCategories();
+    context.read<CategorySelectorCubit>().getCategories(
+      widget.selectedCategory,
+    );
     super.initState();
   }
 

@@ -1,16 +1,26 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/descriptionInput/description_entity.dart';
+import 'package:restaukitchen_app/core/models/dish.dart';
 
 class DescriptionCubit extends Cubit<DescriptionState> {
   List<String> availableLanguages = ['English', 'Spanish', 'French'];
-  DescriptionCubit()
+  DescriptionCubit({List<DescriptionEntity>? descriptions})
     : super(
         DescriptionState(
-          descriptions: [],
+          descriptions: descriptions ?? [],
           availableLanguages: ['English', 'Spanish', 'French'],
         ),
       );
+
+  void init(List<DescriptionEntity> descriptions) {
+    emit(
+      DescriptionState(
+        descriptions: descriptions,
+        availableLanguages: availableLanguages,
+      ),
+    );
+  }
 
   // Add a new language entry from the dropdown
   void addLanguage(String language) {
@@ -50,6 +60,79 @@ class DescriptionCubit extends Cubit<DescriptionState> {
             .where((entry) => entry.id != id)
             .toList(),
         availableLanguages: [...state.availableLanguages, language],
+      ),
+    );
+  }
+
+  void initDescriptions({
+    String? description,
+    String? descriptionIt,
+    String? descriptionFr,
+    String? descriptionEs,
+    String? descriptionAr,
+  }) {
+    List<DescriptionEntity> descriptions = [];
+    List<String> languages = [
+      'English',
+      'Spanish',
+      'French',
+      'Italian',
+      'Arabic',
+    ];
+    if (description != null && description.isNotEmpty) {
+      languages.remove('English');
+      descriptions.add(
+        DescriptionEntity(
+          id: DateTime.now().toString(),
+          language: 'English',
+          value: description,
+        ),
+      );
+    }
+    if (descriptionIt != null && descriptionIt.isNotEmpty) {
+      languages.remove('Italian');
+      descriptions.add(
+        DescriptionEntity(
+          id: DateTime.now().toString(),
+          language: 'Italian',
+          value: descriptionIt,
+        ),
+      );
+    }
+    if (descriptionFr != null && descriptionFr.isNotEmpty) {
+      languages.remove('French');
+      descriptions.add(
+        DescriptionEntity(
+          id: DateTime.now().toString(),
+          language: 'French',
+          value: descriptionFr,
+        ),
+      );
+    }
+    if (descriptionEs != null && descriptionEs.isNotEmpty) {
+      languages.remove('Spanish');
+      descriptions.add(
+        DescriptionEntity(
+          id: DateTime.now().toString(),
+          language: 'Spanish',
+          value: descriptionEs,
+        ),
+      );
+    }
+    if (descriptionAr != null && descriptionAr.isNotEmpty) {
+      languages.remove('Arabic');
+      descriptions.add(
+        DescriptionEntity(
+          id: DateTime.now().toString(),
+          language: 'Arabic',
+          value: descriptionAr,
+        ),
+      );
+    }
+    emit(
+      DescriptionState(
+        descriptions: descriptions,
+        availableLanguages: languages,
       ),
     );
   }

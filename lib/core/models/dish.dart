@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:restaukitchen_app/core/models/dimesnion_assignment.dart';
+import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_assignments.dart';
+import 'package:restaukitchen_app/core/models/category.dart';
 
 class Dish extends Equatable {
   final String? id;
@@ -13,12 +14,12 @@ class Dish extends Equatable {
   final String name;
   final String? categoryId;
   final int? position;
-  
+  final Category? category;
   final String? descriptionIt;
   final String? descriptionAr;
   final String? descriptionFr;
   final String? descriptionEs;
-  final List<DimensionAssignment>? dimensionAssignments;
+  final List<DimensionAssignments>? dimensionAssignments;
 
   const Dish({
     this.id,
@@ -26,6 +27,7 @@ class Dish extends Equatable {
     this.price,
     this.restaurantId,
     this.categoryId,
+    this.category,
     this.menuId,
     this.description,
     this.dishImagesId,
@@ -60,9 +62,12 @@ class Dish extends Equatable {
       descriptionEs: json['descriptionEs'] as String?,
       dimensionAssignments: json['dimensionAssignments'] != null
           ? (json['dimensionAssignments'] as List)
-                .map((dimension) => DimensionAssignment.fromJson(dimension))
+                .map((dimension) => DimensionAssignments.fromJson(dimension))
                 .toList()
           : [],
+      category: json['category'] != null
+          ? Category.fromJson(json['category'])
+          : null,
     );
   }
 
@@ -143,7 +148,8 @@ class Dish extends Equatable {
     String? descriptionAr,
     String? descriptionFr,
     String? descriptionEs,
-    List<DimensionAssignment>? dimensionAssignments,
+    List<DimensionAssignments>? dimensionAssignments,
+    Category? category,
   }) {
     return Dish(
       id: id ?? this.id,
@@ -161,6 +167,7 @@ class Dish extends Equatable {
       descriptionFr: descriptionFr ?? this.descriptionFr,
       descriptionEs: descriptionEs ?? this.descriptionEs,
       dimensionAssignments: dimensionAssignments ?? this.dimensionAssignments,
+      category: category ?? this.category,
     );
   }
 
@@ -170,7 +177,7 @@ class Dish extends Equatable {
     ingredients,
     price,
     restaurantId,
-    //  menuId,
+    menuId,
     description,
     dishImagesId,
     isAvailable,
@@ -181,5 +188,6 @@ class Dish extends Equatable {
     descriptionFr,
     descriptionEs,
     dimensionAssignments,
+    category,
   ];
 }

@@ -99,7 +99,7 @@ class ApiService {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
       final headers = await _getHeadersWithToken();
-      final response = await http.put(
+      final response = await http.patch(
         url,
         headers: headers,
         body: jsonEncode(body),

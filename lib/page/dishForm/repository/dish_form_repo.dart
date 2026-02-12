@@ -10,4 +10,13 @@ class DishFormRepo {
       rethrow;
     }
   }
+
+  Future<void> updateDish(Map<String, Object> payload, String dishId) async {
+    ApiService apiService = getIt<ApiService>();
+    try {
+      await apiService.putPrivate('/api/dish/$dishId', payload);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

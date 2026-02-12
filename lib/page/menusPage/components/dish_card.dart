@@ -223,7 +223,10 @@ class _DishCardState extends State<DishCard> {
                               child: MultiBlocProvider(
                                 providers: [
                                   BlocProvider<DimensionCubit>(
-                                    create: (context) => DimensionCubit(),
+                                    create: (context) => DimensionCubit(
+                                      dimensionAssignments:
+                                          widget.dish.dimensionAssignments,
+                                    ),
                                   ),
                                   BlocProvider(
                                     create: (context) =>
@@ -236,7 +239,10 @@ class _DishCardState extends State<DishCard> {
                                     create: (context) => DishFormCubit(),
                                   ),
                                 ],
-                                child: DishForm(menuId: widget.menuId),
+                                child: DishForm(
+                                  menuId: widget.menuId,
+                                  dish: widget.dish,
+                                ),
                               ),
                             ),
                           );

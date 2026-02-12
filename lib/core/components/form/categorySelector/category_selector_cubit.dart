@@ -13,7 +13,7 @@ class CategorySelectorCubit extends Cubit<CategorySelectorState> {
         ),
       );
 
-  Future<void> getCategories() async {
+  Future<void> getCategories(Category? selectedCategory) async {
     emit(
       CategorySelectorState(
         categories: [],
@@ -27,7 +27,7 @@ class CategorySelectorCubit extends Cubit<CategorySelectorState> {
       emit(
         CategorySelectorState(
           categories: categories,
-          selectedCategory: null,
+          selectedCategory: selectedCategory,
           status: CategorySelectorStatus.loaded,
         ),
       );

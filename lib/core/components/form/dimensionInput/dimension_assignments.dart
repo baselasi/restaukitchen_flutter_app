@@ -13,7 +13,15 @@ class DimensionAssignments extends Equatable {
     required this.dimension,
     this.deleted,
   });
-  
+
+  factory DimensionAssignments.fromJson(Map<String, dynamic> json) {
+    return DimensionAssignments(
+      id: json['id'] as String?,
+      price: json['price'].toString(),
+      dimension: Dimension.fromJson(json['dimension'] as Map<String, dynamic>),
+      deleted: json['deleted'] as bool?,
+    );
+  }
 
   @override
   List<Object?> get props => [id, price, dimension, deleted];

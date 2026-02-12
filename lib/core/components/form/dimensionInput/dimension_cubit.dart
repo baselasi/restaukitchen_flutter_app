@@ -5,25 +5,48 @@ import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_repo.dart';
 
 class DimensionCubit extends Cubit<DimensionState> {
-  DimensionCubit()
+  DimensionCubit({List<DimensionAssignments>? dimensionAssignments})
     : super(
-        DimensionState(status: DimensionStateStatus.initial, isEmpty: true),
+        DimensionState(
+          status: DimensionStateStatus.initial,
+          isEmpty: dimensionAssignments == null || dimensionAssignments.isEmpty,
+          dimensionAssignments: dimensionAssignments,
+        ),
       );
 
   Future<void> getDimensions() async {
-    emit(DimensionState(status: DimensionStateStatus.loading, isEmpty: true));
+    emit(
+      DimensionState(
+        status: DimensionStateStatus.loading,
+        isEmpty:
+            state.dimensionAssignments == null ||
+            state.dimensionAssignments!.isEmpty,
+        dimensionAssignments: state.dimensionAssignments,
+      ),
+    );
     try {
       final dimensions = await DimensionRepo().getDimensions();
       emit(
         DimensionState(
           allDimensions: dimensions.dimensions,
           status: DimensionStateStatus.loaded,
+          dimensionAssignments: state.dimensionAssignments,
           availableDimensions: dimensions.dimensions,
-          isEmpty: true,
+          isEmpty:
+              state.dimensionAssignments == null ||
+              state.dimensionAssignments!.isEmpty,
         ),
       );
     } catch (e) {
-      emit(DimensionState(status: DimensionStateStatus.error, isEmpty: true));
+      emit(
+        DimensionState(
+          status: DimensionStateStatus.error,
+          isEmpty:
+              state.dimensionAssignments == null ||
+              state.dimensionAssignments!.isEmpty,
+          dimensionAssignments: state.dimensionAssignments,
+        ),
+      );
     }
   }
 
@@ -60,7 +83,7 @@ class DimensionCubit extends Cubit<DimensionState> {
         price: price,
         deleted: updatedAssignments[index].deleted,
       );
-      
+
       emit(
         DimensionState(
           dimensionAssignments: updatedAssignments,

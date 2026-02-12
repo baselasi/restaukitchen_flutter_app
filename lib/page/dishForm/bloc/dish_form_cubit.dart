@@ -15,6 +15,7 @@ class DishFormCubit extends Cubit<DishFormState> {
     required int position,
     required List<DescriptionEntity> descriptions,
     required List<DimensionAssignments> dimensionAssignments,
+    required String? dishId,
   }) async {
     Map<String, Object> payload = _buildDishPayload(
       menuId: menuId,
@@ -24,9 +25,15 @@ class DishFormCubit extends Cubit<DishFormState> {
       position: position,
       descriptions: descriptions,
       dimensionAssignments: dimensionAssignments,
+      dishId: dishId,
     );
 
-    await DishFormRepo().createDish(payload);
+    if (dishId != null) {
+      await DishFormRepo().updateDish(payload, dishId);
+    } else {
+      await DishFormRepo().createDish(payload);
+    }
+    // await DishFormRepo().createDish(payload);
     emit(DishFormState(status: DishFormStatus.loading));
     try {
       await Future.delayed(const Duration(seconds: 2));
@@ -44,8 +51,10 @@ class DishFormCubit extends Cubit<DishFormState> {
     required int position,
     required List<DescriptionEntity> descriptions,
     required List<DimensionAssignments> dimensionAssignments,
+    required String? dishId,
   }) {
     return {
+      if (dishId != null) 'id' : dishId,
       'menuId': menuId,
       'name': name,
       'category': categoryId,

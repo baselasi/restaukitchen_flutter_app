@@ -5,10 +5,12 @@ import 'package:restaukitchen_app/page/homePage/bloc/table_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/home_page.dart';
 import 'package:restaukitchen_app/page/menusPage/menus_page.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
+import 'package:restaukitchen_app/page/order_list/orders_list.dart';
 
 enum Pages {
   home,
   menus,
+  orders,
   // tables,
   // settings,
 }
@@ -30,6 +32,8 @@ Widget buildPage(Pages page) {
         create: (context) => MenusPageBloc(),
         child: MenusPage(),
       );
+    case Pages.orders:
+      return OrdersList();
   }
 }
 
@@ -39,5 +43,7 @@ Widget getPageTitle(Pages page) {
       return const Text('Home Page');
     case Pages.menus:
       return const Text('Menus Page');
+    case Pages.orders:
+      return const Text('Orders Page');
   }
 }

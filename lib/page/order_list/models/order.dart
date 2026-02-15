@@ -16,6 +16,19 @@ class Order extends Equatable {
     required this.courseStatus,
   });
 
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      courses: (json['courses'] as List<dynamic>)
+          .map((course) => Course.fromJson(course))
+          .toList(),
+      tableNumber: json['tableNumber'] as int?,
+      totalCovers: json['totalCovers'] as int,
+      total: json['total'] as int?,
+      courseStatus: CourseStatus.received,
+      // courseStatus: json['courseStatus'] as CourseStatus,
+    );
+  }
+
   @override
   List<Object?> get props => [
     courses,

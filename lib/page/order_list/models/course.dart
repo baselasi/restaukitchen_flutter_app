@@ -5,6 +5,13 @@ class Course extends Equatable {
 
   const Course({required this.disheIndices});
 
+
+
+  factory Course.fromJson(Map<String, dynamic> json) {
+    return Course(
+      disheIndices: json['disheIndices'] as List<CourseIndice>,
+    );
+  }
   @override
   List<Object> get props => [];
 }

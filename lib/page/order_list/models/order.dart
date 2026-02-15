@@ -2,14 +2,16 @@ import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
 class Order extends Equatable {
-  final List<Course> courses;
+  final List<Course>? courses;
+  final List<CourseIndice>? courseIndices;
   final int? tableNumber;
   final int totalCovers;
-  final int? total;
+  final double? total;
   final CourseStatus courseStatus;
 
   const Order({
-    required this.courses,
+    this.courses,
+    this.courseIndices,
     required this.tableNumber,
     required this.totalCovers,
     required this.total,
@@ -18,12 +20,13 @@ class Order extends Equatable {
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      courses: (json['courses'] as List<dynamic>)
-          .map((course) => Course.fromJson(course))
-          .toList(),
+      // courses: (json['courses'] as List<dynamic>)
+      //     .map((course) => Course.fromJson(course))
+      //     .toList(),
+      // courseIndices: json['courseIndices'] as List<CourseIndice>?,
       tableNumber: json['tableNumber'] as int?,
       totalCovers: json['totalCovers'] as int,
-      total: json['total'] as int?,
+      total: json['total'] as double?,
       courseStatus: CourseStatus.received,
       // courseStatus: json['courseStatus'] as CourseStatus,
     );
@@ -40,3 +43,18 @@ class Order extends Equatable {
 }
 
 enum CourseStatus { received, onFire, finished }
+
+class OrderResponse extends Equatable {
+  final List<Order> orders;
+
+  const OrderResponse({required this.orders});
+
+  factory OrderResponse.fromJson(List<dynamic> json) {
+    return OrderResponse(
+      orders: json.map((order) => Order.fromJson(order)).toList(),
+    );
+  }
+
+  @override
+  List<Object?> get props => [];
+}

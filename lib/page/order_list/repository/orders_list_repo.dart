@@ -30,9 +30,7 @@ class OrdersListRepo {
 
   Future<void> _connect() async {
     try {
-      final (:stream, :client) = await _apiService.connectToSSE(
-        '/api/order',
-      );
+      final (:stream, :client) = await _apiService.connectToSSE('/api/order');
       _sseClient = client;
 
       String buffer = '';
@@ -60,9 +58,7 @@ class OrdersListRepo {
 
             if (decoded is List) {
               final orders = decoded
-                  .map(
-                    (json) => Order.fromJson(json as Map<String, dynamic>),
-                  )
+                  .map((json) => Order.fromJson(json as Map<String, dynamic>))
                   .toList();
               print('[SSE] Emitting ${orders.length} orders');
               _ordersController?.add(orders);
@@ -102,5 +98,14 @@ class OrdersListRepo {
       _ordersController!.close();
     }
     _ordersController = null;
+  }
+
+  Future<OrderResponse> getOrders() async {
+    final response = await _apiService.getPrivate('/api/order/kitchen');
+    try {
+      return OrderResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Failed to get orders: $e');
+    }
   }
 }

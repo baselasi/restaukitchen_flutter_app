@@ -11,17 +11,15 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
   StreamSubscription<List<Order>>? _ordersSubscription;
 
   OrdersListBloc({required OrdersListRepo repo})
-      : _repo = repo,
-        super(OrdersListInitial()) {
+    : _repo = repo,
+      super(OrdersListInitial()) {
     on<OrdersListSubscribe>(_onSubscribe);
     on<OrdersListUpdated>(_onUpdated);
     on<OrdersListStreamError>(_onStreamError);
+    on<OrdersListGetOrders>(_onGetOrders);
   }
 
-  void _onSubscribe(
-    OrdersListSubscribe event,
-    Emitter<OrdersListState> emit,
-  ) {
+  void _onSubscribe(OrdersListSubscribe event, Emitter<OrdersListState> emit) {
     emit(OrdersListLoading());
 
     // Cancel any previous subscription before starting a new one.
@@ -29,16 +27,11 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
 
     _ordersSubscription = _repo.getOrdersStream().listen(
       (orders) => add(OrdersListUpdated(orders: orders)),
-      onError: (error) => add(
-        OrdersListStreamError(message: error.toString()),
-      ),
+      onError: (error) => add(OrdersListStreamError(message: error.toString())),
     );
   }
 
-  void _onUpdated(
-    OrdersListUpdated event,
-    Emitter<OrdersListState> emit,
-  ) {
+  void _onUpdated(OrdersListUpdated event, Emitter<OrdersListState> emit) {
     emit(OrdersListLoaded(orders: event.orders));
   }
 
@@ -56,12 +49,15 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
     return super.close();
   }
 
-  // void _onGetOrders(
-  //   OrdersListGetOrders event,
-  //   Emitter<OrdersListState> emit,
-  // ) {
-  //   // emit(OrdersListLoaded(orders: orders));
-  // }
-
-
+  void _onGetOrders(
+    OrdersListGetOrders event,
+    Emitter<OrdersListState> emit,
+  ) async {
+    try {
+      final OrderResponse orders = await _repo.getOrders();
+      emit(OrdersListLoaded(orders: orders.orders));
+    } catch (e) {
+      emit(OrdersListError(errorMessage: e.toString()));
+    }
+  }
 }

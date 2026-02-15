@@ -15,6 +15,7 @@ class _OrdersListState extends State<OrdersList> {
   void initState() {
     super.initState();
     context.read<OrdersListBloc>().add(OrdersListSubscribe());
+    context.read<OrdersListBloc>().add(OrdersListGetOrders());
   }
 
   @override

@@ -108,4 +108,11 @@ class OrdersListRepo {
       throw Exception('Failed to get orders: $e');
     }
   }
+
+  Future<void> deleteOrder(String orderId) async {
+    final response = await _apiService.deletePrivate('/api/order/$orderId');
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete order: ${response.body}');
+    }
+  }
 }

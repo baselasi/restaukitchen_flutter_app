@@ -17,6 +17,7 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
     on<OrdersListUpdated>(_onUpdated);
     on<OrdersListStreamError>(_onStreamError);
     on<OrdersListGetOrders>(_onGetOrders);
+    on<OrdersListRemoveOrder>(_onRemoveOrder);
   }
 
   void _onSubscribe(OrdersListSubscribe event, Emitter<OrdersListState> emit) {
@@ -57,6 +58,23 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
       emit(OrdersListLoading());
       final OrderResponse orders = await _repo.getOrders();
       emit(OrdersListLoaded(orders: orders.orders));
+    } catch (e) {
+      emit(OrdersListError(errorMessage: e.toString()));
+    }
+  }
+
+  void _onRemoveOrder(
+    OrdersListRemoveOrder event,
+    Emitter<OrdersListState> emit,
+  ) async {
+    try {
+      if (state is OrdersListLoaded) {
+        final orders = [...(state as OrdersListLoaded).orders];
+        final newOrders = orders
+            .where((order) => order.id != event.orderId)
+            .toList();
+        emit(OrdersListLoaded(orders: newOrders));
+      }
     } catch (e) {
       emit(OrdersListError(errorMessage: e.toString()));
     }

@@ -30,3 +30,11 @@ class OrdersListStreamError extends OrdersListEvent {
   @override
   List<Object> get props => [message];
 }
+
+class OrdersListRemoveOrder extends OrdersListEvent {
+  final String orderId;
+  const OrdersListRemoveOrder({required this.orderId});
+
+  @override
+  List<Object> get props => [orderId];
+}

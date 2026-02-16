@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaukitchen_app/page/order_list/bloc/orders_list_bloc/status_cubit/status_cubit.dart';
+import 'package:restaukitchen_app/page/order_list/bloc/orders_actions_cubit/order_actions_cubit.dart';
+import 'package:restaukitchen_app/page/order_list/bloc/status_cubit/status_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 import 'package:restaukitchen_app/page/order_list/models/order.dart';
 
@@ -8,14 +9,14 @@ class OrderCard extends StatefulWidget {
   final Order order;
   final VoidCallback? onArchive;
   final VoidCallback? onPrint;
-  final VoidCallback? onDelete;
+  final VoidCallback? onActionSucess;
 
   const OrderCard({
     super.key,
     required this.order,
     this.onArchive,
     this.onPrint,
-    this.onDelete,
+    this.onActionSucess,
   });
 
   @override
@@ -89,40 +90,74 @@ class _OrderCardState extends State<OrderCard>
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         color: colorScheme.primary,
         clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _ActionButton(
-                icon: Icons.delete,
-                label: 'Delete',
-                isActive: false,
-                activeColor: colorScheme.secondary,
-                onPressed: () {
-                  setState(() => _isSwiped = false);
-                },
+        child: BlocConsumer<OrderActionsCubit, OrderActionsState>(
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (state.status == OrderActionsStatus.loading) ...[
+                    Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: colorScheme.secondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (state.status == OrderActionsStatus.initial ||
+                      state.status == OrderActionsStatus.success ||
+                      state.status == OrderActionsStatus.error) ...[
+                    _ActionButton(
+                      icon: Icons.delete,
+                      label: 'Delete',
+                      isActive: false,
+                      activeColor: colorScheme.secondary,
+                      onPressed: () {
+                        context.read<OrderActionsCubit>().deleteOrder(
+                          widget.order.id ?? "",
+                        );
+                      },
+                    ),
+                    _ActionButton(
+                      icon: Icons.print,
+                      label: 'Print',
+                      isActive: false,
+                      activeColor: colorScheme.secondary,
+                      onPressed: () {
+                        // context.read<OrderActionsCubit>().printOrder(widget.order.id??"");
+                      },
+                    ),
+                    _ActionButton(
+                      icon: Icons.archive,
+                      label: 'Archive',
+                      isActive: false,
+                      activeColor: colorScheme.secondary,
+                      onPressed: () {
+                        context.read<OrderActionsCubit>().archiveOrder(
+                          widget.order.id ?? "",
+                        );
+                      },
+                    ),
+                  ],
+                ],
               ),
-              _ActionButton(
-                icon: Icons.print,
-                label: 'Print',
-                isActive: false,
-                activeColor: colorScheme.secondary,
-                onPressed: () {
-                  setState(() => _isSwiped = false);
-                },
-              ),
-              _ActionButton(
-                icon: Icons.archive,
-                label: 'Archive',
-                isActive: false,
-                activeColor: colorScheme.secondary,
-                onPressed: () {
-                  setState(() => _isSwiped = false);
-                },
-              ),
-            ],
-          ),
+            );
+          },
+          listener: (context, state) {
+            if (state.status == OrderActionsStatus.success) {
+              setState(() => _isSwiped = false);
+              widget.onActionSucess?.call();
+            } else if (state.status == OrderActionsStatus.error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage ?? "An error occurred"),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -179,7 +214,8 @@ class _OrderCardState extends State<OrderCard>
                           ),
                         ],
                         if (state.status == StatusCubitStatus.initial ||
-                            state.status == StatusCubitStatus.success) ...[
+                            state.status == StatusCubitStatus.success ||
+                            state.status == StatusCubitStatus.error) ...[
                           _StatusButton(
                             icon: Icons.inbox_outlined,
                             tooltip: 'Received',

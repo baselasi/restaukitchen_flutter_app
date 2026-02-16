@@ -54,6 +54,7 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
     Emitter<OrdersListState> emit,
   ) async {
     try {
+      emit(OrdersListLoading());
       final OrderResponse orders = await _repo.getOrders();
       emit(OrdersListLoaded(orders: orders.orders));
     } catch (e) {

@@ -5,19 +5,183 @@ class Course extends Equatable {
 
   const Course({required this.disheIndices});
 
-
-
   factory Course.fromJson(Map<String, dynamic> json) {
     return Course(
-      disheIndices: json['disheIndices'] as List<CourseIndice>,
+      disheIndices: (json['disheIndices'] as List<dynamic>)
+          .map((e) => CourseIndice.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [disheIndices];
 }
 
-sealed class CourseIndice {}
+sealed class CourseIndice extends Equatable {
+  const CourseIndice();
 
-class DishIndice extends CourseIndice {}
+  static CourseIndice fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('combinationId')) {
+      return CombinationIndice.fromJson(json);
+    }
+    return DishIndice.fromJson(json);
+  }
+}
 
-class CombinationIndice extends CourseIndice {}
+class DishIndice extends CourseIndice {
+  final String id;
+  final String dishId;
+  final String dishDimensionId;
+  final String dishDimensionName;
+  final double dishPrice;
+  final String dishName;
+  final int course;
+  final String category;
+  final List<DishesWithIngredients> dishesWithIngredients;
+  final List<String> dishIngredientsId;
+  final int dishQuantity;
+
+  const DishIndice({
+    required this.id,
+    required this.dishId,
+    required this.dishDimensionId,
+    required this.dishDimensionName,
+    required this.dishPrice,
+    required this.dishName,
+    required this.course,
+    required this.category,
+    required this.dishesWithIngredients,
+    required this.dishIngredientsId,
+    required this.dishQuantity,
+  });
+
+  factory DishIndice.fromJson(Map<String, dynamic> json) {
+    return DishIndice(
+      id: json['id'] as String,
+      dishId: json['dishId'] as String,
+      dishDimensionId: json['dishDimensionId'] as String,
+      dishDimensionName: json['dishDimensionName'] as String,
+      dishPrice: (json['dishPrice'] as num).toDouble(),
+      dishName: json['dishName'] as String,
+      course: json['course'] as int,
+      category: json['category'] as String,
+      dishesWithIngredients: (json['dishesWithIngredients'] as List<dynamic>?)
+              ?.map((e) =>
+                  DishesWithIngredients.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      dishIngredientsId: (json['dishIngredientsId'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      dishQuantity: json['dishQuantity'] as int,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    id,
+    dishId,
+    dishDimensionId,
+    dishDimensionName,
+    dishPrice,
+    dishName,
+    course,
+    category,
+    dishesWithIngredients,
+    dishIngredientsId,
+    dishQuantity,
+  ];
+}
+
+class CombinationIndice extends CourseIndice {
+  final String id;
+  final int course;
+  final String combinationId;
+  final List<DishesWithIngredients> dishesWithIngredients;
+  final String combinationDimensionId;
+  final String combinationDimensionName;
+  final double combinationPrice;
+  final int combinationQuantity;
+
+  const CombinationIndice({
+    required this.id,
+    required this.course,
+    required this.combinationId,
+    required this.dishesWithIngredients,
+    required this.combinationDimensionId,
+    required this.combinationDimensionName,
+    required this.combinationPrice,
+    required this.combinationQuantity,
+  });
+
+  factory CombinationIndice.fromJson(Map<String, dynamic> json) {
+    return CombinationIndice(
+      id: json['id'] as String,
+      course: json['course'] as int,
+      combinationId: json['combinationId'] as String,
+      dishesWithIngredients: (json['dishesWithIngredients'] as List<dynamic>?)
+              ?.map((e) =>
+                  DishesWithIngredients.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      combinationDimensionId: json['combinationDimensionId'] as String,
+      combinationDimensionName: json['combinationDimensionName'] as String,
+      combinationPrice: (json['combinationPrice'] as num).toDouble(),
+      combinationQuantity: json['combinationQuantity'] as int,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    id,
+    course,
+    combinationId,
+    dishesWithIngredients,
+    combinationDimensionId,
+    combinationDimensionName,
+    combinationPrice,
+    combinationQuantity,
+  ];
+}
+
+class DishesWithIngredients extends Equatable {
+  final String id;
+  final String dishId;
+  final String dishName;
+  final List<String> ingredientsId;
+  final List<String> ingredientsName;
+
+  const DishesWithIngredients({
+    required this.id,
+    required this.dishId,
+    required this.dishName,
+    required this.ingredientsId,
+    required this.ingredientsName,
+  });
+
+  factory DishesWithIngredients.fromJson(Map<String, dynamic> json) {
+    return DishesWithIngredients(
+      id: json['id'] as String,
+      dishId: json['dishId'] as String,
+      dishName: json['dishName'] as String,
+      ingredientsId: (json['ingredientsId'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      ingredientsName: (json['ingredientsName'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    id,
+    dishId,
+    dishName,
+    ingredientsId,
+    ingredientsName,
+  ];
+}

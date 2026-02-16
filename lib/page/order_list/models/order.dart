@@ -3,7 +3,7 @@ import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
 class Order extends Equatable {
   final List<Course>? courses;
-  final List<CourseIndice>? courseIndices;
+  final List<CourseIndice>? dishIndices;
   final int? tableNumber;
   final int totalCovers;
   final double? total;
@@ -11,7 +11,7 @@ class Order extends Equatable {
 
   const Order({
     this.courses,
-    this.courseIndices,
+    this.dishIndices,
     required this.tableNumber,
     required this.totalCovers,
     required this.total,
@@ -23,11 +23,20 @@ class Order extends Equatable {
       // courses: (json['courses'] as List<dynamic>)
       //     .map((course) => Course.fromJson(course))
       //     .toList(),
-      // courseIndices: json['courseIndices'] as List<CourseIndice>?,
+      dishIndices: (json['dishIndices'] as List<dynamic>?)
+          ?.map((course) => CourseIndice.fromJson(course))
+          .toList(),
+
       tableNumber: json['tableNumber'] as int?,
       totalCovers: json['totalCovers'] as int,
       total: json['total'] as double?,
-      courseStatus: CourseStatus.received,
+      courseStatus: json['courseStatus'] != null
+          ? json['courseStatus'] == "STATUS_RECEIVED"
+                ? CourseStatus.received
+                : json['courseStatus'] == "STATUS_ON_FIRE"
+                ? CourseStatus.onFire
+                : CourseStatus.finished
+          : CourseStatus.received,
       // courseStatus: json['courseStatus'] as CourseStatus,
     );
   }

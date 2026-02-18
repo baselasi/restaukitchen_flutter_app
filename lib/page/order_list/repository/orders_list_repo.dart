@@ -9,7 +9,7 @@ class OrdersListRepo {
   final ApiService _apiService;
 
   http.Client? _sseClient;
-  StreamController<List<Order>>? _ordersController;
+  StreamController<Order>?  _ordersController;
 
   OrdersListRepo({required ApiService apiService}) : _apiService = apiService;
 
@@ -18,8 +18,8 @@ class OrdersListRepo {
   /// Each SSE event is expected to carry a JSON array of orders in its
   /// `data:` field. The stream will keep emitting updates until [close] is
   /// called or the server closes the connection.
-  Stream<List<Order>> getOrdersStream() {
-    _ordersController = StreamController<List<Order>>.broadcast(
+  Stream<Order> getOrdersStream() {
+    _ordersController = StreamController<Order>.broadcast(
       onCancel: close,
     );
 
@@ -56,15 +56,15 @@ class OrdersListRepo {
           try {
             final decoded = jsonDecode(data);
 
-            if (decoded is List) {
-              final orders = decoded
-                  .map((json) => Order.fromJson(json as Map<String, dynamic>))
-                  .toList();
-              print('[SSE] Emitting ${orders.length} orders');
-              _ordersController?.add(orders);
+            if (decoded is Map<String, dynamic>) {
+              final order = Order.fromJson(decoded);
+              print('[SSE] Emitting order: $order');
+              _ordersController?.add(order);
             }
           } on FormatException catch (e) {
             print('[SSE] JSON parse error: $e');
+          } catch (e) {
+            print('[SSE] Error: $e');
           }
         }
       }
@@ -124,7 +124,10 @@ class OrdersListRepo {
   }
 
   Future<void> archiveOrder(String orderId) async {
-    final response = await _apiService.putPrivate('/api/order/archive/$orderId',null);
+    final response = await _apiService.putPrivate(
+      '/api/order/archive/$orderId',
+      null,
+    );
     if (response.statusCode != 200) {
       throw Exception('Failed to archive order: ${response.body}');
     }

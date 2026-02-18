@@ -182,6 +182,7 @@ class _OrderCardState extends State<OrderCard>
         builder: (context, state) {
           CourseStatus currentStatus = state.newStatus ?? _order.courseStatus;
           return Card(
+            key: ValueKey(_order.id),
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             clipBehavior: Clip.antiAlias,
             child: Column(

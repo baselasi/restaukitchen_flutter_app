@@ -97,6 +97,7 @@ class _OrdersListState extends State<OrdersList> {
                           ),
                         ],
                         child: OrderCard(
+                          key: ValueKey(order.id),
                           order: order,
                           onArchive: () {},
                           onPrint: () {},

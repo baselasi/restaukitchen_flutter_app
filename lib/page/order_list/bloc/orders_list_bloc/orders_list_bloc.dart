@@ -8,7 +8,7 @@ import 'package:restaukitchen_app/page/order_list/repository/orders_list_repo.da
 
 class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
   final OrdersListRepo _repo;
-  StreamSubscription<List<Order>>? _ordersSubscription;
+  StreamSubscription<Order>? _ordersSubscription;
 
   OrdersListBloc({required OrdersListRepo repo})
     : _repo = repo,
@@ -27,13 +27,26 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
     _ordersSubscription?.cancel();
 
     _ordersSubscription = _repo.getOrdersStream().listen(
-      (orders) => add(OrdersListUpdated(orders: orders)),
+      (order) => add(OrdersListUpdated(orders: [order])),
       onError: (error) => add(OrdersListStreamError(message: error.toString())),
     );
   }
 
   void _onUpdated(OrdersListUpdated event, Emitter<OrdersListState> emit) {
-    emit(OrdersListLoaded(orders: event.orders));
+    if (state is OrdersListLoaded) {
+      emit(
+        OrdersListLoaded(
+          orders: [
+            ...event.orders,
+            ...(state as OrdersListLoaded).orders.where(
+              (order) => order.id != event.orders.first.id,
+            ),
+          ],
+        ),
+      );
+    } else {
+      emit(OrdersListLoaded(orders: event.orders));
+    }
   }
 
   void _onStreamError(
@@ -57,7 +70,7 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
     try {
       emit(OrdersListLoading());
       final OrderResponse orders = await _repo.getOrders();
-      emit(OrdersListLoaded(orders: orders.orders));
+      add(OrdersListUpdated(orders: orders.orders));
     } catch (e) {
       emit(OrdersListError(errorMessage: e.toString()));
     }

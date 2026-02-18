@@ -15,6 +15,8 @@ class MainDrawer extends StatelessWidget {
         return Icons.home;
       case Pages.menus:
         return Icons.menu;
+      case Pages.orders:
+        return Icons.card_giftcard;
     }
   }
 
@@ -25,6 +27,8 @@ class MainDrawer extends StatelessWidget {
         return 'Home';
       case Pages.menus:
         return 'Menus';
+       case Pages.orders:
+        return 'Orders';
     }
   }
 

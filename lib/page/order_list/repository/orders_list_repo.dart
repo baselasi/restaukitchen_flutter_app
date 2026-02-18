@@ -122,4 +122,11 @@ class OrdersListRepo {
       throw Exception('Failed to update order: ${response.body}');
     }
   }
+
+  Future<void> archiveOrder(String orderId) async {
+    final response = await _apiService.putPrivate('/api/order/archive/$orderId',null);
+    if (response.statusCode != 200) {
+      throw Exception('Failed to archive order: ${response.body}');
+    }
+  }
 }

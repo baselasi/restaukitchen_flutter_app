@@ -21,8 +21,7 @@ class OrderActionsCubit extends Cubit<OrderActionsState> {
   Future<void> archiveOrder(String orderId) async {
     emit(OrderActionsState.loading());
     try {
-      // await _ordersListRepo.archiveOrder(orderId);
-      await Future.delayed(const Duration(seconds: 1));
+      await _ordersListRepo.archiveOrder(orderId);
       emit(OrderActionsState.success());
     } catch (e) {
       emit(OrderActionsState.error(e.toString()));

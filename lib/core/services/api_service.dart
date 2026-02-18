@@ -94,7 +94,7 @@ class ApiService {
   // Private PUT - Token required
   Future<http.Response> putPrivate(
     String endpoint,
-    Map<String, dynamic> body,
+    Map<String, dynamic>? body,
   ) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');

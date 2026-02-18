@@ -33,14 +33,35 @@ class Order extends Equatable {
       tableNumber: json['tableNumber'] as int?,
       totalCovers: json['totalCovers'] as int,
       total: json['total'] as double?,
-      courseStatus: json['courseStatus'] != null
-          ? json['courseStatus'] == "STATUS_RECEIVED"
-                ? CourseStatus.received
-                : json['courseStatus'] == "STATUS_ON_FIRE"
-                ? CourseStatus.onFire
-                : CourseStatus.finished
-          : CourseStatus.received,
-      // courseStatus: json['courseStatus'] as CourseStatus,
+      courseStatus: CourseStatus.fromString(json['courseStatus'] as String?),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      // if (id != null) "id": id,
+      'dishIndices': dishIndices?.map((course) => course.toJson()).toList(),
+      'tableNumber': tableNumber,
+      'totalCovers': totalCovers,
+      // 'total': total,
+      'courseStatus': courseStatus.value,
+    };
+  }
+
+  Order copyWith({
+    CourseStatus? courseStatus,
+    List<CourseIndice>? dishIndices,
+    int? tableNumber,
+    int? totalCovers,
+    double? total,
+  }) {
+    return Order(
+      id: id,
+      dishIndices: dishIndices ?? this.dishIndices,
+      tableNumber: tableNumber ?? this.tableNumber,
+      totalCovers: totalCovers ?? this.totalCovers,
+      total: total ?? this.total,
+      courseStatus: courseStatus ?? this.courseStatus,
     );
   }
 
@@ -54,7 +75,34 @@ class Order extends Equatable {
   ];
 }
 
-enum CourseStatus { received, onFire, finished }
+class CourseStatus extends Equatable {
+  final String value;
+
+  const CourseStatus._(this.value);
+
+  static const CourseStatus received = CourseStatus._('STATUS_RECEIVED');
+  static const CourseStatus onFire = CourseStatus._('STATUS_ON_FIRE');
+  static const CourseStatus finished = CourseStatus._('STATUS_FINISHED');
+
+  static CourseStatus fromString(String? status) {
+    switch (status) {
+      case 'STATUS_RECEIVED':
+        return received;
+      case 'STATUS_ON_FIRE':
+        return onFire;
+      case 'STATUS_FINISHED':
+        return finished;
+      default:
+        return received;
+    }
+  }
+
+  @override
+  List<Object?> get props => [value];
+
+  @override
+  String toString() => value;
+}
 
 class OrderResponse extends Equatable {
   final List<Order> orders;

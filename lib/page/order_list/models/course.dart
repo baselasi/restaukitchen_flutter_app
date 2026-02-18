@@ -13,6 +13,10 @@ class Course extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {'disheIndices': disheIndices.map((e) => e.toJson()).toList()};
+  }
+
   @override
   List<Object> get props => [disheIndices];
 }
@@ -25,6 +29,13 @@ sealed class CourseIndice extends Equatable {
       return CombinationIndice.fromJson(json);
     }
     return DishIndice.fromJson(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    if (this is CombinationIndice) {
+      return (this as CombinationIndice).toJson();
+    }
+    return (this as DishIndice).toJson();
   }
 }
 
@@ -65,17 +76,40 @@ class DishIndice extends CourseIndice {
       dishName: json['dishName'] as String,
       course: json['course'] as int,
       category: json['category'] as String,
-      dishesWithIngredients: (json['dishesWithIngredients'] as List<dynamic>?)
-              ?.map((e) =>
-                  DishesWithIngredients.fromJson(e as Map<String, dynamic>))
+      dishesWithIngredients:
+          (json['dishesWithIngredients'] as List<dynamic>?)
+              ?.map(
+                (e) =>
+                    DishesWithIngredients.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
-      dishIngredientsId: (json['dishIngredientsId'] as List<dynamic>?)
+      dishIngredientsId:
+          (json['dishIngredientsId'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           [],
       dishQuantity: json['dishQuantity'] as int,
     );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      // 'id': id,
+      'dishId': dishId,
+      'dishDimensionId': dishDimensionId,
+      // 'dishDimensionName': dishDimensionName,
+      // 'dishPrice': dishPrice,
+      // 'dishName': dishName,
+      'course': course,
+      // 'category': category,
+      // 'dishesWithIngredients': dishesWithIngredients
+      //     .map((e) => e.toJson())
+      //     .toList(),
+      'dishIngredientsId': dishIngredientsId,
+      'dishQuantity': dishQuantity,
+    };
   }
 
   @override
@@ -120,9 +154,12 @@ class CombinationIndice extends CourseIndice {
       id: json['id'] as String,
       course: json['course'] as int,
       combinationId: json['combinationId'] as String,
-      dishesWithIngredients: (json['dishesWithIngredients'] as List<dynamic>?)
-              ?.map((e) =>
-                  DishesWithIngredients.fromJson(e as Map<String, dynamic>))
+      dishesWithIngredients:
+          (json['dishesWithIngredients'] as List<dynamic>?)
+              ?.map(
+                (e) =>
+                    DishesWithIngredients.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       combinationDimensionId: json['combinationDimensionId'] as String,
@@ -130,6 +167,22 @@ class CombinationIndice extends CourseIndice {
       combinationPrice: (json['combinationPrice'] as num).toDouble(),
       combinationQuantity: json['combinationQuantity'] as int,
     );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'course': course,
+      'combinationId': combinationId,
+      'dishesWithIngredients': dishesWithIngredients
+          .map((e) => e.toJson())
+          .toList(),
+      'combinationDimensionId': combinationDimensionId,
+      'combinationDimensionName': combinationDimensionName,
+      'combinationPrice': combinationPrice,
+      'combinationQuantity': combinationQuantity,
+    };
   }
 
   @override
@@ -165,15 +218,27 @@ class DishesWithIngredients extends Equatable {
       id: json['id'] as String,
       dishId: json['dishId'] as String,
       dishName: json['dishName'] as String,
-      ingredientsId: (json['ingredientsId'] as List<dynamic>?)
+      ingredientsId:
+          (json['ingredientsId'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           [],
-      ingredientsName: (json['ingredientsName'] as List<dynamic>?)
+      ingredientsName:
+          (json['ingredientsName'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'dishId': dishId,
+      'dishName': dishName,
+      'ingredientsId': ingredientsId,
+      'ingredientsName': ingredientsName,
+    };
   }
 
   @override

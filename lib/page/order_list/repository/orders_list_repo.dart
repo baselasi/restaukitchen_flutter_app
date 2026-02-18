@@ -115,4 +115,11 @@ class OrdersListRepo {
       throw Exception('Failed to delete order: ${response.body}');
     }
   }
+
+  Future<void> updateOrder(String orderId, Map<String, dynamic> order) async {
+    final response = await _apiService.putPrivate('/api/order/$orderId', order);
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update order: ${response.body}');
+    }
+  }
 }

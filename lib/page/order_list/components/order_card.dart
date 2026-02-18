@@ -27,10 +27,17 @@ class _OrderCardState extends State<OrderCard>
     with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
   bool _isSwiped = false;
+  late Order _order;
+
+  @override
+  void initState() {
+    super.initState();
+    _order = widget.order;
+  }
 
   /// Groups [courseIndices] by their course number and returns a sorted map.
   Map<int, List<CourseIndice>> _groupByCourse() {
-    final indices = widget.order.dishIndices;
+    final indices = _order.dishIndices;
     if (indices == null || indices.isEmpty) return {};
 
     final Map<int, List<CourseIndice>> grouped = {};
@@ -116,7 +123,7 @@ class _OrderCardState extends State<OrderCard>
                       activeColor: colorScheme.secondary,
                       onPressed: () {
                         context.read<OrderActionsCubit>().deleteOrder(
-                          widget.order.id ?? "",
+                          _order.id ?? "",
                         );
                       },
                     ),
@@ -136,7 +143,7 @@ class _OrderCardState extends State<OrderCard>
                       activeColor: colorScheme.secondary,
                       onPressed: () {
                         context.read<OrderActionsCubit>().archiveOrder(
-                          widget.order.id ?? "",
+                          _order.id ?? "",
                         );
                       },
                     ),
@@ -173,8 +180,7 @@ class _OrderCardState extends State<OrderCard>
       },
       child: BlocConsumer<StatusCubit, StatusState>(
         builder: (context, state) {
-          CourseStatus currentStatus =
-              state.newStatus ?? widget.order.courseStatus;
+          CourseStatus currentStatus = state.newStatus ?? _order.courseStatus;
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             clipBehavior: Clip.antiAlias,
@@ -193,12 +199,12 @@ class _OrderCardState extends State<OrderCard>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Table ${widget.order.tableNumber ?? 'N/A'}',
+                                'Table ${_order.tableNumber ?? 'N/A'}',
                                 style: theme.textTheme.titleMedium,
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Total: €${widget.order.total?.toStringAsFixed(2) ?? '-'}',
+                                'Total: €${_order.total?.toStringAsFixed(2) ?? '-'}',
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: colorScheme.onSurface.withValues(
                                     alpha: 0.7,
@@ -225,6 +231,7 @@ class _OrderCardState extends State<OrderCard>
                             onPressed: () {
                               context.read<StatusCubit>().updateStatus(
                                 CourseStatus.received,
+                                _order,
                               );
                             },
                           ),
@@ -237,6 +244,7 @@ class _OrderCardState extends State<OrderCard>
                             onPressed: () {
                               context.read<StatusCubit>().updateStatus(
                                 CourseStatus.onFire,
+                                _order,
                               );
                             },
                           ),
@@ -249,6 +257,7 @@ class _OrderCardState extends State<OrderCard>
                             onPressed: () {
                               context.read<StatusCubit>().updateStatus(
                                 CourseStatus.finished,
+                                _order,
                               );
                             },
                           ),
@@ -282,7 +291,20 @@ class _OrderCardState extends State<OrderCard>
             ),
           );
         },
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state.status == StatusCubitStatus.success) {
+            setState(() {
+              _order = state.updatedOrder!;
+            });
+          } else if (state.status == StatusCubitStatus.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage ?? "An error occurred"),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
       ),
     );
   }

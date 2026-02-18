@@ -9,13 +9,14 @@ class StatusCubit extends Cubit<StatusState> {
     : _ordersListRepo = ordersListRepo,
       super(StatusState.initial());
 
-  void updateStatus(CourseStatus newStatus) async {
+  void updateStatus(CourseStatus newStatus, Order order) async {
     emit(StatusState.loading());
     try {
       //  final response = await _ordersListRepo.updateStatus(newStatus);
       // final response = await ApiService().updateStatus(newStatus);
-      await Future.delayed(const Duration(seconds: 1));
-      emit(StatusState.success());
+      final updatedOrder = order.copyWith(courseStatus: newStatus);
+      await _ordersListRepo.updateOrder(order.id!, updatedOrder.toJson());
+      emit(StatusState.success(updatedOrder));
     } catch (e) {
       emit(StatusState.error(e.toString()));
     }
@@ -27,9 +28,15 @@ enum StatusCubitStatus { initial, loading, error, success }
 class StatusState extends Equatable {
   final StatusCubitStatus status;
   final CourseStatus? newStatus;
+  final Order? updatedOrder;
   final String? errorMessage;
 
-  const StatusState({required this.status, this.newStatus, this.errorMessage});
+  const StatusState({
+    required this.status,
+    this.newStatus,
+    this.updatedOrder,
+    this.errorMessage,
+  });
 
   factory StatusState.initial() {
     return const StatusState(status: StatusCubitStatus.initial);
@@ -43,8 +50,11 @@ class StatusState extends Equatable {
     return const StatusState(status: StatusCubitStatus.error);
   }
 
-  factory StatusState.success() {
-    return const StatusState(status: StatusCubitStatus.success);
+  factory StatusState.success(Order updatedOrder) {
+    return StatusState(
+      status: StatusCubitStatus.success,
+      updatedOrder: updatedOrder,
+    );
   }
 
   @override

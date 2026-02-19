@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
@@ -49,9 +50,8 @@ class _KitchenListState extends State<KitchenList> {
                 Text(state.errorMessage, textAlign: TextAlign.center),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => context.read<OrdersListBloc>().add(
-                    OrdersListGetOrders(),
-                  ),
+                  onPressed: () =>
+                      context.read<OrdersListBloc>().add(OrdersListGetOrders()),
                   child: const Text('Retry'),
                 ),
               ],

@@ -117,6 +117,7 @@ class _ArchiveListState extends State<ArchiveList> {
                             child: OrderCard(
                               key: ValueKey(order.id),
                               order: order,
+                              isArchived: true,
                               onArchive: () {},
                               onPrint: () {},
                               onActionSucess: () {

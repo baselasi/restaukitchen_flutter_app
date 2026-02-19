@@ -10,6 +10,7 @@ class OrderCard extends StatefulWidget {
   final VoidCallback? onArchive;
   final VoidCallback? onPrint;
   final VoidCallback? onActionSucess;
+  final bool isArchived;
 
   const OrderCard({
     super.key,
@@ -17,6 +18,7 @@ class OrderCard extends StatefulWidget {
     this.onArchive,
     this.onPrint,
     this.onActionSucess,
+    this.isArchived = false,
   });
 
   @override
@@ -136,17 +138,19 @@ class _OrderCardState extends State<OrderCard>
                         // context.read<OrderActionsCubit>().printOrder(widget.order.id??"");
                       },
                     ),
-                    _ActionButton(
-                      icon: Icons.archive,
-                      label: 'Archive',
-                      isActive: false,
-                      activeColor: colorScheme.secondary,
-                      onPressed: () {
-                        context.read<OrderActionsCubit>().archiveOrder(
-                          _order.id ?? "",
-                        );
-                      },
-                    ),
+                    if (!widget.isArchived) ...[
+                      _ActionButton(
+                        icon: Icons.archive,
+                        label: 'Archive',
+                        isActive: false,
+                        activeColor: colorScheme.secondary,
+                        onPressed: () {
+                          context.read<OrderActionsCubit>().archiveOrder(
+                            _order.id ?? "",
+                          );
+                        },
+                      ),
+                    ],
                   ],
                 ],
               ),
@@ -215,65 +219,75 @@ class _OrderCardState extends State<OrderCard>
                             ],
                           ),
                         ),
-                        if (state.status == StatusCubitStatus.loading) ...[
-                          Expanded(
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                        ],
-                        if (state.status == StatusCubitStatus.initial ||
-                            state.status == StatusCubitStatus.success ||
-                            state.status == StatusCubitStatus.error) ...[
-                          _StatusButton(
-                            icon: Icons.inbox_outlined,
-                            tooltip: 'Received',
-                            color: currentStatus == CourseStatus.received
-                                ? colorScheme.primary
-                                : colorScheme.onSurface.withValues(alpha: 0.5),
-                            onPressed: () {
-                              context.read<StatusCubit>().updateStatus(
-                                CourseStatus.received,
-                                _order,
-                              );
-                            },
-                          ),
-                          _StatusButton(
-                            icon: Icons.local_fire_department,
-                            tooltip: 'On Fire',
-                            color: currentStatus == CourseStatus.onFire
-                                ? colorScheme.primary
-                                : colorScheme.onSurface.withValues(alpha: 0.5),
-                            onPressed: () {
-                              context.read<StatusCubit>().updateStatus(
-                                CourseStatus.onFire,
-                                _order,
-                              );
-                            },
-                          ),
-                          _StatusButton(
-                            icon: Icons.check_circle_outline,
-                            tooltip: 'Done',
-                            color: currentStatus == CourseStatus.finished
-                                ? colorScheme.primary
-                                : colorScheme.onSurface.withValues(alpha: 0.5),
-                            onPressed: () {
-                              context.read<StatusCubit>().updateStatus(
-                                CourseStatus.finished,
-                                _order,
-                              );
-                            },
-                          ),
-                        ],
-                        // Action buttons
+                        if (!widget.isArchived) ...[
+                          if (state.status == StatusCubitStatus.loading) ...[
+                            Expanded(
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          ],
+                          if (state.status == StatusCubitStatus.initial ||
+                              state.status == StatusCubitStatus.success ||
+                              state.status == StatusCubitStatus.error) ...[
+                            _StatusButton(
+                              icon: Icons.inbox_outlined,
+                              tooltip: 'Received',
+                              color: currentStatus == CourseStatus.received
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface.withValues(
+                                      alpha: 0.5,
+                                    ),
+                              onPressed: () {
+                                context.read<StatusCubit>().updateStatus(
+                                  CourseStatus.received,
+                                  _order,
+                                );
+                              },
+                            ),
+                            _StatusButton(
+                              icon: Icons.local_fire_department,
+                              tooltip: 'On Fire',
+                              color: currentStatus == CourseStatus.onFire
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface.withValues(
+                                      alpha: 0.5,
+                                    ),
+                              onPressed: () {
+                                context.read<StatusCubit>().updateStatus(
+                                  CourseStatus.onFire,
+                                  _order,
+                                );
+                              },
+                            ),
+                            _StatusButton(
+                              icon: Icons.check_circle_outline,
+                              tooltip: 'Done',
+                              color: currentStatus == CourseStatus.finished
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface.withValues(
+                                      alpha: 0.5,
+                                    ),
+                              onPressed: () {
+                                context.read<StatusCubit>().updateStatus(
+                                  CourseStatus.finished,
+                                  _order,
+                                );
+                              },
+                            ),
+                          ],
+                          // Action buttons
 
-                        // Expand / collapse indicator
-                        AnimatedRotation(
-                          turns: _isExpanded ? 0.5 : 0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Icon(
-                            Icons.expand_more,
-                            color: colorScheme.onSurface.withValues(alpha: 0.5),
+                          // Expand / collapse indicator
+                          AnimatedRotation(
+                            turns: _isExpanded ? 0.5 : 0,
+                            duration: const Duration(milliseconds: 200),
+                            child: Icon(
+                              Icons.expand_more,
+                              color: colorScheme.onSurface.withValues(
+                                alpha: 0.5,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),

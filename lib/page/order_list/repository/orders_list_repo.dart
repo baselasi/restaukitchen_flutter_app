@@ -9,7 +9,7 @@ class OrdersListRepo {
   final ApiService _apiService;
 
   http.Client? _sseClient;
-  StreamController<Order>?  _ordersController;
+  StreamController<Order>? _ordersController;
 
   OrdersListRepo({required ApiService apiService}) : _apiService = apiService;
 
@@ -19,9 +19,7 @@ class OrdersListRepo {
   /// `data:` field. The stream will keep emitting updates until [close] is
   /// called or the server closes the connection.
   Stream<Order> getOrdersStream() {
-    _ordersController = StreamController<Order>.broadcast(
-      onCancel: close,
-    );
+    _ordersController = StreamController<Order>.broadcast(onCancel: close);
 
     _connect();
 
@@ -106,6 +104,17 @@ class OrdersListRepo {
       return OrderResponse.fromJson(jsonDecode(response.body));
     } catch (e) {
       throw Exception('Failed to get orders: $e');
+    }
+  }
+
+  Future<OrderResponse> getArchivedOrders(DateTime date) async {
+    final response = await _apiService.getPrivate(
+      '/api/order/archived?date=${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+    );
+    try {
+      return OrderResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Failed to get archived orders: $e');
     }
   }
 

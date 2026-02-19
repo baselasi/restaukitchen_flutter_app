@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/services/api_service.dart';
+import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
+import 'package:restaukitchen_app/page/order_list/bloc/archive_list_bloc/archive_list_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_page_cubit.dart';
+import 'package:restaukitchen_app/page/order_list/components/archive_list.dart';
 import 'package:restaukitchen_app/page/order_list/components/kitchen_list.dart';
 import 'package:restaukitchen_app/page/order_list/components/orders_drawer.dart';
+import 'package:restaukitchen_app/page/order_list/repository/orders_list_repo.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class OrdersList extends StatelessWidget {
@@ -13,7 +18,12 @@ class OrdersList extends StatelessWidget {
       case OrderSubPage.kitchen:
         return const KitchenList();
       case OrderSubPage.archive:
-        return const Center(child: Text('Archive list'));
+        return BlocProvider<ArchiveListCubit>(
+          create: (context) => ArchiveListCubit(
+            repo: OrdersListRepo(apiService: getIt<ApiService>()),
+          ),
+          child: const ArchiveList(),
+        );
     }
   }
 

@@ -8,6 +8,7 @@ import 'package:restaukitchen_app/page/homePage/home_page.dart';
 import 'package:restaukitchen_app/page/menusPage/menus_page.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_list_bloc/orders_list_bloc.dart';
+import 'package:restaukitchen_app/page/order_list/bloc/orders_page_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/orders_list.dart';
 import 'package:restaukitchen_app/page/order_list/repository/orders_list_repo.dart';
 
@@ -37,11 +38,18 @@ Widget buildPage(Pages page) {
         child: MenusPage(),
       );
     case Pages.orders:
-      return BlocProvider<OrdersListBloc>(
-        create: (context) => OrdersListBloc(
-          repo: OrdersListRepo(apiService: getIt<ApiService>()),
-        ),
-        child: OrdersList(),
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider<OrdersListBloc>(
+            create: (context) => OrdersListBloc(
+              repo: OrdersListRepo(apiService: getIt<ApiService>()),
+            ),
+          ),
+          BlocProvider<OrdersPageCubit>(
+            create: (context) => OrdersPageCubit(),
+          ),
+        ],
+        child: const OrdersList(),
       );
   }
 }

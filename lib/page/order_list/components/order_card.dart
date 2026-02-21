@@ -11,6 +11,7 @@ class OrderCard extends StatefulWidget {
   final VoidCallback? onPrint;
   final VoidCallback? onActionSucess;
   final bool isArchived;
+  final bool isDeleted;
 
   const OrderCard({
     super.key,
@@ -19,6 +20,7 @@ class OrderCard extends StatefulWidget {
     this.onPrint,
     this.onActionSucess,
     this.isArchived = false,
+    this.isDeleted = false,
   });
 
   @override
@@ -118,17 +120,19 @@ class _OrderCardState extends State<OrderCard>
                   if (state.status == OrderActionsStatus.initial ||
                       state.status == OrderActionsStatus.success ||
                       state.status == OrderActionsStatus.error) ...[
-                    _ActionButton(
-                      icon: Icons.delete,
-                      label: 'Delete',
-                      isActive: false,
-                      activeColor: colorScheme.secondary,
-                      onPressed: () {
-                        context.read<OrderActionsCubit>().deleteOrder(
-                          _order.id ?? "",
-                        );
-                      },
-                    ),
+                    if (!widget.isDeleted) ...[
+                      _ActionButton(
+                        icon: Icons.delete,
+                        label: 'Delete',
+                        isActive: false,
+                        activeColor: colorScheme.secondary,
+                        onPressed: () {
+                          context.read<OrderActionsCubit>().deleteOrder(
+                            _order.id ?? "",
+                          );
+                        },
+                      ),
+                    ],
                     _ActionButton(
                       icon: Icons.print,
                       label: 'Print',
@@ -138,7 +142,7 @@ class _OrderCardState extends State<OrderCard>
                         // context.read<OrderActionsCubit>().printOrder(widget.order.id??"");
                       },
                     ),
-                    if (!widget.isArchived) ...[
+                    if (!widget.isArchived && !widget.isDeleted) ...[
                       _ActionButton(
                         icon: Icons.archive,
                         label: 'Archive',
@@ -216,10 +220,21 @@ class _OrderCardState extends State<OrderCard>
                                   ),
                                 ),
                               ),
+                              if (_order.orderTime != null) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${_order.orderTime!.day.toString().padLeft(2, '0')}/${_order.orderTime!.month.toString().padLeft(2, '0')}/${_order.orderTime!.year} ${_order.orderTime!.hour.toString().padLeft(2, '0')}:${_order.orderTime!.minute.toString().padLeft(2, '0')}',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurface.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
-                        if (!widget.isArchived) ...[
+                        if (!widget.isArchived && !widget.isDeleted) ...[
                           if (state.status == StatusCubitStatus.loading) ...[
                             Expanded(
                               child: Center(child: CircularProgressIndicator()),
@@ -274,20 +289,17 @@ class _OrderCardState extends State<OrderCard>
                               },
                             ),
                           ],
-                          // Action buttons
-
-                          // Expand / collapse indicator
-                          AnimatedRotation(
-                            turns: _isExpanded ? 0.5 : 0,
-                            duration: const Duration(milliseconds: 200),
-                            child: Icon(
-                              Icons.expand_more,
-                              color: colorScheme.onSurface.withValues(
-                                alpha: 0.5,
-                              ),
-                            ),
-                          ),
                         ],
+
+                        // Expand / collapse indicator
+                        AnimatedRotation(
+                          turns: _isExpanded ? 0.5 : 0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            Icons.expand_more,
+                            color: colorScheme.onSurface.withValues(alpha: 0.5),
+                          ),
+                        ),
                       ],
                     ),
                   ),

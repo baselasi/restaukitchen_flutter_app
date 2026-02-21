@@ -9,6 +9,7 @@ class Order extends Equatable {
   final int totalCovers;
   final double? total;
   final CourseStatus courseStatus;
+  final DateTime? orderTime;
 
   const Order({
     this.courses,
@@ -18,6 +19,7 @@ class Order extends Equatable {
     required this.totalCovers,
     required this.total,
     required this.courseStatus,
+    this.orderTime,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -29,7 +31,7 @@ class Order extends Equatable {
       dishIndices: (json['dishIndices'] as List<dynamic>?)
           ?.map((course) => CourseIndice.fromJson(course))
           .toList(),
-
+      orderTime: json['orderTime'] != null ? DateTime.parse(json['orderTime'] as String) : null,
       tableNumber: json['tableNumber'] as int?,
       totalCovers: json['totalCovers'] as int,
       total: json['total'] as double?,

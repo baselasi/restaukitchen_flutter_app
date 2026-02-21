@@ -5,14 +5,17 @@ import 'package:restaukitchen_app/page/order_list/repository/orders_list_repo.da
 
 class ArchiveListCubit extends Cubit<ArchiveListState> {
   final OrdersListRepo _repo;
-  ArchiveListCubit({required OrdersListRepo repo})
+  final bool? isDeletedList;
+  ArchiveListCubit({required OrdersListRepo repo, this.isDeletedList = false})
     : _repo = repo,
       super(ArchiveListState.initial());
 
   Future<void> getArchiveList(DateTime date) async {
     emit(ArchiveListState.loading());
     try {
-      final orders = await _repo.getArchivedOrders(date);
+      final orders = isDeletedList == null
+          ? await _repo.getArchivedOrders(date)
+          : await _repo.getDeletedOrders(date);
       emit(ArchiveListState.loaded(orders.orders));
     } catch (e) {
       emit(ArchiveListState.error(e.toString()));

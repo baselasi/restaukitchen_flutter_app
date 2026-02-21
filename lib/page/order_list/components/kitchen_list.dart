@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/models/category.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_actions_cubit/order_actions_cubit.dart';
@@ -13,7 +13,8 @@ import 'package:restaukitchen_app/page/order_list/models/order.dart';
 import 'package:restaukitchen_app/page/order_list/repository/orders_list_repo.dart';
 
 class KitchenList extends StatefulWidget {
-  const KitchenList({super.key});
+   final Category? category;
+   const KitchenList({super.key, this.category});
 
   @override
   State<KitchenList> createState() => _KitchenListState();

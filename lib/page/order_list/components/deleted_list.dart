@@ -9,15 +9,14 @@ import 'package:restaukitchen_app/page/order_list/components/order_card.dart';
 import 'package:restaukitchen_app/page/order_list/repository/orders_list_repo.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
-class ArchiveList extends StatefulWidget {
-  final bool? isDeletedList;
-  const ArchiveList({super.key, this.isDeletedList = false});
+class DeletedList extends StatefulWidget {
+  const DeletedList({super.key});
 
   @override
-  State<ArchiveList> createState() => _ArchiveListState();
+  State<DeletedList> createState() => _DeletedListState();
 }
 
-class _ArchiveListState extends State<ArchiveList> {
+class _DeletedListState extends State<DeletedList> {
   DateTime _selectedDate = DateTime.now();
 
   @override
@@ -90,7 +89,7 @@ class _ArchiveListState extends State<ArchiveList> {
                         physics: const AlwaysScrollableScrollPhysics(),
                         children: const [
                           SizedBox(height: 200),
-                          Center(child: Text('No archived orders')),
+                          Center(child: Text('No deleted orders')),
                         ],
                       )
                     : ListView.builder(
@@ -118,7 +117,7 @@ class _ArchiveListState extends State<ArchiveList> {
                             child: OrderCard(
                               key: ValueKey(order.id),
                               order: order,
-                              isArchived: true,
+                              isDeleted: true,
                               onArchive: () {},
                               onPrint: () {},
                               onActionSucess: () {

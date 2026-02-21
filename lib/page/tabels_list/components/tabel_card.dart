@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
+import 'package:restaukitchen_app/page/tabels_list/components/qr_code_dialog.dart';
 import 'package:restaukitchen_app/page/tabels_list/models/tabel.dart';
 
-class TabelCard extends StatelessWidget {
+class TabelCard extends StatefulWidget {
   final Tabel tabel;
   final VoidCallback? onEdit;
   final VoidCallback? onOrder;
@@ -21,8 +22,13 @@ class TabelCard extends StatelessWidget {
     this.onStatusChanged,
   });
 
+  @override
+  State<TabelCard> createState() => _TabelCardState();
+}
+
+class _TabelCardState extends State<TabelCard> {
   Color _statusColor() {
-    switch (tabel.status) {
+    switch (widget.tabel.status) {
       case TabelStatus.available:
         return const Color(0xFF4CAF50);
       case TabelStatus.reserved:
@@ -42,7 +48,7 @@ class TabelCard extends StatelessWidget {
     return BlocConsumer<TabelsListDeleteCubit, TabelsListDeleteState>(
       listener: (context, state) {
         if (state.status == TabelsListDeleteStatus.success) {
-          onDelete?.call();
+          widget.onDelete?.call();
         }
       },
       builder: (context, state) {
@@ -73,14 +79,14 @@ class TabelCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Table ${tabel.number}',
+                            'Table ${widget.tabel.number}',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            '${tabel.numberOfSeats} seats',
+                            '${widget.tabel.numberOfSeats} seats',
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurface.withValues(
                                 alpha: 0.6,
@@ -144,17 +150,23 @@ class TabelCard extends StatelessWidget {
                     _CardAction(
                       icon: Icons.edit_outlined,
                       color: colorScheme.primary,
-                      onTap: onEdit,
+                      onTap: widget.onEdit,
                     ),
                     _CardAction(
                       icon: Icons.receipt_long_outlined,
                       color: const Color(0xFF26A69A),
-                      onTap: onOrder,
+                      onTap: widget.onOrder,
                     ),
                     _CardAction(
                       icon: Icons.qr_code_2,
                       color: const Color(0xFF5C6BC0),
-                      onTap: onGenerateQr,
+                      onTap: () {
+                        QrCodeDialog.show(
+                          context,
+                          widget.tabel.id ?? '',
+                          widget.tabel.number,
+                        );
+                      },
                     ),
                     if (state.status == TabelsListDeleteStatus.loading)
                       const Center(child: CircularProgressIndicator()),
@@ -164,7 +176,7 @@ class TabelCard extends StatelessWidget {
                         color: const Color(0xFFEF5350),
                         onTap: () {
                           context.read<TabelsListDeleteCubit>().deleteTabel(
-                            tabel.id ?? '',
+                            widget.tabel.id ?? '',
                           );
                         },
                       ),

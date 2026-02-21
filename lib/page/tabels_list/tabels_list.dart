@@ -58,9 +58,15 @@ class _TabelsListState extends State<TabelsList> {
                       itemCount: state.tabels?.length ?? 0,
                       itemBuilder: (context, index) {
                         final tabel = state.tabels![index];
-                        return BlocProvider(
-                          create: (context) =>
-                              TabelsListDeleteCubit(tablesRepo: TablesRepo()),
+                        return MultiBlocProvider(
+                          providers: [
+                        
+                            BlocProvider(
+                              create: (context) => TabelsListDeleteCubit(
+                                tablesRepo: TablesRepo(),
+                              ),
+                            ),
+                          ],
                           child: TabelCard(
                             key: ValueKey(tabel.id),
                             tabel: tabel,

@@ -19,6 +19,12 @@ class TabelsListCubit extends Cubit<TabelsListState> {
       emit(TabelsListState.error(e.toString()));
     }
   }
+
+  void removeTabel(String tabelId) {
+    final List<Tabel> tabels = [...(state).tabels ?? []];
+    tabels.removeWhere((tabel) => tabel.id == tabelId);
+    emit(TabelsListState(status: TabelsListStatus.loaded, tabels: tabels));
+  }
 }
 
 enum TabelsListStatus { initial, loading, loaded, error }
@@ -49,5 +55,5 @@ class TabelsListState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status];
+  List<Object?> get props => [status, tabels, errorMessage];
 }

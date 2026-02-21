@@ -13,4 +13,12 @@ class TablesRepo {
       throw Exception(e);
     }
   }
+
+  Future<void> deleteTabel(String tabelId) async {
+    try {
+      await _apiService.deletePrivate('/api/dinner-table/$tabelId');
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

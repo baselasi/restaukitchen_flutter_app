@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
+import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/tabel_card.dart';
+import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
 
 class TabelsList extends StatefulWidget {
   const TabelsList({super.key});
@@ -56,24 +58,22 @@ class _TabelsListState extends State<TabelsList> {
                       itemCount: state.tabels?.length ?? 0,
                       itemBuilder: (context, index) {
                         final tabel = state.tabels![index];
-                        return TabelCard(
-                          key: ValueKey(tabel.id),
-                          tabel: tabel,
-                          onEdit: () {
-                            // TODO: navigate to edit table
-                          },
-                          onOrder: () {
-                            // TODO: navigate to order for this table
-                          },
-                          onGenerateQr: () {
-                            // TODO: generate QR code
-                          },
-                          onDelete: () {
-                            // TODO: delete table
-                          },
-                          onStatusChanged: (reserved) {
-                            // TODO: toggle table status
-                          },
+                        return BlocProvider(
+                          create: (context) =>
+                              TabelsListDeleteCubit(tablesRepo: TablesRepo()),
+                          child: TabelCard(
+                            key: ValueKey(tabel.id),
+                            tabel: tabel,
+                            onEdit: () {},
+                            onOrder: () {},
+                            onGenerateQr: () {},
+                            onDelete: () {
+                              context.read<TabelsListCubit>().removeTabel(
+                                tabel.id ?? '',
+                              );
+                            },
+                            onStatusChanged: (reserved) {},
+                          ),
                         );
                       },
                     ),

@@ -9,7 +9,7 @@ class OrdersListRepo {
   final ApiService _apiService;
 
   http.Client? _sseClient;
-  StreamController<Order>?  _ordersController;
+  StreamController<Order>? _ordersController;
 
   OrdersListRepo({required ApiService apiService}) : _apiService = apiService;
 
@@ -18,19 +18,19 @@ class OrdersListRepo {
   /// Each SSE event is expected to carry a JSON array of orders in its
   /// `data:` field. The stream will keep emitting updates until [close] is
   /// called or the server closes the connection.
-  Stream<Order> getOrdersStream() {
-    _ordersController = StreamController<Order>.broadcast(
-      onCancel: close,
-    );
+  Stream<Order> getOrdersStream(String? categoryName) {
+    _ordersController = StreamController<Order>.broadcast(onCancel: close);
 
-    _connect();
+    _connect(categoryName);
 
     return _ordersController!.stream;
   }
 
-  Future<void> _connect() async {
+  Future<void> _connect(String? categoryName) async {
     try {
-      final (:stream, :client) = await _apiService.connectToSSE('/api/order');
+      final (:stream, :client) = await _apiService.connectToSSE(
+        '/api/order${categoryName != null ? '/stream/filter/$categoryName' : ''}',
+      );
       _sseClient = client;
 
       String buffer = '';
@@ -39,7 +39,6 @@ class OrdersListRepo {
         // Guard against emitting after close.
         if (_ordersController == null || _ordersController!.isClosed) break;
 
-        print('[SSE] Raw chunk: $chunk');
         buffer += chunk;
 
         // SSE events are delimited by a blank line (\n\n).
@@ -51,20 +50,15 @@ class OrdersListRepo {
           final data = _parseEventData(rawEvent);
           if (data == null || data.isEmpty) continue;
 
-          print('[SSE] Parsed event data: $data');
-
           try {
             final decoded = jsonDecode(data);
 
             if (decoded is Map<String, dynamic>) {
               final order = Order.fromJson(decoded);
-              print('[SSE] Emitting order: $order');
               _ordersController?.add(order);
             }
-          } on FormatException catch (e) {
-            print('[SSE] JSON parse error: $e');
           } catch (e) {
-            print('[SSE] Error: $e');
+            _ordersController?.addError(e);
           }
         }
       }
@@ -100,12 +94,35 @@ class OrdersListRepo {
     _ordersController = null;
   }
 
-  Future<OrderResponse> getOrders() async {
-    final response = await _apiService.getPrivate('/api/order/kitchen');
+  Future<OrderResponse> getOrders(String? categoryName) async {
+    final response = await _apiService.getPrivate(
+      '/api/order${categoryName != null ? '/filter/$categoryName' : '/kitchen'}',
+    );
     try {
       return OrderResponse.fromJson(jsonDecode(response.body));
     } catch (e) {
       throw Exception('Failed to get orders: $e');
+    }
+  }
+
+  Future<OrderResponse> getArchivedOrders(DateTime date) async {
+    final response = await _apiService.getPrivate(
+      '/api/order/archived?date=${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+    );
+    try {
+      return OrderResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Failed to get archived orders: $e');
+    }
+  }
+   Future<OrderResponse> getDeletedOrders(DateTime date) async {
+    final response = await _apiService.getPrivate(
+      '/api/order/deleted?date=${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+    );
+    try {
+      return OrderResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Failed to get archived orders: $e');
     }
   }
 

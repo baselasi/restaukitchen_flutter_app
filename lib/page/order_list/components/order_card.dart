@@ -10,6 +10,8 @@ class OrderCard extends StatefulWidget {
   final VoidCallback? onArchive;
   final VoidCallback? onPrint;
   final VoidCallback? onActionSucess;
+  final bool isArchived;
+  final bool isDeleted;
 
   const OrderCard({
     super.key,
@@ -17,6 +19,8 @@ class OrderCard extends StatefulWidget {
     this.onArchive,
     this.onPrint,
     this.onActionSucess,
+    this.isArchived = false,
+    this.isDeleted = false,
   });
 
   @override
@@ -116,17 +120,19 @@ class _OrderCardState extends State<OrderCard>
                   if (state.status == OrderActionsStatus.initial ||
                       state.status == OrderActionsStatus.success ||
                       state.status == OrderActionsStatus.error) ...[
-                    _ActionButton(
-                      icon: Icons.delete,
-                      label: 'Delete',
-                      isActive: false,
-                      activeColor: colorScheme.secondary,
-                      onPressed: () {
-                        context.read<OrderActionsCubit>().deleteOrder(
-                          _order.id ?? "",
-                        );
-                      },
-                    ),
+                    if (!widget.isDeleted) ...[
+                      _ActionButton(
+                        icon: Icons.delete,
+                        label: 'Delete',
+                        isActive: false,
+                        activeColor: colorScheme.secondary,
+                        onPressed: () {
+                          context.read<OrderActionsCubit>().deleteOrder(
+                            _order.id ?? "",
+                          );
+                        },
+                      ),
+                    ],
                     _ActionButton(
                       icon: Icons.print,
                       label: 'Print',
@@ -136,17 +142,19 @@ class _OrderCardState extends State<OrderCard>
                         // context.read<OrderActionsCubit>().printOrder(widget.order.id??"");
                       },
                     ),
-                    _ActionButton(
-                      icon: Icons.archive,
-                      label: 'Archive',
-                      isActive: false,
-                      activeColor: colorScheme.secondary,
-                      onPressed: () {
-                        context.read<OrderActionsCubit>().archiveOrder(
-                          _order.id ?? "",
-                        );
-                      },
-                    ),
+                    if (!widget.isArchived && !widget.isDeleted) ...[
+                      _ActionButton(
+                        icon: Icons.archive,
+                        label: 'Archive',
+                        isActive: false,
+                        activeColor: colorScheme.secondary,
+                        onPressed: () {
+                          context.read<OrderActionsCubit>().archiveOrder(
+                            _order.id ?? "",
+                          );
+                        },
+                      ),
+                    ],
                   ],
                 ],
               ),
@@ -212,58 +220,76 @@ class _OrderCardState extends State<OrderCard>
                                   ),
                                 ),
                               ),
+                              if (_order.orderTime != null) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${_order.orderTime!.day.toString().padLeft(2, '0')}/${_order.orderTime!.month.toString().padLeft(2, '0')}/${_order.orderTime!.year} ${_order.orderTime!.hour.toString().padLeft(2, '0')}:${_order.orderTime!.minute.toString().padLeft(2, '0')}',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurface.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
-                        if (state.status == StatusCubitStatus.loading) ...[
-                          Expanded(
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
+                        if (!widget.isArchived && !widget.isDeleted) ...[
+                          if (state.status == StatusCubitStatus.loading) ...[
+                            Expanded(
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          ],
+                          if (state.status == StatusCubitStatus.initial ||
+                              state.status == StatusCubitStatus.success ||
+                              state.status == StatusCubitStatus.error) ...[
+                            _StatusButton(
+                              icon: Icons.inbox_outlined,
+                              tooltip: 'Received',
+                              color: currentStatus == CourseStatus.received
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface.withValues(
+                                      alpha: 0.5,
+                                    ),
+                              onPressed: () {
+                                context.read<StatusCubit>().updateStatus(
+                                  CourseStatus.received,
+                                  _order,
+                                );
+                              },
+                            ),
+                            _StatusButton(
+                              icon: Icons.local_fire_department,
+                              tooltip: 'On Fire',
+                              color: currentStatus == CourseStatus.onFire
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface.withValues(
+                                      alpha: 0.5,
+                                    ),
+                              onPressed: () {
+                                context.read<StatusCubit>().updateStatus(
+                                  CourseStatus.onFire,
+                                  _order,
+                                );
+                              },
+                            ),
+                            _StatusButton(
+                              icon: Icons.check_circle_outline,
+                              tooltip: 'Done',
+                              color: currentStatus == CourseStatus.finished
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface.withValues(
+                                      alpha: 0.5,
+                                    ),
+                              onPressed: () {
+                                context.read<StatusCubit>().updateStatus(
+                                  CourseStatus.finished,
+                                  _order,
+                                );
+                              },
+                            ),
+                          ],
                         ],
-                        if (state.status == StatusCubitStatus.initial ||
-                            state.status == StatusCubitStatus.success ||
-                            state.status == StatusCubitStatus.error) ...[
-                          _StatusButton(
-                            icon: Icons.inbox_outlined,
-                            tooltip: 'Received',
-                            color: currentStatus == CourseStatus.received
-                                ? colorScheme.primary
-                                : colorScheme.onSurface.withValues(alpha: 0.5),
-                            onPressed: () {
-                              context.read<StatusCubit>().updateStatus(
-                                CourseStatus.received,
-                                _order,
-                              );
-                            },
-                          ),
-                          _StatusButton(
-                            icon: Icons.local_fire_department,
-                            tooltip: 'On Fire',
-                            color: currentStatus == CourseStatus.onFire
-                                ? colorScheme.primary
-                                : colorScheme.onSurface.withValues(alpha: 0.5),
-                            onPressed: () {
-                              context.read<StatusCubit>().updateStatus(
-                                CourseStatus.onFire,
-                                _order,
-                              );
-                            },
-                          ),
-                          _StatusButton(
-                            icon: Icons.check_circle_outline,
-                            tooltip: 'Done',
-                            color: currentStatus == CourseStatus.finished
-                                ? colorScheme.primary
-                                : colorScheme.onSurface.withValues(alpha: 0.5),
-                            onPressed: () {
-                              context.read<StatusCubit>().updateStatus(
-                                CourseStatus.finished,
-                                _order,
-                              );
-                            },
-                          ),
-                        ],
-                        // Action buttons
 
                         // Expand / collapse indicator
                         AnimatedRotation(

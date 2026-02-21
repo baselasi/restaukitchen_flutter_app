@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
-import 'package:restaukitchen_app/page/order_list/bloc/orders_actions_cubit/order_actions_cubit.dart';
+import 'package:restaukitchen_app/page/order_list/bloc/archive_list_bloc/archive_list_cubit.dart';
+import 'package:restaukitchen_app/page/order_list/bloc/orders_drawer_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_list_bloc/orders_list_bloc.dart';
-import 'package:restaukitchen_app/page/order_list/bloc/orders_list_bloc/orders_list_events.dart';
-import 'package:restaukitchen_app/page/order_list/bloc/orders_list_bloc/orders_list_state.dart';
-import 'package:restaukitchen_app/page/order_list/bloc/status_cubit/status_cubit.dart';
-import 'package:restaukitchen_app/page/order_list/components/order_card.dart';
-import 'package:restaukitchen_app/page/order_list/models/order.dart';
+import 'package:restaukitchen_app/page/order_list/bloc/orders_page_cubit.dart';
+import 'package:restaukitchen_app/page/order_list/components/archive_list.dart';
+import 'package:restaukitchen_app/page/order_list/components/deleted_list.dart';
+import 'package:restaukitchen_app/page/order_list/components/kitchen_list.dart';
 import 'package:restaukitchen_app/page/order_list/repository/orders_list_repo.dart';
+import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class OrdersList extends StatefulWidget {
   const OrdersList({super.key});
@@ -22,97 +23,134 @@ class _OrdersListState extends State<OrdersList> {
   @override
   void initState() {
     super.initState();
-    context.read<OrdersListBloc>().add(OrdersListSubscribe());
-    context.read<OrdersListBloc>().add(OrdersListGetOrders());
+    context.read<OrdersCategoryCubit>().getCategories();
   }
 
-  Future<void> _onRefresh() async {
-    context.read<OrdersListBloc>().add(OrdersListGetOrders());
-    // Wait for the bloc to emit a non-loading state so the indicator stays visible.
-    await context.read<OrdersListBloc>().stream.firstWhere(
-      (state) => state is! OrdersListLoading,
-    );
+  Widget _buildBody(OrderSubPage page) {
+    return switch (page) {
+      KitchenPage() => BlocProvider<OrdersListBloc>(
+        create: (context) => OrdersListBloc(
+          repo: OrdersListRepo(apiService: getIt<ApiService>()),
+        ),
+        child: const KitchenList(),
+      ),
+      ArchivePage() => BlocProvider<ArchiveListCubit>(
+        create: (context) => ArchiveListCubit(
+          repo: OrdersListRepo(apiService: getIt<ApiService>()),
+        ),
+        child: const ArchiveList(),
+      ),
+      DeletedPage() => BlocProvider<ArchiveListCubit>(
+        create: (context) => ArchiveListCubit(
+          repo: OrdersListRepo(apiService: getIt<ApiService>()),
+          isDeletedList: true,
+        ),
+        child: const DeletedList(),
+      ),
+      CategoryPage(:final category) => BlocProvider<OrdersListBloc>(
+        key: ValueKey(category.id),
+        create: (context) => OrdersListBloc(
+          repo: OrdersListRepo(apiService: getIt<ApiService>()),
+          categoryName: category.name,
+        ),
+        child: KitchenList(category: category),
+      ),
+    };
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<OrdersListBloc, OrdersListState>(
-        builder: (context, state) {
-          if (state is OrdersListLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    final pageCubit = context.read<OrdersPageCubit>();
 
-          if (state is OrdersListError) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(state.errorMessage, textAlign: TextAlign.center),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => context.read<OrdersListBloc>().add(
-                      OrdersListGetOrders(),
-                    ),
-                    child: const Text('Retry'),
-                  ),
-                ],
+    return BlocBuilder<OrdersPageCubit, OrdersPageState>(
+      builder: (context, pageState) {
+        return Scaffold(
+          body: Column(
+            children: [
+              _CategoryBar(
+                currentPage: pageState.page,
+                onPageSelected: pageCubit.setPage,
+              ),
+              Expanded(child: _buildBody(pageState.page)),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CategoryBar extends StatelessWidget {
+  final OrderSubPage currentPage;
+  final ValueChanged<OrderSubPage> onPageSelected;
+
+  const _CategoryBar({required this.currentPage, required this.onPageSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<OrdersCategoryCubit, OrdersCategoryState>(
+      builder: (context, state) {
+        final chips = <_ChipData>[
+          _ChipData(label: 'Kitchen', page: const KitchenPage()),
+        ];
+
+        if (state.status == OrdersCategoryStatus.loaded) {
+          for (final category in state.categories) {
+            chips.add(
+              _ChipData(
+                label: category.name,
+                page: CategoryPage(category: category),
               ),
             );
           }
+        }
 
-          final orders = state is OrdersListLoaded ? state.orders : <Order>[];
-
-          return RefreshIndicator(
-            onRefresh: _onRefresh,
-            child: orders.isEmpty
-                ? ListView(
-                    // Keeps the list scrollable so pull-to-refresh still works
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: const [
-                      SizedBox(height: 200),
-                      Center(child: Text('No orders yet')),
-                    ],
-                  )
-                : ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: orders.length,
-                    itemBuilder: (context, index) {
-                      final order = orders[index];
-                      return MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => StatusCubit(
-                              ordersListRepo: OrdersListRepo(
-                                apiService: getIt<ApiService>(),
-                              ),
-                            ),
-                          ),
-                          BlocProvider(
-                            create: (context) => OrderActionsCubit(
-                              ordersListRepo: OrdersListRepo(
-                                apiService: getIt<ApiService>(),
-                              ),
-                            ),
-                          ),
-                        ],
-                        child: OrderCard(
-                          key: ValueKey(order.id),
-                          order: order,
-                          onArchive: () {},
-                          onPrint: () {},
-                          onActionSucess: () {
-                            context.read<OrdersListBloc>().add(
-                              OrdersListRemoveOrder(orderId: order.id ?? ""),
-                            );
-                          },
-                        ),
-                      );
-                    },
+        chips.add(_ChipData(label: 'Archive', page: const ArchivePage()));
+        chips.add(_ChipData(label: 'Deleted', page: const DeletedPage()));
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              children: chips.map((chip) {
+                final isSelected = chip.page == currentPage;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: ChoiceChip(
+                    label: Text(chip.label),
+                    selected: isSelected,
+                    onSelected: (_) => onPageSelected(chip.page),
+                    selectedColor: LightTheme.secondaryColor,
+                    backgroundColor: LightTheme.primaryColor,
+                    side: const BorderSide(color: Colors.white24),
+                    labelStyle: TextStyle(
+                      color: isSelected
+                          ? LightTheme.primaryColor
+                          : Colors.white,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                      fontSize: 14,
+                    ),
+                    showCheckmark: false,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-          );
-        },
-      ),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
     );
   }
+}
+
+class _ChipData {
+  final String label;
+  final OrderSubPage page;
+  const _ChipData({required this.label, required this.page});
 }

@@ -27,7 +27,8 @@ class Tabel extends Equatable {
       description: json['description'] as String?,
       numberOfSeats: json['numberOfSeats'] as int,
       position: json['position'] as int,
-      orderIDs: (json['orderIDs'] as List<dynamic>?)
+      orderIDs:
+          (json['orderIDs'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           [],
@@ -67,14 +68,14 @@ class Tabel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        number,
-        status,
-        description,
-        numberOfSeats,
-        position,
-        orderIDs,
-      ];
+    id,
+    number,
+    status,
+    description,
+    numberOfSeats,
+    position,
+    orderIDs,
+  ];
 }
 
 class TabelStatus extends Equatable {
@@ -113,7 +114,9 @@ class TabelResponse extends Equatable {
 
   factory TabelResponse.fromJson(List<dynamic> json) {
     return TabelResponse(
-      tabels: json.map((tabel) => Tabel.fromJson(tabel)).toList(),
+      tabels: (json)
+          .map((e) => Tabel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 

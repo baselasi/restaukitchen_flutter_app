@@ -9,6 +9,8 @@ import 'package:restaukitchen_app/core/components/form/categorySelector/category
 import 'package:restaukitchen_app/page/order_list/bloc/orders_drawer_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_page_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/orders_list.dart';
+import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
+import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
 import 'package:restaukitchen_app/page/tabels_list/tabels_list.dart';
 
 enum Pages {
@@ -48,7 +50,10 @@ Widget buildPage(Pages page) {
         child: const OrdersList(),
       );
     case Pages.tables:
-      return const TabelsList();
+      return BlocProvider<TabelsListCubit>(
+        create: (context) => TabelsListCubit(tablesRepo: TablesRepo()),
+        child: const TabelsList(),
+      );
   }
 }
 

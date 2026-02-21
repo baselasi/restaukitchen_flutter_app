@@ -4,6 +4,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/qr_code_dialog.dart';
 import 'package:restaukitchen_app/page/tabels_list/models/tabel.dart';
+import 'package:restaukitchen_app/page/table_form/bloc/table_form_cubit.dart';
+import 'package:restaukitchen_app/page/table_form/table_form_repo/table_form_repo.dart';
 import 'package:restaukitchen_app/page/table_form/table_from.dart';
 
 class TabelCard extends StatefulWidget {
@@ -106,13 +108,21 @@ class _TabelCardState extends State<TabelCard> {
                     _CardAction(
                       icon: Icons.edit_outlined,
                       color: colorScheme.primary,
-                      onTap: () {
-                        Navigator.of(context).push(
+                      onTap: () async {
+                        final bool? result = await Navigator.of(context).push(
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
-                            child: TableForm(),
+                            child: BlocProvider<TableFormCubit>(
+                              create: (context) => TableFormCubit(
+                                tableFormRepo: TableFormRepo(),
+                              ),
+                              child: TableForm(table: widget.tabel),
+                            ),
                           ),
                         );
+                        if (result == true) {
+                          widget.onEdit?.call();
+                        }
                       },
                     ),
                     _CardAction(

@@ -12,6 +12,9 @@ import 'package:restaukitchen_app/page/order_list/orders_list.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
 import 'package:restaukitchen_app/page/tabels_list/tabels_list.dart';
+import 'package:restaukitchen_app/page/table_form/bloc/table_form_cubit.dart';
+import 'package:restaukitchen_app/page/table_form/table_form_repo/table_form_repo.dart';
+import 'package:restaukitchen_app/page/table_form/table_from.dart';
 
 enum Pages {
   home,

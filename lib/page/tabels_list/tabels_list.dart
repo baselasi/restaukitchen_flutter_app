@@ -60,7 +60,6 @@ class _TabelsListState extends State<TabelsList> {
                         final tabel = state.tabels![index];
                         return MultiBlocProvider(
                           providers: [
-                        
                             BlocProvider(
                               create: (context) => TabelsListDeleteCubit(
                                 tablesRepo: TablesRepo(),
@@ -70,7 +69,9 @@ class _TabelsListState extends State<TabelsList> {
                           child: TabelCard(
                             key: ValueKey(tabel.id),
                             tabel: tabel,
-                            onEdit: () {},
+                            onEdit: () {
+                              context.read<TabelsListCubit>().getTabelsList();
+                            },
                             onOrder: () {},
                             onGenerateQr: () {},
                             onDelete: () {

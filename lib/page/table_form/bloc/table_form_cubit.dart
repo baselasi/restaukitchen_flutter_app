@@ -8,10 +8,18 @@ class TableFormCubit extends Cubit<TableFormState> {
     : _tableFormRepo = tableFormRepo,
       super(TableFormState(status: TableFormStatus.initial));
 
-  Future<void> createTable(Map<String, dynamic> payload) async {
+  Future<void> createTable({
+    required String number,
+    required String numberOfSeats,
+    required String status,
+  }) async {
     emit(TableFormState(status: TableFormStatus.loading));
     try {
-      // await _tableFormRepo.createTable(payload);
+      await _tableFormRepo.createTable({
+        'number': number,
+        'numberOfSeats': numberOfSeats,
+        'status': getStatusLabel(status),
+      });
       emit(TableFormState(status: TableFormStatus.success));
     } catch (e) {
       emit(TableFormState(status: TableFormStatus.error));

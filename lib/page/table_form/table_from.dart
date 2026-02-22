@@ -124,6 +124,12 @@ class _TableFormState extends State<TableForm> {
                               numberOfSeats: _tableNumberOfSeatsController.text,
                               status: _selectedStatus.value,
                             );
+                          } else {
+                            context.read<TableFormCubit>().createTable(
+                              number: _tableNumberController.text,
+                              numberOfSeats: _tableNumberOfSeatsController.text,
+                              status: _selectedStatus.value,
+                            );
                           }
                         },
                       ),

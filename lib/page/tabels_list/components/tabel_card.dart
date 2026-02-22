@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/qr_code_dialog.dart';
 import 'package:restaukitchen_app/page/tabels_list/models/tabel.dart';
+import 'package:restaukitchen_app/page/table_form/bloc/table_form_cubit.dart';
+import 'package:restaukitchen_app/page/table_form/table_form_repo/table_form_repo.dart';
+import 'package:restaukitchen_app/page/table_form/table_from.dart';
 
 class TabelCard extends StatefulWidget {
   final Tabel tabel;
@@ -96,52 +100,6 @@ class _TabelCardState extends State<TabelCard> {
                         ],
                       ),
                     ),
-                    // GestureDetector(
-                    //   onTap: () => onStatusChanged?.call(!isReserved),
-                    //   child: Container(
-                    //     padding: const EdgeInsets.symmetric(
-                    //       horizontal: 10,
-                    //       vertical: 6,
-                    //     ),
-                    //     decoration: BoxDecoration(
-                    //       color: isReserved
-                    //           ? const Color(0xFFFFF3E0)
-                    //           : const Color(0xFFE8F5E9),
-                    //       borderRadius: BorderRadius.circular(20),
-                    //       border: Border.all(
-                    //         color: isReserved
-                    //             ? const Color(0xFFFFA726)
-                    //             : const Color(0xFF4CAF50),
-                    //         width: 1.2,
-                    //       ),
-                    //     ),
-                    //     child: Row(
-                    //       mainAxisSize: MainAxisSize.min,
-                    //       children: [
-                    //         Container(
-                    //           width: 8,
-                    //           height: 8,
-                    //           decoration: BoxDecoration(
-                    //             color: isReserved
-                    //                 ? const Color(0xFFFFA726)
-                    //                 : const Color(0xFF4CAF50),
-                    //             shape: BoxShape.circle,
-                    //           ),
-                    //         ),
-                    //         const SizedBox(width: 6),
-                    //         Text(
-                    //           isReserved ? 'Reserved' : 'Free',
-                    //           style: theme.textTheme.labelSmall?.copyWith(
-                    //             color: isReserved
-                    //                 ? const Color(0xFFE65100)
-                    //                 : const Color(0xFF2E7D32),
-                    //             fontWeight: FontWeight.w600,
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
                 Row(
@@ -150,7 +108,22 @@ class _TabelCardState extends State<TabelCard> {
                     _CardAction(
                       icon: Icons.edit_outlined,
                       color: colorScheme.primary,
-                      onTap: widget.onEdit,
+                      onTap: () async {
+                        final bool? result = await Navigator.of(context).push(
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: BlocProvider<TableFormCubit>(
+                              create: (context) => TableFormCubit(
+                                tableFormRepo: TableFormRepo(),
+                              ),
+                              child: TableForm(table: widget.tabel),
+                            ),
+                          ),
+                        );
+                        if (result == true) {
+                          widget.onEdit?.call();
+                        }
+                      },
                     ),
                     _CardAction(
                       icon: Icons.receipt_long_outlined,

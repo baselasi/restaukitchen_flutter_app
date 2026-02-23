@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/new_order.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/qr_code_dialog.dart';
 import 'package:restaukitchen_app/page/tabels_list/models/tabel.dart';
@@ -128,7 +130,17 @@ class _TabelCardState extends State<TabelCard> {
                     _CardAction(
                       icon: Icons.receipt_long_outlined,
                       color: const Color(0xFF26A69A),
-                      onTap: widget.onOrder,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: BlocProvider(
+                              create: (context) => MenusPageBloc(),
+                              child: NewOrder(),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     _CardAction(
                       icon: Icons.qr_code_2,

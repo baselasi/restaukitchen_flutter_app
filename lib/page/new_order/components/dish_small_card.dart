@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/page/new_order/components/add_dish_dialog.dart';
 
 class DishSmallCard extends StatefulWidget {
   final Dish dish;
@@ -23,9 +24,10 @@ class _DishSmallCardState extends State<DishSmallCard>
       duration: const Duration(milliseconds: 100),
       reverseDuration: const Duration(milliseconds: 100),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -39,6 +41,7 @@ class _DishSmallCardState extends State<DishSmallCard>
   void _onTapUp(TapUpDetails details) {
     _controller.reverse();
     widget.onTap?.call();
+    showAddDishDialog(context: context);
   }
 
   void _onTapCancel() => _controller.reverse();
@@ -50,10 +53,8 @@ class _DishSmallCardState extends State<DishSmallCard>
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
-      builder: (context, child) => Transform.scale(
-        scale: _scaleAnimation.value,
-        child: child,
-      ),
+      builder: (context, child) =>
+          Transform.scale(scale: _scaleAnimation.value, child: child),
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(12),
@@ -94,7 +95,11 @@ class _DishSmallCardState extends State<DishSmallCard>
                 right: -20,
                 child: IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.add_circle, color: colorScheme.primary, size: 36),
+                  icon: Icon(
+                    Icons.add_circle,
+                    color: colorScheme.primary,
+                    size: 36,
+                  ),
                 ),
               ),
             ],

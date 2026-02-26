@@ -40,29 +40,29 @@ sealed class CourseIndice extends Equatable {
 }
 
 class DishIndice extends CourseIndice {
-  final String id;
+  final String? id;
   final String dishId;
   final String dishDimensionId;
-  final String dishDimensionName;
-  final double dishPrice;
-  final String dishName;
+  final String? dishDimensionName;
+  final double? dishPrice;
+  final String? dishName;
   final int course;
-  final String category;
-  final List<DishesWithIngredients> dishesWithIngredients;
-  final List<String> dishIngredientsId;
+  final String? category;
+  final List<DishesWithIngredients>? dishesWithIngredients;
+  final List<String>? dishIngredientsId;
   final int dishQuantity;
 
   const DishIndice({
-    required this.id,
+    this.id,
     required this.dishId,
     required this.dishDimensionId,
-    required this.dishDimensionName,
-    required this.dishPrice,
-    required this.dishName,
+    this.dishDimensionName,
+    this.dishPrice,
+    this.dishName,
     required this.course,
-    required this.category,
-    required this.dishesWithIngredients,
-    required this.dishIngredientsId,
+    this.category,
+    this.dishesWithIngredients,
+    this.dishIngredientsId,
     required this.dishQuantity,
   });
 

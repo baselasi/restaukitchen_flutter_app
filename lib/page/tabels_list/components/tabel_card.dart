@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/new_order.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/qr_code_dialog.dart';
@@ -134,8 +135,15 @@ class _TabelCardState extends State<TabelCard> {
                         Navigator.of(context).push(
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
-                            child: BlocProvider(
-                              create: (context) => MenusPageBloc(),
+                            child: MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => MenusPageBloc(),
+                                ),
+                                BlocProvider(
+                                  create: (context) => NewOrderFormBloc(),
+                                ),
+                              ],
                               child: NewOrder(),
                             ),
                           ),

@@ -11,13 +11,14 @@ class NewOrderFormState extends Equatable {
   final int totalCovers;
   final double total;
   final DateTime orderTime;
-
+  final int currentCourseIndex;
   const NewOrderFormState({
     required this.courses,
     required this.tableNumber,
     required this.totalCovers,
     required this.total,
     required this.orderTime,
+    required this.currentCourseIndex,
   });
 
   factory NewOrderFormState.fromJson(Map<String, dynamic> json) {
@@ -27,6 +28,7 @@ class NewOrderFormState extends Equatable {
       totalCovers: json['totalCovers'] as int,
       total: json['total'] as double,
       orderTime: json['orderTime'] as DateTime,
+      currentCourseIndex: json['currentCourseIndex'] as int,
     );
   }
 
@@ -36,6 +38,7 @@ class NewOrderFormState extends Equatable {
     int? totalCovers,
     double? total,
     DateTime? orderTime,
+    int? currentCourseIndex,
   }) {
     return NewOrderFormState(
       courses: courses ?? this.courses,
@@ -43,9 +46,10 @@ class NewOrderFormState extends Equatable {
       totalCovers: totalCovers ?? this.totalCovers,
       total: total ?? this.total,
       orderTime: orderTime ?? this.orderTime,
+      currentCourseIndex: currentCourseIndex ?? this.currentCourseIndex,
     );
   }
 
   @override
-  List<Object?> get props => [courses, tableNumber, totalCovers, total];
+  List<Object?> get props => [courses, tableNumber, totalCovers, total, orderTime, currentCourseIndex];
 }

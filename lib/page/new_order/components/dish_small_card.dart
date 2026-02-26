@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_from_events.dart';
 import 'package:restaukitchen_app/page/new_order/components/add_dish_dialog.dart';
+import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
 class DishSmallCard extends StatefulWidget {
   final Dish dish;
@@ -38,10 +42,25 @@ class _DishSmallCardState extends State<DishSmallCard>
 
   void _onTapDown(TapDownDetails details) => _controller.forward();
 
-  void _onTapUp(TapUpDetails details) {
+  void _onTapUp(TapUpDetails details) async {
     _controller.reverse();
     widget.onTap?.call();
-    showAddDishDialog(context: context);
+    final result = await showAddDishDialog(context: context, dish: widget.dish);
+    if (result != null && mounted && context.mounted) {
+      final courseIndex = context
+          .read<NewOrderFormBloc>()
+          .state
+          .currentCourseIndex;
+      final dishIndice = DishIndice(
+        dishId: widget.dish.id ?? '',
+        dishDimensionId: result.selectedDimension?.id ?? '',
+        dishQuantity: result.quantity,
+        course: courseIndex,
+      );
+      context.read<NewOrderFormBloc>().add(
+        AddDishIndice(dishIndice: dishIndice, courseIndex: courseIndex),
+      );
+    }
   }
 
   void _onTapCancel() => _controller.reverse();

@@ -42,7 +42,7 @@ class Order extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       // if (id != null) "id": id,
-      'dishIndices': dishIndices?.map((course) => course.toJson()).toList(),
+      'dishIndices': dishIndices?.map((course) => course.toOrderPayload()).toList(),
       'tableNumber': tableNumber,
       'totalCovers': totalCovers,
       // 'total': total,

@@ -1,10 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
-
-
-
-
 class NewOrderFormState extends Equatable {
   final List<Course> courses;
   final int tableNumber;
@@ -32,6 +28,17 @@ class NewOrderFormState extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'courses': courses.map((course) => course.toOrderPayload()).toList(),
+      'tableNumber': tableNumber,
+      'totalCovers': totalCovers,
+      'total': total,
+      'orderTime': orderTime,
+      'currentCourseIndex': currentCourseIndex,
+    };
+  }
+
   NewOrderFormState copyWith({
     List<Course>? courses,
     int? tableNumber,
@@ -50,6 +57,24 @@ class NewOrderFormState extends Equatable {
     );
   }
 
+  bool hasAnyIndicesInCourses() {
+    return courses.any((course) => course.disheIndices.isNotEmpty);
+  }
+
+  int getTotalIndicesInCourses() {
+    return courses.fold(
+      0,
+      (total, course) => total + course.disheIndices.length,
+    );
+  }
+
   @override
-  List<Object?> get props => [courses, tableNumber, totalCovers, total, orderTime, currentCourseIndex];
+  List<Object?> get props => [
+    courses,
+    tableNumber,
+    totalCovers,
+    total,
+    orderTime,
+    currentCourseIndex,
+  ];
 }

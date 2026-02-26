@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_events.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_state.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
 import 'package:restaukitchen_app/page/menusPage/components/menus_scroll_bar.dart';
 import 'package:restaukitchen_app/page/new_order/components/dish_small_card.dart';
 
@@ -60,6 +63,28 @@ class _NewOrderState extends State<NewOrder> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DetailsAppBar(pageTitle: "New Order"),
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        child: BlocBuilder<NewOrderFormBloc, NewOrderFormState>(
+          builder: (context, state) {
+            final hasDishes = state.hasAnyIndicesInCourses();
+            final dishesCount = state.getTotalIndicesInCourses();
+
+            return PrimaryButton(
+              text: hasDishes
+                  ? 'Submit Order ($dishesCount)'
+                  : 'Submit Order',
+              isDisabled: !hasDishes,
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Order submitted')),
+                );
+                Navigator.of(context).pop(state);
+              },
+            );
+          },
+        ),
+      ),
       body: BlocConsumer<MenusPageBloc, MenusPageState>(
         builder: (context, state) {
           return CustomScrollView(

@@ -60,13 +60,13 @@ class _TotalCoversDialogContentState extends State<_TotalCoversDialogContent> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            PrimaryButton(width: 100, onPressed: _onContinue, text: 'Continue'),
-            const SizedBox(width: 16),
             SecondaryButton(
               onPressed: () => Navigator.of(context).pop(),
               text: 'Cancel',
               width: 100,
             ),
+            const SizedBox(width: 16),
+            PrimaryButton(width: 100, onPressed: _onContinue, text: 'Continue'),
           ],
         ),
       ],

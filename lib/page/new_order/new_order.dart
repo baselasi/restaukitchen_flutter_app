@@ -47,7 +47,10 @@ class _NewOrderState extends State<NewOrder> {
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate((context, index) {
           final dish = dishes[index];
-          return DishSmallCard(dish: dish);
+          return DishSmallCard(
+            dish: dish,
+            ingredients: selectedMenu.ingredients,
+          );
         }, childCount: dishes.length),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -71,9 +74,7 @@ class _NewOrderState extends State<NewOrder> {
             final dishesCount = state.getTotalIndicesInCourses();
 
             return PrimaryButton(
-              text: hasDishes
-                  ? 'Submit Order ($dishesCount)'
-                  : 'Submit Order',
+              text: hasDishes ? 'Submit Order ($dishesCount)' : 'Submit Order',
               isDisabled: !hasDishes,
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -107,9 +108,7 @@ class _NewOrderState extends State<NewOrder> {
                     },
                   ),
                 ),
-                SliverToBoxAdapter(
-                  child: SizedBox(height: 10),
-                ),
+                SliverToBoxAdapter(child: SizedBox(height: 10)),
                 _buildDishesList(state),
               ],
               if (state is MenusPageLoading)

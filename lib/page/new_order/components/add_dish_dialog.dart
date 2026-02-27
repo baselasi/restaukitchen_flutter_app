@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_assignments.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/core/models/ingredients.dart';
 
 class AddDishDialogResult {
   final String note;
   final int quantity;
   final DimensionAssignments? selectedDimension;
-
+  final List<Ingredient> ingredients;
   const AddDishDialogResult({
     required this.note,
     required this.quantity,
     required this.selectedDimension,
+    required this.ingredients,
   });
 }
 
@@ -19,20 +21,29 @@ Future<AddDishDialogResult?> showAddDishDialog({
   required BuildContext context,
   double heightFactor = 0.5,
   required Dish dish,
+  required List<Ingredient> ingredients,
 }) {
   return showModalBottomSheet<AddDishDialogResult>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _AddDishSheet(heightFactor: heightFactor, dish: dish),
+    builder: (_) => _AddDishSheet(
+      heightFactor: heightFactor,
+      dish: dish,
+      ingredients: ingredients,
+    ),
   );
 }
 
 class _AddDishSheet extends StatefulWidget {
   final double heightFactor;
   final Dish dish;
-
-  const _AddDishSheet({required this.heightFactor, required this.dish});
+  final List<Ingredient> ingredients;
+  const _AddDishSheet({
+    required this.heightFactor,
+    required this.dish,
+    required this.ingredients,
+  });
 
   @override
   State<_AddDishSheet> createState() => _AddDishSheetState();
@@ -47,6 +58,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
   String _note = '';
   late final List<DimensionAssignments> _dimensionAssignments;
   DimensionAssignments? _selectedDimension;
+  final Set<String> _selectedIngredientKeys = {};
 
   @override
   void initState() {
@@ -95,23 +107,63 @@ class _AddDishSheetState extends State<_AddDishSheet> {
       return;
     }
     FocusScope.of(context).unfocus();
+    final selectedIngredients = _ingredientsForSelectedDimension
+        .where(
+          (ingredient) =>
+              _selectedIngredientKeys.contains(_ingredientKey(ingredient)),
+        )
+        .toList();
     Navigator.of(context).pop(
       AddDishDialogResult(
         note: _note.trim(),
         quantity: _quantity,
         selectedDimension: _selectedDimension,
+        ingredients: selectedIngredients,
       ),
     );
   }
 
   String _dimensionKey(DimensionAssignments assignment) {
-    return assignment.id ?? assignment.dimension.id ?? assignment.dimension.name;
+    return assignment.id ??
+        assignment.dimension.id ??
+        assignment.dimension.name;
   }
 
   String _formatPrice(String? rawPrice) {
     final parsed = num.tryParse(rawPrice ?? '');
     if (parsed == null) return '';
     return '€${parsed.toStringAsFixed(2)}';
+  }
+
+  String _ingredientKey(Ingredient ingredient) {
+    return ingredient.id ?? ingredient.name;
+  }
+
+  List<Ingredient> get _ingredientsForSelectedDimension {
+    final selectedDimensionId = _selectedDimension?.dimension.id;
+    if (selectedDimensionId == null || selectedDimensionId.isEmpty) return [];
+
+    return widget.ingredients
+        .where((ingredient) => ingredient.hasDimensionId(selectedDimensionId))
+        .toList();
+  }
+
+  void _toggleIngredientSelection(Ingredient ingredient) {
+    final key = _ingredientKey(ingredient);
+    setState(() {
+      if (_selectedIngredientKeys.contains(key)) {
+        _selectedIngredientKeys.remove(key);
+      } else {
+        _selectedIngredientKeys.add(key);
+      }
+    });
+  }
+
+  void _syncSelectedIngredientsWithCurrentDimension() {
+    final availableKeys = _ingredientsForSelectedDimension
+        .map(_ingredientKey)
+        .toSet();
+    _selectedIngredientKeys.removeWhere((key) => !availableKeys.contains(key));
   }
 
   @override
@@ -125,7 +177,9 @@ class _AddDishSheetState extends State<_AddDishSheet> {
       builder: (context, scrollController) => AnimatedPadding(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOut,
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -150,7 +204,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (_dimensionAssignments.isNotEmpty && _dimensionAssignments.length > 1) ...[
+                      if (_dimensionAssignments.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         RadioGroup<String>(
                           groupValue: _selectedDimension == null
@@ -158,32 +212,81 @@ class _AddDishSheetState extends State<_AddDishSheet> {
                               : _dimensionKey(_selectedDimension!),
                           onChanged: (value) {
                             final selected = _dimensionAssignments.firstWhere(
-                              (assignment) => _dimensionKey(assignment) == value,
+                              (assignment) =>
+                                  _dimensionKey(assignment) == value,
                             );
                             setState(() => _selectedDimension = selected);
+                            _syncSelectedIngredientsWithCurrentDimension();
                           },
                           child: Column(
                             children: _dimensionAssignments.map((assignment) {
                               final isSelected =
-                                  _dimensionKey(_selectedDimension ?? assignment) ==
+                                  _dimensionKey(
+                                    _selectedDimension ?? assignment,
+                                  ) ==
                                   _dimensionKey(assignment);
                               return Card(
                                 margin: const EdgeInsets.only(bottom: 8),
                                 child: ListTile(
-                                  onTap: () => setState(
-                                    () => _selectedDimension = assignment,
-                                  ),
+                                  onTap: () => setState(() {
+                                    _selectedDimension = assignment;
+                                    _syncSelectedIngredientsWithCurrentDimension();
+                                  }),
                                   leading: Radio<String>(
                                     value: _dimensionKey(assignment),
                                   ),
                                   title: Text(assignment.dimension.name),
-                                  subtitle: Text(_formatPrice(assignment.price)),
+                                  subtitle: Text(
+                                    _formatPrice(assignment.price),
+                                  ),
                                   selected: isSelected,
                                 ),
                               );
                             }).toList(),
                           ),
                         ),
+                        const SizedBox(height: 8),
+                      ],
+                      if (_ingredientsForSelectedDimension.isNotEmpty) ...[
+                        Text(
+                          'Selected Ingredients',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        ..._ingredientsForSelectedDimension.map((ingredient) {
+                          final key = _ingredientKey(ingredient);
+                          final isSelected = _selectedIngredientKeys.contains(
+                            key,
+                          );
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            child: ListTile(
+                              onTap: () =>
+                                  _toggleIngredientSelection(ingredient),
+                              leading: Icon(
+                                isSelected
+                                    ? Icons.radio_button_checked
+                                    : Icons.radio_button_unchecked,
+                                color: isSelected
+                                    ? Theme.of(context).colorScheme.primary
+                                    : null,
+                              ),
+                              title: Text(ingredient.name),
+                              selected: isSelected,
+                              trailing: Text(
+                                _formatPrice(
+                                  ingredient.dimensionAssignments
+                                      .firstWhere(
+                                        (assignment) =>
+                                            assignment.dimension.id ==
+                                            _selectedDimension?.dimension.id,
+                                      )
+                                      .price,
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
                         const SizedBox(height: 8),
                       ],
                       TextField(

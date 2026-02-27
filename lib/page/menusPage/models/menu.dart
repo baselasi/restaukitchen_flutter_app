@@ -1,17 +1,20 @@
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/core/models/ingredients.dart';
 
 class Menu extends Equatable {
   final String id;
   final String name;
   final bool combination;
   final List<Dish> dishes;
+  final List<Ingredient> ingredients;
 
   const Menu({
     required this.id,
     required this.name,
     required this.combination,
     required this.dishes,
+    required this.ingredients,
   });
 
   factory Menu.fromJson(Map<String, dynamic> json) {
@@ -21,6 +24,9 @@ class Menu extends Equatable {
       combination: json['combination'] as bool,
       dishes: json['dish'] != null
           ? (json['dish'] as List).map((dish) => Dish.fromJson(dish)).toList()
+          : [],
+      ingredients: json['ingredients'] != null
+          ? (json['ingredients'] as List).map((ingredient) => Ingredient.fromJson(ingredient)).toList()
           : [],
     );
   }
@@ -32,11 +38,12 @@ class Menu extends Equatable {
       'name': name,
       'combination': combination,
       'dish': dishes.map((dish) => dish.toJson()).toList(),
+      // 'ingredients': ingredients.map((ingredient) => ingredient.toJson()).toList(),
     };
   }
 
   @override
-  List<Object?> get props => [id, name, combination, dishes];
+  List<Object?> get props => [id, name, combination, dishes, ingredients];
 }
 
 class MenuResponse extends Equatable {

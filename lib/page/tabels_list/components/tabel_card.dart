@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/new_order.dart';
+import 'package:restaukitchen_app/page/new_order/repository/new_oreder_repository.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/qr_code_dialog.dart';
+import 'package:restaukitchen_app/page/tabels_list/components/total_covers_dialog.dart';
 import 'package:restaukitchen_app/page/tabels_list/models/tabel.dart';
 import 'package:restaukitchen_app/page/table_form/bloc/table_form_cubit.dart';
 import 'package:restaukitchen_app/page/table_form/table_form_repo/table_form_repo.dart';
@@ -131,7 +135,14 @@ class _TabelCardState extends State<TabelCard> {
                     _CardAction(
                       icon: Icons.receipt_long_outlined,
                       color: const Color(0xFF26A69A),
-                      onTap: () {
+                      onTap: () async {
+                        final totalCovers = await TotalCoversDialog.show(
+                          context,
+                        );
+                        if (!context.mounted || totalCovers == null) {
+                          return;
+                        }
+
                         Navigator.of(context).push(
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
@@ -141,7 +152,17 @@ class _TabelCardState extends State<TabelCard> {
                                   create: (context) => MenusPageBloc(),
                                 ),
                                 BlocProvider(
-                                  create: (context) => NewOrderFormBloc(),
+                                  create: (context) => NewOrderFormBloc(
+                                    tableNumber: widget.tabel.number,
+                                    totalCovers: totalCovers,
+                                  ),
+                                ),
+                                BlocProvider(
+                                  create: (context) => NewOrderCubit(
+                                    newOrderRepo: NewOrderRepository(
+                                      apiService: ApiService(),
+                                    ),
+                                  ),
                                 ),
                               ],
                               child: NewOrder(),

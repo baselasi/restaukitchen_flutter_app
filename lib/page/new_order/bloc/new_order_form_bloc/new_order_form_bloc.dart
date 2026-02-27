@@ -4,12 +4,12 @@ import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_or
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
 class NewOrderFormBloc extends Bloc<NewOrderFormEvent, NewOrderFormState> {
-  NewOrderFormBloc()
+  NewOrderFormBloc({int tableNumber = 0, int totalCovers = 0})
     : super(
         NewOrderFormState(
           courses: [Course(disheIndices: [])],
-          tableNumber: 0,
-          totalCovers: 0,
+          tableNumber: tableNumber,
+          totalCovers: totalCovers,
           total: 0,
           orderTime: DateTime.now(),
           currentCourseIndex: 0,

@@ -1,15 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
+import 'package:restaukitchen_app/page/new_order/repository/new_oreder_repository.dart';
 
 class NewOrderCubit extends Cubit<NewOrderState> {
-  NewOrderCubit() : super(NewOrderState.initial());
+  final NewOrderRepository _newOrderRepo;
+  NewOrderCubit({required NewOrderRepository newOrderRepo})
+    : _newOrderRepo = newOrderRepo,
+      super(NewOrderState.initial());
 
-  Future<void> createOrder(NewOrderFormState newOrderFormState) async {
+  Future<void> createOrder({
+    required NewOrderFormState newOrderFormState,
+  }) async {
     emit(NewOrderState.loading(newOrderFormState));
     try {
       // await Future.delayed(const Duration(seconds: 2));
-      // await _newOrderRepo.createOrder(newOrderFormState);
+      await _newOrderRepo.createOrder(newOrderFormState.toJson());
       emit(NewOrderState.success());
     } catch (e) {
       emit(NewOrderState.error(e.toString(), newOrderFormState));

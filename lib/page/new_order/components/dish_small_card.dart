@@ -64,7 +64,7 @@ class _DishSmallCardState extends State<DishSmallCard>
           .currentCourseIndex;
       final dishIndice = DishIndice(
         dishId: widget.dish.id ?? '',
-        dishDimensionId: result.selectedDimension?.id ?? '',
+        dishDimensionId: result.selectedDimension?.dimension.id ?? '',
         dishIngredientsId: result.ingredients
             .map((ingredient) => ingredient.id)
             .whereType<String>()

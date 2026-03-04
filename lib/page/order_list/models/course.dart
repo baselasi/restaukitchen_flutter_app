@@ -13,10 +13,8 @@ class Course extends Equatable {
     );
   }
 
-  Map<String, dynamic> toOrderPayload() {
-    return {
-      'disheIndices': disheIndices.map((e) => e.toOrderPayload()).toList(),
-    };
+  List<Map<String, dynamic>> toOrderPayload() {
+    return disheIndices.map((e) => e.toOrderPayload()).toList();
   }
 
   @override

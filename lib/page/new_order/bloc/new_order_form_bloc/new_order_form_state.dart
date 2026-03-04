@@ -30,12 +30,11 @@ class NewOrderFormState extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'courses': courses.map((course) => course.toOrderPayload()).toList(),
+      'dishIndices': courses
+          .expand((course) => course.toOrderPayload())
+          .toList(),
       'tableNumber': tableNumber,
       'totalCovers': totalCovers,
-      'total': total,
-      'orderTime': orderTime,
-      'currentCourseIndex': currentCourseIndex,
     };
   }
 

@@ -5,6 +5,7 @@ import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_events.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_state.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
 import 'package:restaukitchen_app/page/menusPage/components/menus_scroll_bar.dart';
@@ -77,10 +78,12 @@ class _NewOrderState extends State<NewOrder> {
               text: hasDishes ? 'Submit Order ($dishesCount)' : 'Submit Order',
               isDisabled: !hasDishes,
               onPressed: () {
+                context.read<NewOrderCubit>().createOrder(
+                  newOrderFormState: state,
+                );
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Order submitted')),
                 );
-                Navigator.of(context).pop(state);
               },
             );
           },

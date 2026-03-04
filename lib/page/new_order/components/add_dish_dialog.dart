@@ -19,7 +19,7 @@ class AddDishDialogResult {
 
 Future<AddDishDialogResult?> showAddDishDialog({
   required BuildContext context,
-  double heightFactor = 0.5,
+  double heightFactor = 0.9,
   required Dish dish,
   required List<Ingredient> ingredients,
 }) {
@@ -50,10 +50,7 @@ class _AddDishSheet extends StatefulWidget {
 }
 
 class _AddDishSheetState extends State<_AddDishSheet> {
-  late final DraggableScrollableController _draggableController;
-  late final FocusNode _noteFocusNode;
-  late final double _collapsedSize;
-  late final double _focusedSize;
+  // late final FocusNode _noteFocusNode;
   int _quantity = 1;
   String _note = '';
   late final List<DimensionAssignments> _dimensionAssignments;
@@ -63,10 +60,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
   @override
   void initState() {
     super.initState();
-    _draggableController = DraggableScrollableController();
-    _noteFocusNode = FocusNode()..addListener(_handleNoteFocusChange);
-    _collapsedSize = widget.heightFactor.clamp(0.25, 1.0);
-    _focusedSize = (_collapsedSize + 0.3).clamp(0.25, 0.95);
+    // _noteFocusNode = FocusNode()..addListener(_handleNoteFocusChange);
     _dimensionAssignments = (widget.dish.dimensionAssignments ?? [])
         .where((assignment) => assignment.deleted != true)
         .toList();
@@ -80,24 +74,23 @@ class _AddDishSheetState extends State<_AddDishSheet> {
 
   @override
   void dispose() {
-    _noteFocusNode.removeListener(_handleNoteFocusChange);
-    _noteFocusNode.dispose();
-    _draggableController.dispose();
+    // _noteFocusNode.removeListener(_handleNoteFocusChange);
+    // _noteFocusNode.dispose();
     super.dispose();
   }
 
-  void _handleNoteFocusChange() {
-    _animateSheet(_noteFocusNode.hasFocus ? _focusedSize : _collapsedSize);
-  }
+  // void _handleNoteFocusChange() {
+  //   _animateSheet(_noteFocusNode.hasFocus ? _focusedSize : _collapsedSize);
+  // }
 
-  void _animateSheet(double size) {
-    if (!mounted || !_draggableController.isAttached) return;
-    _draggableController.animateTo(
-      size,
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOut,
-    );
-  }
+  // void _animateSheet(double size) {
+  //   if (!mounted || !_draggableController.isAttached) return;
+  //   _draggableController.animateTo(
+  //     size,
+  //     duration: const Duration(milliseconds: 220),
+  //     curve: Curves.easeOut,
+  //   );
+  // }
 
   void _submit() {
     if (_dimensionAssignments.isNotEmpty && _selectedDimension == null) {
@@ -168,178 +161,186 @@ class _AddDishSheetState extends State<_AddDishSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      controller: _draggableController,
-      initialChildSize: _collapsedSize,
-      minChildSize: 0.25,
-      maxChildSize: 0.95,
-      expand: false,
-      builder: (context, scrollController) => AnimatedPadding(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade400,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final maxSheetHeight =
+        screenHeight * widget.heightFactor.clamp(0.35, 0.98);
+
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxSheetHeight),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
               ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (_dimensionAssignments.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        RadioGroup<String>(
-                          groupValue: _selectedDimension == null
-                              ? null
-                              : _dimensionKey(_selectedDimension!),
-                          onChanged: (value) {
-                            final selected = _dimensionAssignments.firstWhere(
-                              (assignment) =>
-                                  _dimensionKey(assignment) == value,
-                            );
-                            setState(() => _selectedDimension = selected);
-                            _syncSelectedIngredientsWithCurrentDimension();
-                          },
-                          child: Column(
-                            children: _dimensionAssignments.map((assignment) {
-                              final isSelected =
-                                  _dimensionKey(
-                                    _selectedDimension ?? assignment,
-                                  ) ==
-                                  _dimensionKey(assignment);
-                              return Card(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                child: ListTile(
-                                  onTap: () => setState(() {
-                                    _selectedDimension = assignment;
-                                    _syncSelectedIngredientsWithCurrentDimension();
-                                  }),
-                                  leading: Radio<String>(
-                                    value: _dimensionKey(assignment),
-                                  ),
-                                  title: Text(assignment.dimension.name),
-                                  subtitle: Text(
-                                    _formatPrice(assignment.price),
-                                  ),
-                                  selected: isSelected,
-                                ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade400,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_dimensionAssignments.isNotEmpty &&
+                            _dimensionAssignments.length > 1) ...[
+                          const SizedBox(height: 8),
+                          RadioGroup<String>(
+                            groupValue: _selectedDimension == null
+                                ? null
+                                : _dimensionKey(_selectedDimension!),
+                            onChanged: (value) {
+                              final selected = _dimensionAssignments.firstWhere(
+                                (assignment) =>
+                                    _dimensionKey(assignment) == value,
                               );
-                            }).toList(),
+                              setState(() => _selectedDimension = selected);
+                              _syncSelectedIngredientsWithCurrentDimension();
+                            },
+                            child: Column(
+                              children: _dimensionAssignments.map((assignment) {
+                                final isSelected =
+                                    _dimensionKey(
+                                      _selectedDimension ?? assignment,
+                                    ) ==
+                                    _dimensionKey(assignment);
+                                return Card(
+                                  margin: const EdgeInsets.only(bottom: 8),
+                                  child: ListTile(
+                                    onTap: () => setState(() {
+                                      _selectedDimension = assignment;
+                                      _syncSelectedIngredientsWithCurrentDimension();
+                                    }),
+                                    leading: Radio<String>(
+                                      value: _dimensionKey(assignment),
+                                    ),
+                                    title: Text(assignment.dimension.name),
+                                    subtitle: Text(
+                                      _formatPrice(assignment.price),
+                                    ),
+                                    selected: isSelected,
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                        if (_ingredientsForSelectedDimension.isNotEmpty) ...[
+                          Text(
+                            'Selected Ingredients',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          ..._ingredientsForSelectedDimension.map((ingredient) {
+                            final key = _ingredientKey(ingredient);
+                            final isSelected = _selectedIngredientKeys.contains(
+                              key,
+                            );
+                            return Card(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              child: ListTile(
+                                onTap: () =>
+                                    _toggleIngredientSelection(ingredient),
+                                leading: Icon(
+                                  isSelected
+                                      ? Icons.radio_button_checked
+                                      : Icons.radio_button_unchecked,
+                                  color: isSelected
+                                      ? Theme.of(context).colorScheme.primary
+                                      : null,
+                                ),
+                                title: Text(ingredient.name),
+                                selected: isSelected,
+                                trailing: Text(
+                                  _formatPrice(
+                                    ingredient.dimensionAssignments
+                                        .firstWhere(
+                                          (assignment) =>
+                                              assignment.dimension.id ==
+                                              _selectedDimension?.dimension.id,
+                                        )
+                                        .price,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                          const SizedBox(height: 8),
+                        ],
+                        TextField(
+                          // focusNode: _noteFocusNode,
+                          minLines: 3,
+                          maxLines: 5,
+                          textInputAction: TextInputAction.done,
+                          scrollPadding: const EdgeInsets.only(bottom: 120),
+                          onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                          onChanged: (value) => _note = value,
+                          decoration: const InputDecoration(
+                            labelText: 'Note',
+                            hintText: 'Add note for this dish',
+                            border: OutlineInputBorder(),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 20),
                       ],
-                      if (_ingredientsForSelectedDimension.isNotEmpty) ...[
+                    ),
+                  ),
+                ),
+                SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    child: Row(
+                      children: [
+                        _CircleQuantityButton(
+                          icon: Icons.remove,
+                          onTap: () {
+                            if (_quantity > 1) {
+                              setState(() => _quantity -= 1);
+                            }
+                          },
+                        ),
+                        const SizedBox(width: 12),
                         Text(
-                          'Selected Ingredients',
+                          '$_quantity',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        const SizedBox(height: 8),
-                        ..._ingredientsForSelectedDimension.map((ingredient) {
-                          final key = _ingredientKey(ingredient);
-                          final isSelected = _selectedIngredientKeys.contains(
-                            key,
-                          );
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 8),
-                            child: ListTile(
-                              onTap: () =>
-                                  _toggleIngredientSelection(ingredient),
-                              leading: Icon(
-                                isSelected
-                                    ? Icons.radio_button_checked
-                                    : Icons.radio_button_unchecked,
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.primary
-                                    : null,
-                              ),
-                              title: Text(ingredient.name),
-                              selected: isSelected,
-                              trailing: Text(
-                                _formatPrice(
-                                  ingredient.dimensionAssignments
-                                      .firstWhere(
-                                        (assignment) =>
-                                            assignment.dimension.id ==
-                                            _selectedDimension?.dimension.id,
-                                      )
-                                      .price,
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                        const SizedBox(height: 8),
-                      ],
-                      TextField(
-                        focusNode: _noteFocusNode,
-                        minLines: 3,
-                        maxLines: 5,
-                        textInputAction: TextInputAction.done,
-                        scrollPadding: const EdgeInsets.only(bottom: 120),
-                        onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                        onChanged: (value) => _note = value,
-                        decoration: const InputDecoration(
-                          labelText: 'Note',
-                          hintText: 'Add note for this dish',
-                          border: OutlineInputBorder(),
+                        const SizedBox(width: 12),
+                        _CircleQuantityButton(
+                          icon: Icons.add,
+                          onTap: () => setState(() => _quantity += 1),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: PrimaryButton(onPressed: _submit, text: 'Add'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SafeArea(
-                top: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  child: Row(
-                    children: [
-                      _CircleQuantityButton(
-                        icon: Icons.remove,
-                        onTap: () {
-                          if (_quantity > 1) {
-                            setState(() => _quantity -= 1);
-                          }
-                        },
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        '$_quantity',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(width: 12),
-                      _CircleQuantityButton(
-                        icon: Icons.add,
-                        onTap: () => setState(() => _quantity += 1),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: PrimaryButton(onPressed: _submit, text: 'Add'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

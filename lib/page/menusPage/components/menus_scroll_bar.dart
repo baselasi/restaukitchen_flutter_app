@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
+import 'package:restaukitchen_app/page/menusPage/models/menu_scroll_bar_item.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class MenusScrollBar extends StatelessWidget {
-  final List<Menu> menus;
+  final List<MenuScrollBarItem> menus;
   final int selectedMenuIndex;
   final Function(int) onMenuSelected;
 

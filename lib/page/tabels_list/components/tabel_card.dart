@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/menu_scroll_bar_cubit/menu_scroll_bar_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/new_order.dart';
@@ -163,6 +164,9 @@ class _TabelCardState extends State<TabelCard> {
                                       apiService: ApiService(),
                                     ),
                                   ),
+                                ),
+                                BlocProvider(
+                                  create: (context) => MenuScrollBarCubit(),
                                 ),
                               ],
                               child: NewOrder(),

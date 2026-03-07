@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
+import 'package:restaukitchen_app/page/menusPage/models/menu_scroll_bar_item.dart';
 
 class Menu extends Equatable {
   final String id;
@@ -26,7 +27,9 @@ class Menu extends Equatable {
           ? (json['dish'] as List).map((dish) => Dish.fromJson(dish)).toList()
           : [],
       ingredients: json['ingredients'] != null
-          ? (json['ingredients'] as List).map((ingredient) => Ingredient.fromJson(ingredient)).toList()
+          ? (json['ingredients'] as List)
+                .map((ingredient) => Ingredient.fromJson(ingredient))
+                .toList()
           : [],
     );
   }
@@ -40,6 +43,10 @@ class Menu extends Equatable {
       'dish': dishes.map((dish) => dish.toJson()).toList(),
       // 'ingredients': ingredients.map((ingredient) => ingredient.toJson()).toList(),
     };
+  }
+
+  MenuScrollBarItem toMenuScrollBarItem() {
+    return MenuScrollBarItem(id: id, name: name, isCombination: false);
   }
 
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:restaukitchen_app/page/combination_page/models/combination.dart';
+import 'package:restaukitchen_app/page/combination_page/models/menu_combination.dart';
 
 class CombinationsSmallCard extends StatefulWidget {
-  final Combination combination;
+  final MenuCombination combination;
   const CombinationsSmallCard({super.key, required this.combination});
 
   @override

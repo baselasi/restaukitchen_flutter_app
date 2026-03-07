@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/core/services/user_service.dart';
-import 'package:restaukitchen_app/page/combination_page/models/combination.dart';
+import 'package:restaukitchen_app/page/combination_page/models/menu_combination.dart';
 import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
 import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
 import 'package:restaukitchen_app/page/menusPage/models/menu_scroll_bar_item.dart';
@@ -30,7 +30,7 @@ class MenuScrollBarCubit extends Cubit<MenuScrollBarState> {
         getIt<UserService>().user?.restaurant ?? '',
       );
 
-      final combinationsResponse = await CombinationPageRepo().getCombinations(
+      final combinationsResponse = await CombinationPageRepo().getCombinationsList(
         getIt<UserService>().user?.restaurant ?? '',
       );
       emit(
@@ -104,7 +104,7 @@ class MenuScrollBarState extends Equatable {
   final int selectedMenuIndex;
   final Menu? selectedMenu;
   final List<Menu>? menus;
-  final List<Combination>? combinations;
+  final List<MenuCombination>? combinations;
   final String? errorMessage;
 
   const MenuScrollBarState({

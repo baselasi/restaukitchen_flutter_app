@@ -1,49 +1,53 @@
 import 'package:equatable/equatable.dart';
-import 'package:restaukitchen_app/page/menusPage/models/menu_scroll_bar_item.dart';
+import 'package:restaukitchen_app/page/combination_page/models/menu_combination.dart';
+import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
 
 class Combination extends Equatable {
   final String id;
   final String name;
+  final int limits;
+  final String restaurant;
   final List<DimensionAssignment> dimensionAssignments;
-  final List<String> combinationImageIds;
+  final List<Menu> menuList;
 
   const Combination({
     required this.id,
     required this.name,
+    required this.limits,
+    required this.restaurant,
     required this.dimensionAssignments,
-    required this.combinationImageIds,
+    required this.menuList,
   });
 
   factory Combination.fromJson(Map<String, dynamic> json) {
     return Combination(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
+      limits: json['limits'] as int? ?? 0,
+      restaurant: json['restaurant'] as String? ?? '',
       dimensionAssignments:
           (json['dimensionAssignments'] as List<dynamic>? ?? [])
               .map(
-                (assignment) => DimensionAssignment.fromJson(
-                  assignment as Map<String, dynamic>,
-                ),
+                (item) =>
+                    DimensionAssignment.fromJson(item as Map<String, dynamic>),
               )
               .toList(),
-      combinationImageIds: (json['combinationImageIds'] as List<dynamic>? ?? [])
-          .map((imageId) => imageId.toString())
+      menuList: (json['menuList'] as List<dynamic>)
+          .map((menu) => Menu.fromJson(menu as Map<String, dynamic>))
           .toList(),
     );
-  }
-
-  MenuScrollBarItem toMenuScrollBarItem() {
-    return MenuScrollBarItem(id: id, name: name, isCombination: true);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'limits': limits,
+      'restaurant': restaurant,
       'dimensionAssignments': dimensionAssignments
-          .map((assignment) => assignment.toJson())
+          .map((item) => item.toJson())
           .toList(),
-      'combinationImageIds': combinationImageIds,
+      'menuList': menuList,
     };
   }
 
@@ -51,91 +55,21 @@ class Combination extends Equatable {
   List<Object?> get props => [
     id,
     name,
+    limits,
+    restaurant,
     dimensionAssignments,
-    combinationImageIds,
+    menuList,
   ];
 }
 
-class DimensionAssignment extends Equatable {
-  final String id;
-  final Dimension dimension;
-  final double price;
-  final bool isDeleted;
-
-  const DimensionAssignment({
-    required this.id,
-    required this.dimension,
-    required this.price,
-    required this.isDeleted,
-  });
-
-  factory DimensionAssignment.fromJson(Map<String, dynamic> json) {
-    return DimensionAssignment(
-      id: json['id'] as String? ?? '',
-      dimension: Dimension.fromJson(
-        json['dimension'] as Map<String, dynamic>? ?? <String, dynamic>{},
-      ),
-      price: (json['price'] as num?)?.toDouble() ?? 0,
-      isDeleted: json['isDeleted'] as bool? ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'dimension': dimension.toJson(),
-      'price': price,
-      'isDeleted': isDeleted,
-    };
-  }
-
-  @override
-  List<Object?> get props => [id, dimension, price, isDeleted];
-}
-
-class Dimension extends Equatable {
-  final String id;
-  final String name;
-  final bool standard;
-  final bool deleted;
-
-  const Dimension({
-    required this.id,
-    required this.name,
-    required this.standard,
-    required this.deleted,
-  });
-
-  factory Dimension.fromJson(Map<String, dynamic> json) {
-    return Dimension(
-      id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      standard: json['standard'] as bool? ?? false,
-      deleted: json['deleted'] as bool? ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name, 'standard': standard, 'deleted': deleted};
-  }
-
-  @override
-  List<Object?> get props => [id, name, standard, deleted];
-}
-
 class CombinationResponse extends Equatable {
-  final List<Combination> combinations;
+  final Combination combination;
 
-  const CombinationResponse({required this.combinations});
+  const CombinationResponse({required this.combination});
 
-  factory CombinationResponse.fromJson(List<dynamic> json) {
-    return CombinationResponse(
-      combinations: json
-          .map((e) => Combination.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+  factory CombinationResponse.fromJson(Map<String, dynamic> json) {
+    return CombinationResponse(combination: Combination.fromJson(json));
   }
-
   @override
-  List<Object?> get props => [combinations];
+  List<Object?> get props => [combination];
 }

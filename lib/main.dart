@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
@@ -14,7 +16,26 @@ void main() async {
   // Setup service locator
   await setupServiceLocator();
 
-  runApp(const MyApp());
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint('Flutter framework error: ${details.exceptionAsString()}');
+    if (details.stack != null) {
+      debugPrintStack(stackTrace: details.stack);
+    }
+  };
+
+  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+    debugPrint('PlatformDispatcher uncaught error: $error');
+    debugPrintStack(stackTrace: stack);
+    return true;
+  };
+
+  runZonedGuarded(() {
+    runApp(const MyApp());
+  }, (Object error, StackTrace stack) {
+    debugPrint('Zone uncaught error: $error');
+    debugPrintStack(stackTrace: stack);
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -28,6 +49,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<AuthCubit>(create: (context) => AuthCubit()),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: LightTheme.theme,
           home: BlocConsumer<AuthCubit, AuthState>(

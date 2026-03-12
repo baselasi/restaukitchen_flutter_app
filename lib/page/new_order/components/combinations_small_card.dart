@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/combination_page/models/menu_combination.dart';
+import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
+import 'package:restaukitchen_app/page/new_order/components/add_combination_dialog.dart';
+import 'package:restaukitchen_app/page/order_combinations_form/dimensions_selection_page.dart';
 
 class CombinationsSmallCard extends StatefulWidget {
   final MenuCombination combination;
@@ -13,6 +19,7 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
+  bool _isDialogOpen = false;
 
   @override
   void initState() {
@@ -47,9 +54,18 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
         elevation: 2,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
-          onTapDown: (details) {},
-          onTapUp: (details) {},
-          onTapCancel: () {},
+          onTap: () {
+            Navigator.of(context).push(
+            PageTransition(
+              type: PageTransitionType.rightToLeft,
+              child: BlocProvider(
+                create: (context) => CombinationGetCubit(
+                  combinationPageRepo: CombinationPageRepo(),
+                )..getCombination(widget.combination.id),
+                child: DimensionsSelectionPage(),
+              ),
+            ));
+          },
           borderRadius: BorderRadius.circular(12),
           child: Stack(
             clipBehavior: Clip.none,
@@ -72,7 +88,17 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
                 top: -20,
                 right: -20,
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    PageTransition(
+                      type: PageTransitionType.rightToLeft,
+                      child: BlocProvider(
+                        create: (context) => CombinationGetCubit(
+                          combinationPageRepo: CombinationPageRepo(),
+                        )..getCombination(widget.combination.id),
+                        child: DimensionsSelectionPage(),
+                      ),
+                    );
+                  },
                   icon: Icon(
                     Icons.add_circle,
                     color: colorScheme.primary,
@@ -85,5 +111,15 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
         ),
       ),
     );
+  }
+
+  Future<void> _openDialog() async {
+    if (_isDialogOpen) return;
+    _isDialogOpen = true;
+    try {
+      // await showAddCombinationDialog(context, widget.combination.id);
+    } finally {
+      _isDialogOpen = false;
+    }
   }
 }

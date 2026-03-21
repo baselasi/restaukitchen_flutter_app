@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/page/combination_page/models/combination.dart';
+import 'package:restaukitchen_app/page/order_combinations_form/bloc/add_dishes_cubit.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/bloc/combination_menu_section_cubit/combination_menu_section_cubit.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/components/menu_combination_section.dart';
 
@@ -23,22 +24,39 @@ class AddDishesPage extends StatefulWidget {
 class _AddDishesPageState extends State<AddDishesPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: DetailsAppBar(pageTitle: 'Add Dishes'),
-      body: Column(
-        children: [
-          ...widget.combination?.menuList
-                  .map(
-                    (menu) => BlocProvider(
-                      create: (context) =>
-                          CombinationMenuSectionCubit(menu: menu),
-                      child: MenuCombinationSection(menu: menu),
-                    ),
-                  )
-                  .toList() ??
-              [],
-        ],
-      ),
+    return BlocConsumer<AddDishesCubit, AddDishesState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: DetailsAppBar(pageTitle: 'Add Dishes'),
+          body: Column(
+            children: [
+              ...widget.combination?.menuList
+                      .asMap()
+                      .entries
+                      .map(
+                        (menu) => BlocProvider(
+                          create: (context) =>
+                              CombinationMenuSectionCubit(menu: menu.value),
+                          child: MenuCombinationSection(
+                            isActive:
+                                state.activeMenuIds.contains(menu.value.id) ||
+                                menu.key == 0,
+                            menu: menu.value,
+                            onDishSelected: (menuId) {
+                              context.read<AddDishesCubit>().addActiveMenuId(
+                                menuId,
+                              );
+                            },
+                          ),
+                        ),
+                      )
+                      .toList() ??
+                  [],
+            ],
+          ),
+        );
+      },
+      listener: (context, state) {},
     );
   }
 }

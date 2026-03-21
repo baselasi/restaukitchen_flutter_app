@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/add_dishes_page.dart';
+import 'package:restaukitchen_app/page/order_combinations_form/bloc/add_dishes_cubit.dart';
 
 class DimensionsSelectionPage extends StatefulWidget {
   const DimensionsSelectionPage({super.key});
@@ -94,10 +95,15 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => AddDishesPage(
-                                      combination: state.combination,
-                                      selectedDimensionAssignmentId:
-                                          assignmentKey,
+                                    builder: (context) => BlocProvider(
+                                      create: (context) => AddDishesCubit(
+                                        combination: state.combination,
+                                      ),
+                                      child: AddDishesPage(
+                                        combination: state.combination,
+                                        selectedDimensionAssignmentId:
+                                            assignmentKey,
+                                      ),
                                     ),
                                   ),
                                 );

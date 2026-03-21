@@ -5,7 +5,14 @@ import 'package:restaukitchen_app/page/order_combinations_form/bloc/combination_
 
 class MenuCombinationSection extends StatefulWidget {
   final Menu menu;
-  const MenuCombinationSection({super.key, required this.menu});
+  final Function(String menuId) onDishSelected;
+  final bool isActive;
+  const MenuCombinationSection({
+    super.key,
+    required this.menu,
+    required this.onDishSelected,
+    required this.isActive,
+  });
 
   @override
   State<MenuCombinationSection> createState() => _MenuCombinationSectionState();
@@ -38,8 +45,10 @@ class _MenuCombinationSectionState extends State<MenuCombinationSection> {
             RadioGroup<int?>(
               groupValue: _selectedDishIndex,
               onChanged: (value) {
+                if (!widget.isActive) return;
                 setState(() {
                   _selectedDishIndex = value;
+                  widget.onDishSelected(widget.menu.id);
                 });
               },
               child: ConstrainedBox(
@@ -51,9 +60,9 @@ class _MenuCombinationSectionState extends State<MenuCombinationSection> {
                   itemCount: dishes.length,
                   itemBuilder: (context, index) {
                     final dish = dishes[index];
-                    return RadioListTile<int>(
+                    return RadioListTile<int?>(
                       dense: true,
-                      enabled: state.isActive,
+                      enabled: widget.isActive,
                       value: index,
                       contentPadding: EdgeInsets.zero,
                       title: Text(dish.name),

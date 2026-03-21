@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
+import 'package:restaukitchen_app/page/order_combinations_form/add_dishes_page.dart';
 
 class DimensionsSelectionPage extends StatefulWidget {
   const DimensionsSelectionPage({super.key});
@@ -90,6 +91,16 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                             child: ListTile(
                               onTap: () => setState(() {
                                 _selectedDimensionAssignmentId = assignmentKey;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddDishesPage(
+                                      combination: state.combination,
+                                      selectedDimensionAssignmentId:
+                                          assignmentKey,
+                                    ),
+                                  ),
+                                );
                               }),
                               leading: Radio<String>(value: assignmentKey),
                               title: Text(assignment.dimension.name),

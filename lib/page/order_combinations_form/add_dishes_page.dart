@@ -8,12 +8,12 @@ import 'package:restaukitchen_app/page/order_combinations_form/components/menu_c
 
 class AddDishesPage extends StatefulWidget {
   final Combination? combination;
-  final String? selectedDimensionAssignmentId;
+  final String? selectedDimensionId;
   final String? combinationId;
   const AddDishesPage({
     super.key,
     this.combination,
-    this.selectedDimensionAssignmentId,
+    this.selectedDimensionId,
     this.combinationId,
   });
 
@@ -28,31 +28,35 @@ class _AddDishesPageState extends State<AddDishesPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: DetailsAppBar(pageTitle: 'Add Dishes'),
-          body: Column(
-            children: [
-              ...widget.combination?.menuList
-                      .asMap()
-                      .entries
-                      .map(
-                        (menu) => BlocProvider(
-                          create: (context) =>
-                              CombinationMenuSectionCubit(menu: menu.value),
-                          child: MenuCombinationSection(
-                            isActive:
-                                state.activeMenuIds.contains(menu.value.id) ||
-                                menu.key == 0,
-                            menu: menu.value,
-                            onDishSelected: (menuId) {
-                              context.read<AddDishesCubit>().addActiveMenuId(
-                                menuId,
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                      .toList() ??
-                  [],
-            ],
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ...?widget.combination?.menuList.asMap().entries.map(
+                  (menu) => Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: BlocProvider(
+                      create: (context) =>
+                          CombinationMenuSectionCubit(menu: menu.value),
+                      child: MenuCombinationSection(
+                        selectedDimensionId:
+                            widget.selectedDimensionId,
+                        isActive:
+                            state.activeMenuIds.contains(menu.value.id) ||
+                            menu.key == 0,
+                        menu: menu.value,
+                        onDishSelected: (menuId) {
+                          context.read<AddDishesCubit>().addActiveMenuId(
+                            menuId,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

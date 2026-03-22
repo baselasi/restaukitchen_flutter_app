@@ -14,7 +14,7 @@ class DimensionsSelectionPage extends StatefulWidget {
 }
 
 class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
-  String? _selectedDimensionAssignmentId;
+  String? _selectedDimensionId;
 
   @override
   Widget build(BuildContext context) {
@@ -76,22 +76,22 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                     ),
                     const SizedBox(height: 12),
                     RadioGroup<String>(
-                      groupValue: _selectedDimensionAssignmentId,
+                      groupValue: _selectedDimensionId,
                       onChanged: (value) {
                         setState(() {
-                          _selectedDimensionAssignmentId = value;
+                          _selectedDimensionId = value;
                         });
                       },
                       child: Column(
                         children: assignments.map((assignment) {
-                          final assignmentKey = assignment.id;
+                          final assignmentKey = assignment.dimension.id;
                           final isSelected =
-                              _selectedDimensionAssignmentId == assignmentKey;
+                              _selectedDimensionId == assignmentKey;
                           return Card(
                             margin: const EdgeInsets.only(bottom: 8),
                             child: ListTile(
                               onTap: () => setState(() {
-                                _selectedDimensionAssignmentId = assignmentKey;
+                                _selectedDimensionId = assignmentKey;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -101,7 +101,7 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                                       ),
                                       child: AddDishesPage(
                                         combination: state.combination,
-                                        selectedDimensionAssignmentId:
+                                        selectedDimensionId:
                                             assignmentKey,
                                       ),
                                     ),

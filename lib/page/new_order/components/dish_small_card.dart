@@ -73,7 +73,7 @@ class _DishSmallCardState extends State<DishSmallCard>
         course: courseIndex,
       );
       context.read<NewOrderFormBloc>().add(
-        AddDishIndice(dishIndice: dishIndice, courseIndex: courseIndex),
+        AddDishIndice(courseIndice: dishIndice, courseIndex: courseIndex),
       );
     }
   }

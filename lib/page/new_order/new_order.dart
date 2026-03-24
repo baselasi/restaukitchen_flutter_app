@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
@@ -9,6 +10,7 @@ import 'package:restaukitchen_app/page/menusPage/components/menus_scroll_bar.dar
 import 'package:restaukitchen_app/page/new_order/components/combinations_small_card.dart';
 import 'package:restaukitchen_app/page/new_order/components/dish_small_card.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/menu_scroll_bar_cubit/menu_scroll_bar_cubit.dart';
+import 'package:restaukitchen_app/page/new_order/preview_order_page.dart';
 
 class NewOrder extends StatefulWidget {
   const NewOrder({super.key});
@@ -95,73 +97,84 @@ class _NewOrderState extends State<NewOrder> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: DetailsAppBar(pageTitle: "New Order"),
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-        child: BlocBuilder<NewOrderFormBloc, NewOrderFormState>(
-          builder: (context, state) {
-            final hasDishes = state.hasAnyIndicesInCourses();
-            final dishesCount = state.getTotalIndicesInCourses();
+    return BlocBuilder<NewOrderFormBloc, NewOrderFormState>(
+      builder: (context, formState) {
+        final hasItems = formState.hasAnyIndicesInCourses();
+        final dishesCount = formState.getTotalIndicesInCourses();
 
-            return PrimaryButton(
-              text: hasDishes ? 'Submit Order ($dishesCount)' : 'Submit Order',
-              isDisabled: !hasDishes,
-              onPressed: () {
-                context.read<NewOrderCubit>().createOrder(
-                  newOrderFormState: state,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Order submitted')),
-                );
-              },
-            );
-          },
-        ),
-      ),
-      body: BlocConsumer<MenuScrollBarCubit, MenuScrollBarState>(
-        builder: (context, state) {
-          return CustomScrollView(
-            slivers: [
-              if (state.status == MenuScrollBarStatus.success) ...[
-                SliverAppBar(
-                  pinned: true,
-                  floating: false,
-                  automaticallyImplyLeading: false,
-                  elevation: 10,
-                  backgroundColor: Colors.white,
-                  flexibleSpace: MenusScrollBar(
-                    menus: state.menuScrollBarItem,
-                    selectedMenuIndex: state.selectedMenuIndex,
-                    onMenuSelected: (index) {
-                      if (!state.menuScrollBarItem[index].isCombination) {
-                        context.read<MenuScrollBarCubit>().selectMenu(index);
-                      } else {
-                        context.read<MenuScrollBarCubit>().selectCombination(
-                          index,
-                        );
-                      }
-                    },
-                  ),
-                ),
-                SliverToBoxAdapter(child: SizedBox(height: 10)),
-                if (state.selectedMenu != null) _buildDishesList(state),
-                if (state.selectedMenu == null) _buildCombinationsList(state),
-              ],
-              if (state.status == MenuScrollBarStatus.loading)
-                SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-              // SliverAppBar (top bar)
-              if (state.status == MenuScrollBarStatus.error)
-                SliverFillRemaining(
-                  child: Center(child: Text(state.errorMessage!)),
-                ),
-            ],
-          );
-        },
-        listener: (context, state) {},
-      ),
+        return Scaffold(
+          appBar: DetailsAppBar(pageTitle: "New Order"),
+          floatingActionButton: hasItems
+              ? FloatingActionButton.extended(
+                  heroTag: 'new_order_preview_fab',
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      PageTransition(
+                        type: PageTransitionType.rightToLeft,
+                        child: BlocProvider.value(
+                          value: context.read<NewOrderFormBloc>(),
+                          child: const PreviewOrderPage(),
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.receipt_long_outlined),
+                  label: const Text('Preview order'),
+                )
+              : null,
+          floatingActionButtonLocation: hasItems
+              ? FloatingActionButtonLocation.centerFloat
+              : null,
+
+          body: BlocConsumer<MenuScrollBarCubit, MenuScrollBarState>(
+            builder: (context, state) {
+              return CustomScrollView(
+                slivers: [
+                  if (state.status == MenuScrollBarStatus.success) ...[
+                    SliverAppBar(
+                      pinned: true,
+                      floating: false,
+                      automaticallyImplyLeading: false,
+                      elevation: 10,
+                      backgroundColor: Colors.white,
+                      flexibleSpace: MenusScrollBar(
+                        menus: state.menuScrollBarItem,
+                        selectedMenuIndex: state.selectedMenuIndex,
+                        onMenuSelected: (index) {
+                          if (!state.menuScrollBarItem[index].isCombination) {
+                            context.read<MenuScrollBarCubit>().selectMenu(
+                              index,
+                            );
+                          } else {
+                            context
+                                .read<MenuScrollBarCubit>()
+                                .selectCombination(index);
+                          }
+                        },
+                      ),
+                    ),
+                    SliverToBoxAdapter(child: SizedBox(height: 10)),
+                    if (state.selectedMenu != null) _buildDishesList(state),
+                    if (state.selectedMenu == null)
+                      _buildCombinationsList(state),
+                    if (hasItems)
+                      const SliverToBoxAdapter(child: SizedBox(height: 80)),
+                  ],
+                  if (state.status == MenuScrollBarStatus.loading)
+                    SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  if (state.status == MenuScrollBarStatus.error)
+                    SliverFillRemaining(
+                      child: Center(child: Text(state.errorMessage!)),
+                    ),
+                ],
+              );
+            },
+            listener: (context, state) {},
+          ),
+        );
+      },
     );
   }
 }

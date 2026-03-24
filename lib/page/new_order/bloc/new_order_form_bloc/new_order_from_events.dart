@@ -27,11 +27,11 @@ class UpdateCourse extends NewOrderFormEvent {
 }
 
 class AddDishIndice extends NewOrderFormEvent {
-  final CourseIndice dishIndice;
+  final CourseIndice courseIndice;
   final int courseIndex;
-  AddDishIndice({required this.dishIndice, required this.courseIndex});
+  AddDishIndice({required this.courseIndice, required this.courseIndex});
   @override
-  List<Object?> get props => [dishIndice, courseIndex];
+  List<Object?> get props => [courseIndice, courseIndex];
 }
 
 class RemoveDishIndice extends NewOrderFormEvent {

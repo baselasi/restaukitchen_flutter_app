@@ -6,7 +6,6 @@ import 'package:restaukitchen_app/page/combination_page/models/menu_combination.
 import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_from_events.dart';
-import 'package:restaukitchen_app/page/new_order/components/add_combination_dialog.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/dimensions_selection_page.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
@@ -22,7 +21,6 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
-  bool _isDialogOpen = false;
 
   @override
   void initState() {
@@ -53,7 +51,10 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
         .currentCourseIndex;
     for (final combinationIndice in combinationIndices) {
       context.read<NewOrderFormBloc>().add(
-        AddDishIndice(dishIndice: combinationIndice, courseIndex: courseIndex),
+        AddDishIndice(
+          courseIndice: combinationIndice,
+          courseIndex: courseIndex,
+        ),
       );
     }
   }
@@ -139,15 +140,5 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
         ),
       ),
     );
-  }
-
-  Future<void> _openDialog() async {
-    if (_isDialogOpen) return;
-    _isDialogOpen = true;
-    try {
-      // await showAddCombinationDialog(context, widget.combination.id);
-    } finally {
-      _isDialogOpen = false;
-    }
   }
 }

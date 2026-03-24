@@ -4,8 +4,11 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/combination_page/models/menu_combination.dart';
 import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_from_events.dart';
 import 'package:restaukitchen_app/page/new_order/components/add_combination_dialog.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/dimensions_selection_page.dart';
+import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
 class CombinationsSmallCard extends StatefulWidget {
   final MenuCombination combination;
@@ -41,6 +44,20 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
     super.dispose();
   }
 
+  Future<void> _saveCombination(
+    List<CombinationIndice> combinationIndices,
+  ) async {
+    final courseIndex = context
+        .read<NewOrderFormBloc>()
+        .state
+        .currentCourseIndex;
+    for (final combinationIndice in combinationIndices) {
+      context.read<NewOrderFormBloc>().add(
+        AddDishIndice(dishIndice: combinationIndice, courseIndex: courseIndex),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -54,17 +71,28 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
         elevation: 2,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
-          onTap: () {
-            Navigator.of(context).push(
-            PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: BlocProvider(
-                create: (context) => CombinationGetCubit(
-                  combinationPageRepo: CombinationPageRepo(),
-                )..getCombination(widget.combination.id),
-                child: DimensionsSelectionPage(),
+          onTap: () async {
+            final result = await Navigator.of(context).push(
+              PageTransition(
+                type: PageTransitionType.rightToLeft,
+                child: BlocProvider(
+                  create: (context) => CombinationGetCubit(
+                    combinationPageRepo: CombinationPageRepo(),
+                  )..getCombination(widget.combination.id),
+                  child: DimensionsSelectionPage(),
+                ),
               ),
-            ));
+            );
+            // final courseIndex = context
+            //     .read<NewOrderFormBloc>()
+            //     .state
+            //     .currentCourseIndex;
+            // context.read<NewOrderFormBloc>().add(
+            //   AddDishIndice(dishIndice: result, courseIndex: courseIndex),
+            // );
+            if (result != null) {
+              _saveCombination(result);
+            }
           },
           borderRadius: BorderRadius.circular(12),
           child: Stack(

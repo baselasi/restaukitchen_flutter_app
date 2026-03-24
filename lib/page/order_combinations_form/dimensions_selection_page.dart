@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/core/models/dimesnion_assignment.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/add_dishes_page.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/bloc/add_dishes_cubit.dart';
@@ -15,6 +17,45 @@ class DimensionsSelectionPage extends StatefulWidget {
 
 class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
   String? _selectedDimensionId;
+
+  Future<void> _navigateToAddDishesPage(
+    String dimensionId,
+    CombinationGetState state,
+    DimensionAssignment assignment,
+    String assignmentKey,
+  ) async {
+    final result = await Navigator.of(context).push(
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: BlocProvider(
+          create: (context) => AddDishesCubit(combination: state.combination),
+          child: AddDishesPage(
+            combination: state.combination,
+            price: assignment.price,
+            selectedDimensionId: assignmentKey,
+            combinationDimension: assignment.dimension,
+          ),
+        ),
+      ),
+    );
+    // final result = await Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => BlocProvider(
+    //       create: (context) => AddDishesCubit(combination: state.combination),
+    //       child: AddDishesPage(
+    //         combination: state.combination,
+    //         price: assignment.price,
+    //         selectedDimensionId: assignmentKey,
+    //         combinationDimension: assignment.dimension,
+    //       ),
+    //     ),
+    //   ),
+    // );
+    if (result != null && mounted) {
+      Navigator.pop(context, result);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,22 +133,11 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                             child: ListTile(
                               onTap: () => setState(() {
                                 _selectedDimensionId = assignmentKey;
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => BlocProvider(
-                                      create: (context) => AddDishesCubit(
-                                        combination: state.combination,
-                                      ),
-                                      child: AddDishesPage(
-                                        combination: state.combination,
-                                        price: assignment.price,
-                                        selectedDimensionId: assignmentKey,
-                                        combinationDimension:
-                                            assignment.dimension,
-                                      ),
-                                    ),
-                                  ),
+                                _navigateToAddDishesPage(
+                                  _selectedDimensionId ?? '',
+                                  state,
+                                  assignment,
+                                  assignmentKey ?? '',
                                 );
                               }),
                               leading: Radio<String>(

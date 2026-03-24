@@ -101,14 +101,18 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                                       ),
                                       child: AddDishesPage(
                                         combination: state.combination,
-                                        selectedDimensionId:
-                                            assignmentKey,
+                                        price: assignment.price,
+                                        selectedDimensionId: assignmentKey,
+                                        combinationDimension:
+                                            assignment.dimension,
                                       ),
                                     ),
                                   ),
                                 );
                               }),
-                              leading: Radio<String>(value: assignmentKey),
+                              leading: Radio<String>(
+                                value: assignmentKey ?? '',
+                              ),
                               title: Text(assignment.dimension.name),
                               subtitle: Row(
                                 children: [

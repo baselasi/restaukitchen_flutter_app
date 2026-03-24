@@ -99,7 +99,7 @@ class _MenuCombinationSectionState extends State<MenuCombinationSection> {
             if (state.selectedDish != null && availableIngredients.isNotEmpty)
               MenuIngredientsList(
                 ingredients: availableIngredients,
-                quantities: state.ingredientQuantities,
+                ingredientSelections: state.ingredientSelections,
               ),
           ],
         );
@@ -115,13 +115,14 @@ class MenuIngredientsList extends StatelessWidget {
   const MenuIngredientsList({
     super.key,
     required this.ingredients,
-    required this.quantities,
+    required this.ingredientSelections,
   });
 
   final List<Ingredient> ingredients;
-  final Map<String, int> quantities;
+  final Map<String, IngredientSelection> ingredientSelections;
 
-  static String ingredientKey(Ingredient ingredient, int index) {
+  /// Map key: ingredient id when present, else stable fallback per row.
+  static String ingredientIdKey(Ingredient ingredient, int index) {
     if (ingredient.id != null && ingredient.id!.isNotEmpty) {
       return ingredient.id!;
     }
@@ -146,13 +147,17 @@ class MenuIngredientsList extends StatelessWidget {
             ),
           _MenuIngredientTile(
             ingredient: ingredients[i],
-            quantity: quantities[ingredientKey(ingredients[i], i)] ?? 0,
+            quantity:
+                ingredientSelections[ingredientIdKey(ingredients[i], i)]
+                    ?.quantity ??
+                0,
             priceLabel: _ingredientExtraPriceLabel(ingredients[i]),
             onIncrement: () => cubit.incrementIngredientQuantity(
-              ingredientKey(ingredients[i], i),
+              ingredientIdKey(ingredients[i], i),
+              ingredients[i],
             ),
             onDecrement: () => cubit.decrementIngredientQuantity(
-              ingredientKey(ingredients[i], i),
+              ingredientIdKey(ingredients[i], i),
             ),
           ),
         ],

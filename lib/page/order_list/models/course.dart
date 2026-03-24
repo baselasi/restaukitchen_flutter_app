@@ -125,7 +125,7 @@ class DishIndice extends CourseIndice {
 }
 
 class CombinationIndice extends CourseIndice {
-  final String id;
+  final String? id;
   final int course;
   final String combinationId;
   final List<DishesWithIngredients> dishesWithIngredients;
@@ -135,7 +135,7 @@ class CombinationIndice extends CourseIndice {
   final int combinationQuantity;
 
   const CombinationIndice({
-    required this.id,
+    this.id,
     required this.course,
     required this.combinationId,
     required this.dishesWithIngredients,
@@ -195,14 +195,14 @@ class CombinationIndice extends CourseIndice {
 }
 
 class DishesWithIngredients extends Equatable {
-  final String id;
+  final String? id;
   final String dishId;
   final String dishName;
   final List<String> ingredientsId;
   final List<String> ingredientsName;
 
   const DishesWithIngredients({
-    required this.id,
+    this.id,
     required this.dishId,
     required this.dishName,
     required this.ingredientsId,

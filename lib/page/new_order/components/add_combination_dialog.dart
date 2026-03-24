@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/models/dimesnion_assignment.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
-import 'package:restaukitchen_app/page/combination_page/models/menu_combination.dart';
 import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
 import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
 
@@ -47,7 +47,7 @@ class _AddCombinationDialogBodyState extends State<_AddCombinationDialogBody> {
 
   String _assignmentKey(DimensionAssignment assignment) {
     if (assignment.id.isNotEmpty) return assignment.id;
-    if (assignment.dimension.id.isNotEmpty) return assignment.dimension.id;
+    if (assignment.dimension.id?.isNotEmpty ?? false) return assignment.dimension.id!;
     return assignment.dimension.name;
   }
 

@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
-import 'package:restaukitchen_app/core/components/form/primary_button.dart';
-import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
 import 'package:restaukitchen_app/page/menusPage/components/menus_scroll_bar.dart';
 import 'package:restaukitchen_app/page/new_order/components/combinations_small_card.dart';
 import 'package:restaukitchen_app/page/new_order/components/dish_small_card.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/menu_scroll_bar_cubit/menu_scroll_bar_cubit.dart';
-import 'package:restaukitchen_app/page/new_order/preview_order_page.dart';
+import 'package:restaukitchen_app/page/preview_order/preview_order_page.dart';
 
 class NewOrder extends StatefulWidget {
   const NewOrder({super.key});

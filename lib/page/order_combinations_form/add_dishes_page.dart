@@ -62,21 +62,19 @@ class _AddDishesPageState extends State<AddDishesPage> {
     if (!_canSaveOrder) return;
     final menuSectionStates = _sectionCubits.map((c) => c.state).toList();
     List<CombinationIndice> combinationIndices = [];
-    for (int i = 0; i < menuSectionStates.length; i++) {
-      final state = menuSectionStates[i];
-      if (state.selectedDish != null) {
-        combinationIndices.add(
-          CombinationIndice(
-            combinationId: widget.combination!.id,
-            combinationQuantity: _quantity,
-            combinationDimensionId: widget.selectedDimensionId!,
-            combinationDimensionName: widget.combinationDimension.name,
-            combinationPrice: widget.price ?? 0,
-            dishesWithIngredients: _getDishesWithIngredients(menuSectionStates),
-            course: 0,
-          ),
-        );
-      }
+    final state = menuSectionStates.first;
+    if (state.selectedDish != null) {
+      combinationIndices.add(
+        CombinationIndice(
+          combinationId: widget.combination!.id,
+          combinationQuantity: _quantity,
+          combinationDimensionId: widget.selectedDimensionId!,
+          combinationDimensionName: widget.combinationDimension.name,
+          combinationPrice: widget.price ?? 0,
+          dishesWithIngredients: _getDishesWithIngredients(menuSectionStates),
+          course: 0,
+        ),
+      );
     }
     Navigator.pop(context, combinationIndices);
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
@@ -18,6 +20,20 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Preview Order')),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: PrimaryButton(
+            text: 'Create Order',
+            onPressed: () {
+              context.read<NewOrderCubit>().createOrder(
+                newOrderFormState: context.read<NewOrderFormBloc>().state,
+              );
+            },
+          ),
+        ),
+      ),
       body: BlocConsumer<NewOrderFormBloc, NewOrderFormState>(
         builder: (context, state) {
           final indices = state.courses.expand((c) => c.disheIndices).toList();

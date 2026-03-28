@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
 import 'package:restaukitchen_app/page/menusPage/components/menus_scroll_bar.dart';
@@ -98,7 +99,6 @@ class _NewOrderState extends State<NewOrder> {
     return BlocBuilder<NewOrderFormBloc, NewOrderFormState>(
       builder: (context, formState) {
         final hasItems = formState.hasAnyIndicesInCourses();
-        final dishesCount = formState.getTotalIndicesInCourses();
 
         return Scaffold(
           appBar: DetailsAppBar(pageTitle: "New Order"),
@@ -109,8 +109,15 @@ class _NewOrderState extends State<NewOrder> {
                     Navigator.of(context).push(
                       PageTransition(
                         type: PageTransitionType.rightToLeft,
-                        child: BlocProvider.value(
-                          value: context.read<NewOrderFormBloc>(),
+                        child: MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(
+                              value: context.read<NewOrderFormBloc>(),
+                            ),
+                            BlocProvider.value(
+                              value: context.read<NewOrderCubit>(),
+                            ),
+                          ],
                           child: const PreviewOrderPage(),
                         ),
                       ),

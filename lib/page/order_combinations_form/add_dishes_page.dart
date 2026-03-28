@@ -66,6 +66,7 @@ class _AddDishesPageState extends State<AddDishesPage> {
     if (state.selectedDish != null) {
       combinationIndices.add(
         CombinationIndice(
+          combinationName: widget.combination!.name,
           combinationId: widget.combination!.id,
           combinationQuantity: _quantity,
           combinationDimensionId: widget.selectedDimensionId!,

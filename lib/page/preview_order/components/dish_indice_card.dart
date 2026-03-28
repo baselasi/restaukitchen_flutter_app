@@ -1,37 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
-/// Line item card for a combination: combination name as title, dishes with ingredients below.
-class CombinationIndiceCard extends StatefulWidget {
-  final CombinationIndice combinationIndice;
+/// Line item card for a single dish: name as title, optional dimension, dishes + ingredients.
+class DishIndiceCard extends StatefulWidget {
+  final DishIndice dishIndice;
   final VoidCallback? onDelete;
   final VoidCallback? onEdit;
   final ValueChanged<int>? onQuantityChanged;
 
-  /// Shown as a yellow badge when non-null/non-empty (e.g. prep time).
+  /// Shown as a badge when non-null/non-empty (e.g. prep time).
   final String? urgencyLabel;
 
-  /// Shown as yellow italic note when non-null/non-empty.
-  final String? note;
-
-  const CombinationIndiceCard({
+  const DishIndiceCard({
     super.key,
-    required this.combinationIndice,
+    required this.dishIndice,
     this.onDelete,
     this.onEdit,
     this.onQuantityChanged,
     this.urgencyLabel,
-    this.note,
   });
 
   @override
-  State<CombinationIndiceCard> createState() => _CombinationIndiceCardState();
+  State<DishIndiceCard> createState() => _DishIndiceCardState();
 }
 
-class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
-  /// Soft cool gray — reads clearly on white scaffold backgrounds.
+class _DishIndiceCardState extends State<DishIndiceCard> {
   static const Color _cardBg = Color(0xFFF3F4F6);
   static const Color _titleColor = Color(0xFF111827);
+  static const Color _subtitleColor = Color(0xFF6B7280);
   static const Color _dishNameColor = Color(0xFF1F2937);
   static const Color _ingredientsColor = Color(0xFF6B7280);
   static const Color _divider = Color(0xFFE5E7EB);
@@ -43,25 +39,43 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
   @override
   void initState() {
     super.initState();
-    _quantity = widget.combinationIndice.combinationQuantity;
+    _quantity = widget.dishIndice.dishQuantity;
   }
 
   @override
-  void didUpdateWidget(covariant CombinationIndiceCard oldWidget) {
+  void didUpdateWidget(covariant DishIndiceCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.combinationIndice.combinationQuantity !=
-        widget.combinationIndice.combinationQuantity) {
-      _quantity = widget.combinationIndice.combinationQuantity;
+    if (oldWidget.dishIndice.dishQuantity != widget.dishIndice.dishQuantity) {
+      _quantity = widget.dishIndice.dishQuantity;
     }
   }
 
+  String get _primaryTitle {
+    final d = widget.dishIndice;
+    return d.dishName?.trim().isNotEmpty == true
+        ? d.dishName!.trim()
+        : (d.dishDimensionName?.trim().isNotEmpty == true
+              ? d.dishDimensionName!.trim()
+              : 'Dish');
+  }
+
+  bool get _showDimensionSubtitle {
+    final d = widget.dishIndice;
+    final name = d.dishName?.trim();
+    final dim = d.dishDimensionName?.trim();
+    if (name == null || name.isEmpty || dim == null || dim.isEmpty) {
+      return false;
+    }
+    return name != dim;
+  }
+
   List<Widget> _buildDishBlocks() {
-    final dishes = widget.combinationIndice.dishesWithIngredients;
+    final dishes = widget.dishIndice.dishesWithIngredients ?? const [];
     if (dishes.isEmpty) return const [];
 
     final children = <Widget>[];
     for (var i = 0; i < dishes.length; i++) {
-      final d = dishes[i];
+      final dish = dishes[i];
       if (i > 0) {
         children.add(const SizedBox(height: 12));
       }
@@ -70,7 +84,7 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              d.dishName,
+              dish.dishName,
               style: const TextStyle(
                 color: _dishNameColor,
                 fontSize: 14,
@@ -78,10 +92,10 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                 height: 1.3,
               ),
             ),
-            if (d.ingredientsName.isNotEmpty) ...[
+            if (dish.ingredientsName.isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(
-                d.ingredientsName.join(', '),
+                dish.ingredientsName.join(', '),
                 style: const TextStyle(
                   color: _ingredientsColor,
                   fontSize: 13,
@@ -109,9 +123,14 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
     final iconMuted = _iconColor;
 
     final urgency = widget.urgencyLabel?.trim();
-    final note = widget.note?.trim();
+    final note = widget.dishIndice.note?.trim();
     final showMeta = (urgency != null && urgency.isNotEmpty) ||
         (note != null && note.isNotEmpty);
+
+    final price = widget.dishIndice.dishPrice;
+    final priceText = price != null ? '\$${price.toStringAsFixed(2)}' : '—';
+
+    final hasBlocks = (widget.dishIndice.dishesWithIngredients ?? []).isNotEmpty;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
@@ -138,18 +157,34 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: Text(
-                              widget.combinationIndice.combinationName,
-                              style: const TextStyle(
-                                color: _titleColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _primaryTitle,
+                                  style: const TextStyle(
+                                    color: _titleColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                if (_showDimensionSubtitle) ...[
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    widget.dishIndice.dishDimensionName!,
+                                    style: const TextStyle(
+                                      color: _subtitleColor,
+                                      fontSize: 13,
+                                      height: 1.25,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '\$${widget.combinationIndice.combinationPrice.toStringAsFixed(2)}',
+                            priceText,
                             style: TextStyle(
                               color: primary,
                               fontSize: 16,
@@ -158,8 +193,7 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                           ),
                         ],
                       ),
-                      if (widget.combinationIndice.dishesWithIngredients
-                          .isNotEmpty) ...[
+                      if (hasBlocks) ...[
                         const SizedBox(height: 10),
                         ..._buildDishBlocks(),
                       ],

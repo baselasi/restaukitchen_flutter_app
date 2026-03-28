@@ -256,21 +256,6 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                               size: 22,
                             ),
                           ),
-                          IconButton(
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(
-                              minWidth: 40,
-                              minHeight: 40,
-                            ),
-                            onPressed: widget.onEdit,
-                            icon: Icon(
-                              Icons.edit_outlined,
-                              color: iconMuted,
-                              size: 22,
-                            ),
-                          ),
-                          const Spacer(),
                           DecoratedBox(
                             decoration: BoxDecoration(
                               color: _qtyTrayBg,

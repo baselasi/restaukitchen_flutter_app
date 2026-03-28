@@ -24,6 +24,9 @@ class NewOrderFormBloc extends Bloc<NewOrderFormEvent, NewOrderFormState> {
     on<UpdateCourse>((event, emit) {
       _onUpdateCourse(event, emit);
     });
+    on<SetCurrentCourseIndex>((event, emit) {
+      emit(state.copyWith(currentCourseIndex: event.courseIndex));
+    });
     on<AddDishIndice>((event, emit) {
       _onAddDishIndice(event, emit);
     });
@@ -69,7 +72,12 @@ class NewOrderFormBloc extends Bloc<NewOrderFormEvent, NewOrderFormState> {
     RemoveDishIndice event,
     Emitter<NewOrderFormState> emit,
   ) {
-   
+    final updatedCourses = List<Course>.from(state.courses);
+    final currentCourse = updatedCourses[event.courseIndex];
+    final updatedIndices = List<CourseIndice>.from(currentCourse.disheIndices)
+      ..removeAt(event.dishIndiceIndex);
+    updatedCourses[event.courseIndex] = Course(disheIndices: updatedIndices);
+    emit(state.copyWith(courses: updatedCourses));
   }
 
   void _onDeleteDishIndice(

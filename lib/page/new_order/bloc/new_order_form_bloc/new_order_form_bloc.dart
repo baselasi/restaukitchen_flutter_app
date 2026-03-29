@@ -97,8 +97,13 @@ class NewOrderFormBloc extends Bloc<NewOrderFormEvent, NewOrderFormState> {
     UpdateDishIndice event,
     Emitter<NewOrderFormState> emit,
   ) {
-    // final courses = state.courses;
-    // courses[event.courseIndex].disheIndices[event.dishIndiceIndex] = event.dishIndice;
-    // emit(state.copyWith(courses: courses));
+    final updatedCourses = List<Course>.from(state.courses);
+    final currentCourse = updatedCourses[event.courseIndex];
+    final updatedIndices = List<CourseIndice>.from(currentCourse.disheIndices)
+      ..replaceRange(event.dishIndiceIndex, event.dishIndiceIndex + 1, [
+        event.dishIndice,
+      ]);
+    updatedCourses[event.courseIndex] = Course(disheIndices: updatedIndices);
+    emit(state.copyWith(courses: updatedCourses));
   }
 }

@@ -42,21 +42,14 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
     super.dispose();
   }
 
-  Future<void> _saveCombination(
-    List<CombinationIndice> combinationIndices,
-  ) async {
+  Future<void> _saveCombination(CombinationIndice combinationIndice) async {
     final courseIndex = context
         .read<NewOrderFormBloc>()
         .state
         .currentCourseIndex;
-    for (final combinationIndice in combinationIndices) {
-      context.read<NewOrderFormBloc>().add(
-        AddDishIndice(
-          courseIndice: combinationIndice,
-          courseIndex: courseIndex,
-        ),
-      );
-    }
+    context.read<NewOrderFormBloc>().add(
+      AddDishIndice(courseIndice: combinationIndice, courseIndex: courseIndex),
+    );
   }
 
   @override

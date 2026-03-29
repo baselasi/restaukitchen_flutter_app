@@ -21,37 +21,27 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
   Future<void> _navigateToAddDishesPage(
     String dimensionId,
     CombinationGetState state,
-    DimensionAssignment assignment,
-    String assignmentKey,
+    DimensionAssignment dimensionAssignment,
   ) async {
     final result = await Navigator.of(context).push(
       PageTransition(
         type: PageTransitionType.rightToLeft,
-        child: BlocProvider(
-          create: (context) => AddDishesCubit(combination: state.combination),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  AddDishesCubit(combination: state.combination),
+            ),
+            BlocProvider.value(value: context.read<CombinationGetCubit>()),
+          ],
           child: AddDishesPage(
             combination: state.combination,
-            price: assignment.price,
-            selectedDimensionId: assignmentKey,
-            combinationDimension: assignment.dimension,
+            price: dimensionAssignment.price,
+            combinationDimension: dimensionAssignment.dimension,
           ),
         ),
       ),
     );
-    // final result = await Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => BlocProvider(
-    //       create: (context) => AddDishesCubit(combination: state.combination),
-    //       child: AddDishesPage(
-    //         combination: state.combination,
-    //         price: assignment.price,
-    //         selectedDimensionId: assignmentKey,
-    //         combinationDimension: assignment.dimension,
-    //       ),
-    //     ),
-    //   ),
-    // );
     if (result != null && mounted) {
       Navigator.pop(context, result);
     }
@@ -124,8 +114,8 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                         });
                       },
                       child: Column(
-                        children: assignments.map((assignment) {
-                          final assignmentKey = assignment.dimension.id;
+                        children: assignments.map((dimensionAssgnment) {
+                          final assignmentKey = dimensionAssgnment.dimension.id;
                           final isSelected =
                               _selectedDimensionId == assignmentKey;
                           return Card(
@@ -136,19 +126,18 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                                 _navigateToAddDishesPage(
                                   _selectedDimensionId ?? '',
                                   state,
-                                  assignment,
-                                  assignmentKey ?? '',
+                                  dimensionAssgnment,
                                 );
                               }),
                               leading: Radio<String>(
                                 value: assignmentKey ?? '',
                               ),
-                              title: Text(assignment.dimension.name),
+                              title: Text(dimensionAssgnment.dimension.name),
                               subtitle: Row(
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      'Price: ${assignment.price.toStringAsFixed(2)}',
+                                      'Price: ${dimensionAssgnment.price.toStringAsFixed(2)}',
                                     ),
                                   ),
                                 ],

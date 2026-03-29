@@ -34,8 +34,22 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
       );
     }
 
+    void onEdit(CourseIndice updatedItem) {
+      context.read<NewOrderFormBloc>().add(
+        UpdateDishIndice(
+          courseIndex: courseIndex,
+          dishIndiceIndex: dishIndiceIndex,
+          dishIndice: updatedItem,
+        ),
+      );
+    }
+
     if (item is CombinationIndice) {
-      return CombinationIndiceCard(combinationIndice: item, onDelete: remove);
+      return CombinationIndiceCard(
+        combinationIndice: item,
+        onDelete: remove,
+        onEdit: onEdit,
+      );
     }
     if (item is DishIndice) {
       return DishIndiceCard(dishIndice: item, onDelete: remove);
@@ -138,7 +152,11 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              for (var courseIndex = 0; courseIndex < courses.length; courseIndex++) ...[
+              for (
+                var courseIndex = 0;
+                courseIndex < courses.length;
+                courseIndex++
+              ) ...[
                 if (courseIndex > 0) const SizedBox(height: 24),
                 _courseSection(
                   context,
@@ -169,10 +187,7 @@ class _CreateNewCourseCard extends StatelessWidget {
   final Color accentColor;
   final VoidCallback onTap;
 
-  const _CreateNewCourseCard({
-    required this.accentColor,
-    required this.onTap,
-  });
+  const _CreateNewCourseCard({required this.accentColor, required this.onTap});
 
   static const double _radius = 12;
 
@@ -206,11 +221,7 @@ class _CreateNewCourseCard extends StatelessWidget {
                     color: accentColor,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 28,
-                  ),
+                  child: Icon(Icons.add, color: Colors.white, size: 28),
                 ),
                 const SizedBox(height: 14),
                 Text(
@@ -234,10 +245,7 @@ class _DashedRoundedRectPainter extends CustomPainter {
   final Color color;
   final double borderRadius;
 
-  _DashedRoundedRectPainter({
-    required this.color,
-    required this.borderRadius,
-  });
+  _DashedRoundedRectPainter({required this.color, required this.borderRadius});
 
   @override
   void paint(Canvas canvas, Size size) {

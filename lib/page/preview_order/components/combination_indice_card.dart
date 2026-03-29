@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
+import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
+import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
+import 'package:restaukitchen_app/page/order_combinations_form/add_dishes_page.dart';
+import 'package:restaukitchen_app/page/order_combinations_form/bloc/add_dishes_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
 /// Line item card for a combination: combination name as title, dishes with ingredients below.
 class CombinationIndiceCard extends StatefulWidget {
   final CombinationIndice combinationIndice;
   final VoidCallback? onDelete;
-  final VoidCallback? onEdit;
+  final Function(CombinationIndice)? onEdit;
   final ValueChanged<int>? onQuantityChanged;
 
   /// Shown as a yellow badge when non-null/non-empty (e.g. prep time).
@@ -100,6 +107,40 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
     if (next < 1) return;
     setState(() => _quantity = next);
     widget.onQuantityChanged?.call(next);
+  }
+
+  void _onEdit() async {
+    final result = await Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => CombinationGetCubit(
+                combinationPageRepo: CombinationPageRepo(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => AddDishesCubit(combination: null),
+            ),
+          ],
+          child: AddDishesPage(
+            price: widget.combinationIndice.combinationPrice,
+            combinationId: widget.combinationIndice.combinationId,
+            combinationDimension: Dimension(
+              name: widget.combinationIndice.combinationDimensionName,
+              id: widget.combinationIndice.combinationDimensionId,
+              standard: false,
+            ),
+            combinationIndice: widget.combinationIndice,
+          ),
+        ),
+      ),
+    );
+    if (result != null) {
+      widget.onEdit?.call(result);
+    }
   }
 
   @override
@@ -225,6 +266,22 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                             onPressed: widget.onDelete,
                             icon: Icon(
                               Icons.delete_outline_rounded,
+                              color: iconMuted,
+                              size: 22,
+                            ),
+                          ),
+                          IconButton(
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(
+                              minWidth: 40,
+                              minHeight: 40,
+                            ),
+                            onPressed: () {
+                              _onEdit();
+                            },
+                            icon: Icon(
+                              Icons.edit_outlined,
                               color: iconMuted,
                               size: 22,
                             ),

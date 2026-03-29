@@ -10,6 +10,10 @@ class AddDishesCubit extends Cubit<AddDishesState> {
         AddDishesState(menus: combination?.menuList ?? [], activeMenuIds: []),
       );
 
+  void addMenus(List<Menu> menus) {
+    emit(state.copyWith(menus: menus, activeMenuIds: state.activeMenuIds));
+  }
+
   void addActiveMenuId(String currentMenuId) {
     final menuIndex = state.menus.indexWhere(
       (menu) => menu.id == currentMenuId,
@@ -31,8 +35,14 @@ class AddDishesState extends Equatable {
   activeMenuIds; // ids of the menus that have selected dishes
   const AddDishesState({required this.menus, this.activeMenuIds = const []});
 
-  AddDishesState copyWith({required List<String> activeMenuIds}) {
-    return AddDishesState(menus: menus, activeMenuIds: activeMenuIds);
+  AddDishesState copyWith({
+    List<Menu>? menus,
+    required List<String> activeMenuIds,
+  }) {
+    return AddDishesState(
+      menus: menus ?? this.menus,
+      activeMenuIds: activeMenuIds,
+    );
   }
 
   @override

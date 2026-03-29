@@ -3,18 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
 import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/bloc/combination_menu_section_cubit/combination_menu_section_cubit.dart';
+import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
 class MenuCombinationSection extends StatefulWidget {
   final Menu menu;
   final String? selectedDimensionId;
   final Function(String menuId) onDishSelected;
   final bool isActive;
+  final DishesWithIngredients? dishesWithIngredients;
   const MenuCombinationSection({
     super.key,
     required this.menu,
     required this.selectedDimensionId,
     required this.onDishSelected,
     required this.isActive,
+    this.dishesWithIngredients,
   });
 
   @override
@@ -23,6 +26,20 @@ class MenuCombinationSection extends StatefulWidget {
 
 class _MenuCombinationSectionState extends State<MenuCombinationSection> {
   int? _selectedDishIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.dishesWithIngredients != null) {
+      context.read<CombinationMenuSectionCubit>().initialize(
+        widget.dishesWithIngredients!,
+      );
+      widget.onDishSelected(widget.menu.id);
+      _selectedDishIndex = widget.menu.dishes.indexWhere(
+        (dish) => dish.id == widget.dishesWithIngredients!.dishId,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

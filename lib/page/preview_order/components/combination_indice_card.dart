@@ -110,7 +110,8 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
 
     final urgency = widget.urgencyLabel?.trim();
     final note = widget.note?.trim();
-    final showMeta = (urgency != null && urgency.isNotEmpty) ||
+    final showMeta =
+        (urgency != null && urgency.isNotEmpty) ||
         (note != null && note.isNotEmpty);
 
     return ClipRRect(
@@ -158,7 +159,9 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                           ),
                         ],
                       ),
-                      if (widget.combinationIndice.dishesWithIngredients
+                      if (widget
+                          .combinationIndice
+                          .dishesWithIngredients
                           .isNotEmpty) ...[
                         const SizedBox(height: 10),
                         ..._buildDishBlocks(),
@@ -204,7 +207,11 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                       ],
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
-                        child: Divider(height: 1, thickness: 1, color: _divider),
+                        child: Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: _divider,
+                        ),
                       ),
                       Row(
                         children: [
@@ -218,20 +225,6 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                             onPressed: widget.onDelete,
                             icon: Icon(
                               Icons.delete_outline_rounded,
-                              color: iconMuted,
-                              size: 22,
-                            ),
-                          ),
-                          IconButton(
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(
-                              minWidth: 40,
-                              minHeight: 40,
-                            ),
-                            onPressed: widget.onEdit,
-                            icon: Icon(
-                              Icons.edit_outlined,
                               color: iconMuted,
                               size: 22,
                             ),

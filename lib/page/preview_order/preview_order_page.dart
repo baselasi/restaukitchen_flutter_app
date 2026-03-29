@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
@@ -41,6 +43,64 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
     return const SizedBox.shrink();
   }
 
+  Widget _courseSection(
+    BuildContext context,
+    ThemeData theme,
+    Course course,
+    int courseIndex,
+  ) {
+    final indices = course.disheIndices;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                'Course ${courseIndex + 1}',
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+            PrimaryButton(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              isFullWidth: false,
+              text: 'Add dish',
+              onPressed: () {
+                context.read<NewOrderFormBloc>().add(
+                  SetCurrentCourseIndex(courseIndex: courseIndex),
+                );
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (indices.isEmpty)
+          Text(
+            'No dishes in this course',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.outline,
+            ),
+          )
+        else
+          ...indices.asMap().entries.map((entry) {
+            final dishIndiceIndex = entry.key;
+            final item = entry.value;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _indiceCard(
+                context,
+                item,
+                courseIndex: courseIndex,
+                dishIndiceIndex: dishIndiceIndex,
+              ),
+            );
+          }),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,69 +133,145 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
             );
           }
 
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: courses.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 24),
-            itemBuilder: (context, courseIndex) {
-              final course = courses[courseIndex];
-              final indices = course.disheIndices;
-              final theme = Theme.of(context);
+          final theme = Theme.of(context);
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Course ${courseIndex + 1}',
-                          style: theme.textTheme.titleMedium,
-                        ),
-                      ),
-                      PrimaryButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        isFullWidth: false,
-                        text: 'Add dish',
-                        onPressed: () {
-                          context.read<NewOrderFormBloc>().add(
-                            SetCurrentCourseIndex(courseIndex: courseIndex),
-                          );
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  if (indices.isEmpty)
-                    Text(
-                      'No dishes in this course',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.outline,
-                      ),
-                    )
-                  else
-                    ...indices.asMap().entries.map((entry) {
-                      final dishIndiceIndex = entry.key;
-                      final item = entry.value;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _indiceCard(
-                          context,
-                          item,
-                          courseIndex: courseIndex,
-                          dishIndiceIndex: dishIndiceIndex,
-                        ),
-                      );
-                    }),
-                ],
-              );
-            },
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              for (var courseIndex = 0; courseIndex < courses.length; courseIndex++) ...[
+                if (courseIndex > 0) const SizedBox(height: 24),
+                _courseSection(
+                  context,
+                  theme,
+                  courses[courseIndex],
+                  courseIndex,
+                ),
+              ],
+              const SizedBox(height: 24),
+              _CreateNewCourseCard(
+                accentColor: theme.colorScheme.primary,
+                onTap: () {
+                  context.read<NewOrderFormBloc>().add(
+                    AddCourse(course: Course(disheIndices: [])),
+                  );
+                },
+              ),
+            ],
           );
         },
         listener: (context, state) {},
       ),
     );
+  }
+}
+
+class _CreateNewCourseCard extends StatelessWidget {
+  final Color accentColor;
+  final VoidCallback onTap;
+
+  const _CreateNewCourseCard({
+    required this.accentColor,
+    required this.onTap,
+  });
+
+  static const double _radius = 12;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(_radius),
+        child: CustomPaint(
+          foregroundPainter: _DashedRoundedRectPainter(
+            color: accentColor,
+            borderRadius: _radius,
+          ),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(_radius),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: accentColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  'CREATE NEW COURSE',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DashedRoundedRectPainter extends CustomPainter {
+  final Color color;
+  final double borderRadius;
+
+  _DashedRoundedRectPainter({
+    required this.color,
+    required this.borderRadius,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const strokeWidth = 1.5;
+    final rrect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        strokeWidth / 2,
+        strokeWidth / 2,
+        size.width - strokeWidth,
+        size.height - strokeWidth,
+      ),
+      Radius.circular(borderRadius - strokeWidth / 2),
+    );
+    final path = Path()..addRRect(rrect);
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      const dashLength = 6.0;
+      const gapLength = 4.0;
+      while (distance < metric.length) {
+        final len = math.min(dashLength, metric.length - distance);
+        canvas.drawPath(metric.extractPath(distance, distance + len), paint);
+        distance += dashLength + gapLength;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedRoundedRectPainter oldDelegate) {
+    return oldDelegate.color != color ||
+        oldDelegate.borderRadius != borderRadius;
   }
 }

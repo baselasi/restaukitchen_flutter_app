@@ -42,9 +42,13 @@ class NewOrderFormBloc extends Bloc<NewOrderFormEvent, NewOrderFormState> {
   }
 
   void _onAddCourse(AddCourse event, Emitter<NewOrderFormState> emit) {
-    // final courses = state.courses;
-    // courses.add(Course(disheIndices: []));
-    // emit(state.copyWith(courses: courses));
+    final updatedCourses = List<Course>.from(state.courses)..add(event.course);
+    emit(
+      state.copyWith(
+        courses: updatedCourses,
+        currentCourseIndex: updatedCourses.length - 1,
+      ),
+    );
   }
 
   void _onRemoveCourse(RemoveCourse event, Emitter<NewOrderFormState> emit) {

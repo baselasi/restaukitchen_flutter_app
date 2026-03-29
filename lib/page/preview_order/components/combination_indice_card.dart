@@ -42,24 +42,18 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
   static const Color _dishNameColor = Color(0xFF1F2937);
   static const Color _ingredientsColor = Color(0xFF6B7280);
   static const Color _divider = Color(0xFFE5E7EB);
-  static const Color _qtyTrayBg = Color(0xFFE5E7EB);
   static const Color _iconColor = Color(0xFF4B5563);
-
-  late int _quantity;
 
   @override
   void initState() {
     super.initState();
-    _quantity = widget.combinationIndice.combinationQuantity;
   }
 
   @override
   void didUpdateWidget(covariant CombinationIndiceCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.combinationIndice.combinationQuantity !=
-        widget.combinationIndice.combinationQuantity) {
-      _quantity = widget.combinationIndice.combinationQuantity;
-    }
+        widget.combinationIndice.combinationQuantity) {}
   }
 
   List<Widget> _buildDishBlocks() {
@@ -101,12 +95,6 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
       );
     }
     return children;
-  }
-
-  void _setQuantity(int next) {
-    if (next < 1) return;
-    setState(() => _quantity = next);
-    widget.onQuantityChanged?.call(next);
   }
 
   void _onEdit() async {
@@ -286,70 +274,70 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                               size: 22,
                             ),
                           ),
-                          const Spacer(),
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: _qtyTrayBg,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                                vertical: 4,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  InkWell(
-                                    onTap: _quantity > 1
-                                        ? () => _setQuantity(_quantity - 1)
-                                        : null,
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 6,
-                                      ),
-                                      child: Icon(
-                                        Icons.remove,
-                                        size: 20,
-                                        color: _quantity > 1
-                                            ? iconMuted
-                                            : iconMuted.withValues(alpha: 0.4),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 28,
-                                    child: Text(
-                                      '$_quantity',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: primary,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () => _setQuantity(_quantity + 1),
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 6,
-                                      ),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 20,
-                                        color: secondary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          // const Spacer(),
+                          // DecoratedBox(
+                          //   decoration: BoxDecoration(
+                          //     color: _qtyTrayBg,
+                          //     borderRadius: BorderRadius.circular(10),
+                          //   ),
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.symmetric(
+                          //       horizontal: 4,
+                          //       vertical: 4,
+                          //     ),
+                          //     child: Row(
+                          //       mainAxisSize: MainAxisSize.min,
+                          //       children: [
+                          //         InkWell(
+                          //           onTap: _quantity > 1
+                          //               ? () => _setQuantity(_quantity - 1)
+                          //               : null,
+                          //           borderRadius: BorderRadius.circular(8),
+                          //           child: Padding(
+                          //             padding: const EdgeInsets.symmetric(
+                          //               horizontal: 10,
+                          //               vertical: 6,
+                          //             ),
+                          //             child: Icon(
+                          //               Icons.remove,
+                          //               size: 20,
+                          //               color: _quantity > 1
+                          //                   ? iconMuted
+                          //                   : iconMuted.withValues(alpha: 0.4),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         SizedBox(
+                          //           width: 28,
+                          //           child: Text(
+                          //             '$_quantity',
+                          //             textAlign: TextAlign.center,
+                          //             style: TextStyle(
+                          //               color: primary,
+                          //               fontSize: 16,
+                          //               fontWeight: FontWeight.w700,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         InkWell(
+                          //           onTap: () => _setQuantity(_quantity + 1),
+                          //           borderRadius: BorderRadius.circular(8),
+                          //           child: Padding(
+                          //             padding: const EdgeInsets.symmetric(
+                          //               horizontal: 10,
+                          //               vertical: 6,
+                          //             ),
+                          //             child: Icon(
+                          //               Icons.add,
+                          //               size: 20,
+                          //               color: secondary,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],

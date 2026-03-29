@@ -37,7 +37,7 @@ class _AddDishesPageState extends State<AddDishesPage> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
   List<CombinationMenuSectionCubit>? _sectionCubits;
-  bool _canSaveOrder = false;
+  // bool _canSaveOrder = false;
 
   @override
   void initState() {
@@ -48,6 +48,7 @@ class _AddDishesPageState extends State<AddDishesPage> {
           .toList();
     } else {
       context.read<CombinationGetCubit>().getCombination(widget.combinationId!);
+      _quantity = widget.combinationIndice?.combinationQuantity ?? 1;
     }
   }
 
@@ -60,10 +61,10 @@ class _AddDishesPageState extends State<AddDishesPage> {
     super.dispose();
   }
 
-  // bool get _canSaveOrder =>
-  //     _sectionCubits != null &&
-  //     _sectionCubits!.isNotEmpty &&
-  //     _sectionCubits!.every((c) => c.state.selectedDish != null);
+  bool get _canSaveOrder =>
+      _sectionCubits != null &&
+      _sectionCubits!.isNotEmpty &&
+      _sectionCubits!.every((c) => c.state.selectedDish != null);
 
   void _saveOrder(Combination? combination) {
     final menuSectionStates = _sectionCubits?.map((c) => c.state).toList();
@@ -113,10 +114,10 @@ class _AddDishesPageState extends State<AddDishesPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AddDishesCubit, AddDishesState>(
       builder: (context, addDishesState) {
-        _canSaveOrder =
-            _sectionCubits != null &&
-            _sectionCubits!.isNotEmpty &&
-            _sectionCubits!.every((c) => c.state.selectedDish != null);
+        // _canSaveOrder =
+        //     _sectionCubits != null &&
+        //     _sectionCubits!.isNotEmpty &&
+        //     _sectionCubits!.every((c) => c.state.selectedDish != null);
         return Scaffold(
           appBar: DetailsAppBar(pageTitle: 'Add Dishes'),
           bottomNavigationBar: SafeArea(
@@ -196,10 +197,11 @@ class _AddDishesPageState extends State<AddDishesPage> {
                                   ?.dishesWithIngredients[i],
                               selectedDimensionId:
                                   widget.combinationDimension.id,
-                              isActive: addDishesState.activeMenuIds.contains(
-                                          menu.id,
-                                        ) ||
-                                        i == 0,
+                              isActive:
+                                  addDishesState.activeMenuIds.contains(
+                                    menu.id,
+                                  ) ||
+                                  i == 0,
                               menu: menu,
                               onDishSelected: (menuId) {
                                 context.read<AddDishesCubit>().addActiveMenuId(

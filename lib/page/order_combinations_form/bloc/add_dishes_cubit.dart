@@ -25,6 +25,9 @@ class AddDishesCubit extends Cubit<AddDishesState> {
       final nextMenuId = state.menus[menuIndex + 1].id;
       final activeMenuIds = [...state.activeMenuIds, nextMenuId];
       emit(state.copyWith(activeMenuIds: [...activeMenuIds]));
+    } else {
+      final activeMenuIds = [...state.activeMenuIds,currentMenuId];
+      emit(state.copyWith(activeMenuIds: [...activeMenuIds]));
     }
   }
 }

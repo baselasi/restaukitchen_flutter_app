@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaukitchen_app/page/new_order/components/add_dish_dialog.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
 /// Line item card for a single dish: name as title, optional dimension, dishes + ingredients.
@@ -28,10 +29,8 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
   static const Color _cardBg = Color(0xFFF3F4F6);
   static const Color _titleColor = Color(0xFF111827);
   static const Color _subtitleColor = Color(0xFF6B7280);
-  static const Color _dishNameColor = Color(0xFF1F2937);
   static const Color _ingredientsColor = Color(0xFF6B7280);
   static const Color _divider = Color(0xFFE5E7EB);
-  static const Color _qtyTrayBg = Color(0xFFE5E7EB);
   static const Color _iconColor = Color(0xFF4B5563);
 
   late int _quantity;
@@ -74,47 +73,35 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
     if (dishes.isEmpty) return const [];
 
     final children = <Widget>[];
-    for (var i = 0; i < dishes.length; i++) {
-      final dish = dishes[i];
-      if (i > 0) {
-        children.add(const SizedBox(height: 12));
-      }
-      children.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+
+    children.add(
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          for (int i = 0; i < dishes.length; i++) ...[
+            if (i > 0) Icon(Icons.circle, color: Colors.black, size: 8),
             Text(
-              dish.dishName,
+              dishes[i].ingredientsName.join(', '),
               style: const TextStyle(
-                color: _dishNameColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                height: 1.3,
+                color: _ingredientsColor,
+                fontSize: 13,
+                height: 1.35,
               ),
             ),
-            if (dish.ingredientsName.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(
-                dish.ingredientsName.join(', '),
-                style: const TextStyle(
-                  color: _ingredientsColor,
-                  fontSize: 13,
-                  height: 1.35,
-                ),
-              ),
-            ],
+            const SizedBox(width: 10),
           ],
-        ),
-      );
-    }
+        ],
+      ),
+    );
     return children;
   }
 
-  void _setQuantity(int next) {
-    if (next < 1) return;
-    setState(() => _quantity = next);
-    widget.onQuantityChanged?.call(next);
-  }
+  // void _setQuantity(int next) {
+  //   if (next < 1) return;
+  //   setState(() => _quantity = next);
+  //   widget.onQuantityChanged?.call(next);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +111,15 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
 
     final urgency = widget.urgencyLabel?.trim();
     final note = widget.dishIndice.note?.trim();
-    final showMeta = (urgency != null && urgency.isNotEmpty) ||
+    final showMeta =
+        (urgency != null && urgency.isNotEmpty) ||
         (note != null && note.isNotEmpty);
 
     final price = widget.dishIndice.dishPrice;
     final priceText = price != null ? '\$${price.toStringAsFixed(2)}' : '—';
 
-    final hasBlocks = (widget.dishIndice.dishesWithIngredients ?? []).isNotEmpty;
+    final hasBlocks =
+        (widget.dishIndice.dishesWithIngredients ?? []).isNotEmpty;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
@@ -160,13 +149,27 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  _primaryTitle,
-                                  style: const TextStyle(
-                                    color: _titleColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      _primaryTitle,
+                                      style: const TextStyle(
+                                        color: _titleColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'x$_quantity',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 if (_showDimensionSubtitle) ...[
                                   const SizedBox(height: 4),
@@ -227,7 +230,7 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                               Text(
                                 'Note: $note',
                                 style: TextStyle(
-                                  color: secondary,
+                                  color: Colors.black,
                                   fontSize: 13,
                                   fontStyle: FontStyle.italic,
                                   fontWeight: FontWeight.w500,
@@ -238,7 +241,11 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                       ],
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
-                        child: Divider(height: 1, thickness: 1, color: _divider),
+                        child: Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: _divider,
+                        ),
                       ),
                       Row(
                         children: [
@@ -256,67 +263,21 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                               size: 22,
                             ),
                           ),
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: _qtyTrayBg,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                                vertical: 4,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  InkWell(
-                                    onTap: _quantity > 1
-                                        ? () => _setQuantity(_quantity - 1)
-                                        : null,
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 6,
-                                      ),
-                                      child: Icon(
-                                        Icons.remove,
-                                        size: 20,
-                                        color: _quantity > 1
-                                            ? iconMuted
-                                            : iconMuted.withValues(alpha: 0.4),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 28,
-                                    child: Text(
-                                      '$_quantity',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: primary,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () => _setQuantity(_quantity + 1),
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 6,
-                                      ),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 20,
-                                        color: secondary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          IconButton(
+                            onPressed: () async {
+                              await showAddDishDialog(
+                                context: context,
+                                dishId: widget.dishIndice.dishId,
+                                selectedDimensionId:
+                                    widget.dishIndice.dishDimensionId,
+                                selectedIngredientsIds:
+                                    widget.dishIndice.dishIngredientsId,
+                              );
+                            },
+                            icon: Icon(
+                              Icons.edit_outlined,
+                              color: iconMuted,
+                              size: 22,
                             ),
                           ),
                         ],

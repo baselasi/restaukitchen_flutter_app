@@ -26,27 +26,6 @@ class Ingredient extends Equatable {
     );
   }
 
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'id': id,
-  //     'name': name,
-  //     'dimensionAssignments': dimensionAssignments
-  //         .map(
-  //           (assignment) => {
-  //             'id': assignment.id,
-  //             'price': assignment.price,
-  //             'deleted': assignment.deleted,
-  //             'dimension': {
-  //               'id': assignment.dimension.id,
-  //               'name': assignment.dimension.name,
-  //               'standard': assignment.dimension.standard,
-  //               'deleted': assignment.dimension.deleted,
-  //             },
-  //           },
-  //         )
-  //         .toList(),
-  //   };
-  // }
 
   bool hasDimensionId(String dimensionId) {
     return dimensionAssignments.any(

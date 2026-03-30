@@ -42,18 +42,24 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
   static const Color _dishNameColor = Color(0xFF1F2937);
   static const Color _ingredientsColor = Color(0xFF6B7280);
   static const Color _divider = Color(0xFFE5E7EB);
+  static const Color _qtyTrayBg = Color(0xFFE5E7EB);
   static const Color _iconColor = Color(0xFF4B5563);
+
+  late int _quantity;
 
   @override
   void initState() {
     super.initState();
+    _quantity = widget.combinationIndice.combinationQuantity;
   }
 
   @override
   void didUpdateWidget(covariant CombinationIndiceCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.combinationIndice.combinationQuantity !=
-        widget.combinationIndice.combinationQuantity) {}
+        widget.combinationIndice.combinationQuantity) {
+      _quantity = widget.combinationIndice.combinationQuantity;
+    }
   }
 
   List<Widget> _buildDishBlocks() {
@@ -96,6 +102,8 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
     }
     return children;
   }
+
+  
 
   void _onEdit() async {
     final result = await Navigator.push(

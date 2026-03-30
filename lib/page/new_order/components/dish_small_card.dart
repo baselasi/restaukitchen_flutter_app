@@ -73,6 +73,17 @@ class _DishSmallCardState extends State<DishSmallCard>
             .whereType<String>()
             .toList(),
         dishQuantity: result.quantity,
+        note: result.note,
+        dishesWithIngredients: result.ingredients
+            .map(
+              (ingredient) => DishesWithIngredients(
+                dishId: widget.dish.id ?? '',
+                dishName: widget.dish.name,
+                ingredientsId: [ingredient.id ?? ''],
+                ingredientsName: [ingredient.name],
+              ),
+            )
+            .toList(),
         course: courseIndex,
       );
       context.read<NewOrderFormBloc>().add(

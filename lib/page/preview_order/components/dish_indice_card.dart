@@ -75,9 +75,10 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
     final children = <Widget>[];
 
     children.add(
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+      Wrap(
+        spacing: 10,
+        runSpacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           for (int i = 0; i < dishes.length; i++) ...[
             if (i > 0) Icon(Icons.circle, color: Colors.black, size: 8),
@@ -88,8 +89,8 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                 fontSize: 13,
                 height: 1.35,
               ),
+              softWrap: true,
             ),
-            const SizedBox(width: 10),
           ],
         ],
       ),

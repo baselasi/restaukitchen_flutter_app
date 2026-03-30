@@ -42,7 +42,6 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
   static const Color _dishNameColor = Color(0xFF1F2937);
   static const Color _ingredientsColor = Color(0xFF6B7280);
   static const Color _divider = Color(0xFFE5E7EB);
-  static const Color _qtyTrayBg = Color(0xFFE5E7EB);
   static const Color _iconColor = Color(0xFF4B5563);
 
   late int _quantity;

@@ -21,6 +21,12 @@ class GetIngredientsCubit extends Cubit<GetIngredientsState> {
   Future<void> setIngredients(List<Ingredient> ingredients) async {
     emit(GetIngredientsState.loaded(ingredients));
   }
+
+  @override
+  Future<void> close() {
+    emit(GetIngredientsState.initial());
+    return super.close();
+  }
 }
 
 enum GetIngredientsStatus { initial, loading, loaded, error }

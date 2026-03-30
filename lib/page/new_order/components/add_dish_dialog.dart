@@ -29,6 +29,8 @@ Future<AddDishDialogResult?> showAddDishDialog({
   List<Ingredient>? ingredients,
   String? selectedDimensionId,
   List<String>? selectedIngredientsIds,
+  String? note,
+  int? quantity,
   String? dishId,
 }) {
   return showModalBottomSheet<AddDishDialogResult>(
@@ -47,6 +49,8 @@ Future<AddDishDialogResult?> showAddDishDialog({
         dishId: dishId,
         selectedDimensionId: selectedDimensionId,
         selectedIngredientsIds: selectedIngredientsIds,
+        note: note,
+        quantity: quantity,
       ),
     ),
   );
@@ -59,6 +63,8 @@ class _AddDishSheet extends StatefulWidget {
   final List<Ingredient>? ingredients;
   final String? selectedDimensionId;
   final List<String>? selectedIngredientsIds;
+  final String? note;
+  final int? quantity;
   const _AddDishSheet({
     required this.heightFactor,
     required this.dish,
@@ -66,6 +72,8 @@ class _AddDishSheet extends StatefulWidget {
     required this.ingredients,
     this.selectedDimensionId,
     this.selectedIngredientsIds,
+    this.note,
+    this.quantity,
   });
 
   @override
@@ -104,21 +112,20 @@ class _AddDishSheetState extends State<_AddDishSheet> {
       );
       context.read<GetDishCubit>().getDish(widget.dishId!);
     }
-    // if (widget.selectedDimensionId != null) {
-    //   _selectedDimension = _dimensionAssignments!.firstWhere(
-    //     (assignment) => assignment.dimension.id == widget.selectedDimensionId,
-    //     orElse: () => _dimensionAssignments!.first,
-    //   );
-    // }
+
     if (widget.selectedIngredientsIds != null) {
       _selectedIngredientsIds.addAll(widget.selectedIngredientsIds!);
+    }
+    if (widget.note != null) {
+      _note = widget.note!;
+    }
+    if (widget.quantity != null) {
+      _quantity = widget.quantity!;
     }
   }
 
   @override
   void dispose() {
-    // _noteFocusNode.removeListener(_handleNoteFocusChange);
-    // _noteFocusNode.dispose();
     super.dispose();
   }
 
@@ -374,6 +381,9 @@ class _AddDishSheetState extends State<_AddDishSheet> {
                                 TextField(
                                   // focusNode: _noteFocusNode,
                                   minLines: 3,
+                                  controller: TextEditingController(
+                                    text: _note,
+                                  ),
                                   maxLines: 5,
                                   textInputAction: TextInputAction.done,
                                   scrollPadding: const EdgeInsets.only(

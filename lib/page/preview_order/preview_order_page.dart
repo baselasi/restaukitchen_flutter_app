@@ -52,7 +52,7 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
       );
     }
     if (item is DishIndice) {
-      return DishIndiceCard(dishIndice: item, onDelete: remove);
+      return DishIndiceCard(dishIndice: item, onDelete: remove, onEdit: onEdit);
     }
     return const SizedBox.shrink();
   }

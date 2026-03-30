@@ -6,7 +6,7 @@ import 'package:restaukitchen_app/page/order_list/models/course.dart';
 class DishIndiceCard extends StatefulWidget {
   final DishIndice dishIndice;
   final VoidCallback? onDelete;
-  final VoidCallback? onEdit;
+  final Function(CourseIndice)? onEdit;
   final ValueChanged<int>? onQuantityChanged;
 
   /// Shown as a badge when non-null/non-empty (e.g. prep time).
@@ -95,6 +95,45 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
       ),
     );
     return children;
+  }
+
+  Future<void> _onEdit() async {
+    final result = await showAddDishDialog(
+      context: context,
+      dishId: widget.dishIndice.dishId,
+      selectedDimensionId: widget.dishIndice.dishDimensionId,
+      selectedIngredientsIds: widget.dishIndice.dishIngredientsId,
+      note: widget.dishIndice.note,
+      quantity: widget.dishIndice.dishQuantity,
+    );
+    if (result != null) {
+      final dishIndice = DishIndice(
+        dishId: widget.dishIndice.dishId,
+        dishName: widget.dishIndice.dishName,
+        dishPrice: widget.dishIndice.dishPrice,
+        dishDimensionName: result.selectedDimension?.dimension.name,
+        dishDimensionId: result.selectedDimension?.dimension.id ?? '',
+        dishIngredientsId: result.ingredients
+            .map((ingredient) => ingredient.id)
+            .whereType<String>()
+            .toList(),
+        dishQuantity: result.quantity,
+        note: result.note,
+        dishesWithIngredients: result.ingredients
+            .map(
+              (ingredient) => DishesWithIngredients(
+                dishId: widget.dishIndice.dishId,
+                dishName: widget.dishIndice.dishName ?? '',
+                ingredientsId: [ingredient.id ?? ''],
+                ingredientsName: [ingredient.name],
+              ),
+            )
+            .toList(),
+        course: widget.dishIndice.course,
+      );
+
+      widget.onEdit?.call(dishIndice);
+    }
   }
 
   // void _setQuantity(int next) {
@@ -264,16 +303,7 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                             ),
                           ),
                           IconButton(
-                            onPressed: () async {
-                              await showAddDishDialog(
-                                context: context,
-                                dishId: widget.dishIndice.dishId,
-                                selectedDimensionId:
-                                    widget.dishIndice.dishDimensionId,
-                                selectedIngredientsIds:
-                                    widget.dishIndice.dishIngredientsId,
-                              );
-                            },
+                            onPressed: _onEdit,
                             icon: Icon(
                               Icons.edit_outlined,
                               color: iconMuted,

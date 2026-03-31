@@ -112,6 +112,7 @@ class OrderResponse extends Equatable {
   const OrderResponse({required this.orders});
 
   factory OrderResponse.fromJson(List<dynamic> json) {
+    print(json);
     return OrderResponse(
       orders: json.map((order) => Order.fromJson(order)).toList(),
     );

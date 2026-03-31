@@ -1,7 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
+import 'package:restaukitchen_app/page/order_list/models/order.dart';
 
 abstract class NewOrderFormEvent extends Equatable {}
+
+class InitializeOrder extends NewOrderFormEvent {
+  final Order? order;
+  InitializeOrder({this.order});
+  @override
+  List<Object?> get props => [order];
+}
 
 class AddCourse extends NewOrderFormEvent {
   final Course course;

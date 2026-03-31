@@ -127,7 +127,7 @@ class DishIndice extends CourseIndice {
 class CombinationIndice extends CourseIndice {
   final String? id;
   final int course;
-  final String combinationName;
+  final String? combinationName;
   final String combinationId;
   final List<DishesWithIngredients> dishesWithIngredients;
   final String combinationDimensionId;
@@ -138,7 +138,7 @@ class CombinationIndice extends CourseIndice {
   const CombinationIndice({
     this.id,
     required this.course,
-    required this.combinationName,
+     this.combinationName,
     required this.combinationId,
     required this.dishesWithIngredients,
     required this.combinationDimensionId,
@@ -151,7 +151,7 @@ class CombinationIndice extends CourseIndice {
     return CombinationIndice(
       id: json['id'] as String,
       course: json['course'] as int,
-      combinationName: json['combinationName'] as String,
+      combinationName: json['combinationName'] as String?,
       combinationId: json['combinationId'] as String,
       dishesWithIngredients:
           (json['dishesWithIngredients'] as List<dynamic>?)

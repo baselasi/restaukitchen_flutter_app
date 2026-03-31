@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
-import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
 import 'package:restaukitchen_app/page/menusPage/components/menus_scroll_bar.dart';
 import 'package:restaukitchen_app/page/new_order/components/combinations_small_card.dart';
 import 'package:restaukitchen_app/page/new_order/components/dish_small_card.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/menu_scroll_bar_cubit/menu_scroll_bar_cubit.dart';
-import 'package:restaukitchen_app/page/preview_order/preview_order_page.dart';
 
-class NewOrder extends StatefulWidget {
-  const NewOrder({super.key});
+class AddDishesPage extends StatefulWidget {
+  final String? orderId;
+  const AddDishesPage({super.key, this.orderId});
 
   @override
-  State<NewOrder> createState() => _NewOrderState();
+  State<AddDishesPage> createState() => _AddDishesPageState();
 }
 
-class _NewOrderState extends State<NewOrder> {
+class _AddDishesPageState extends State<AddDishesPage> {
   @override
   void initState() {
-    // context.read<MenusPageBloc>().add(
-    //   GetMenus(showSucess: false, menuIndex: 0),
-    // );
-    context.read<MenuScrollBarCubit>().getMenus();
+    final menuState = context.read<MenuScrollBarCubit>().state;
+    if (menuState.status != MenuScrollBarStatus.success) {
+      context.read<MenuScrollBarCubit>().getMenus();
+    }
     super.initState();
   }
 
@@ -99,38 +97,8 @@ class _NewOrderState extends State<NewOrder> {
     return BlocBuilder<NewOrderFormBloc, NewOrderFormState>(
       builder: (context, formState) {
         final hasItems = formState.hasAnyIndicesInCourses();
-
         return Scaffold(
           appBar: DetailsAppBar(pageTitle: "New Order"),
-          floatingActionButton: hasItems
-              ? FloatingActionButton.extended(
-                  heroTag: 'new_order_preview_fab',
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      PageTransition(
-                        type: PageTransitionType.rightToLeft,
-                        child: MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(
-                              value: context.read<NewOrderFormBloc>(),
-                            ),
-                            BlocProvider.value(
-                              value: context.read<NewOrderCubit>(),
-                            ),
-                          ],
-                          child: const PreviewOrderPage(),
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.receipt_long_outlined),
-                  label: const Text('Preview order'),
-                )
-              : null,
-          floatingActionButtonLocation: hasItems
-              ? FloatingActionButtonLocation.centerFloat
-              : null,
-
           body: BlocConsumer<MenuScrollBarCubit, MenuScrollBarState>(
             builder: (context, state) {
               return CustomScrollView(

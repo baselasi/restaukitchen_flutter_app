@@ -73,7 +73,7 @@ class OrdersListBloc extends Bloc<OrdersListEvent, OrdersListState> {
   ) async {
     try {
       emit(OrdersListLoading());
-      final OrderResponse orders = await _repo.getOrders(categoryName);
+      final OrderResponse orders = await _repo.getOrdersByCategoryName(categoryName);
       add(OrdersListUpdated(orders: orders.orders));
     } catch (e) {
       emit(OrdersListError(errorMessage: e.toString()));

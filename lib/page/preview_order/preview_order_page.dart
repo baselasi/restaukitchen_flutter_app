@@ -2,23 +2,42 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/menu_scroll_bar_cubit/menu_scroll_bar_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_from_events.dart';
+import 'package:restaukitchen_app/page/new_order/add_dishes_page.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 import 'package:restaukitchen_app/page/preview_order/components/combination_indice_card.dart';
 import 'package:restaukitchen_app/page/preview_order/components/dish_indice_card.dart';
 
 class PreviewOrderPage extends StatefulWidget {
-  const PreviewOrderPage({super.key});
+  final String? orderId;
+  final String? dinnerTableNumber;
+  const PreviewOrderPage({super.key, this.orderId, this.dinnerTableNumber});
 
   @override
   State<PreviewOrderPage> createState() => _PreviewOrderPageState();
 }
 
 class _PreviewOrderPageState extends State<PreviewOrderPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.orderId != null) {
+      context.read<NewOrderCubit>().getOrder(
+        orderId: widget.orderId!,
+        dinnerTableNumber: widget.dinnerTableNumber!,
+        newOrderFormState: context.read<NewOrderFormBloc>().state,
+      );
+    }
+  }
+
   Widget _indiceCard(
     BuildContext context,
     CourseIndice item, {
@@ -84,7 +103,28 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
                 context.read<NewOrderFormBloc>().add(
                   SetCurrentCourseIndex(courseIndex: courseIndex),
                 );
-                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  PageTransition(
+                    type: PageTransitionType.rightToLeft,
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: context.read<NewOrderFormBloc>(),
+                        ),
+                        BlocProvider.value(
+                          value: context.read<NewOrderCubit>(),
+                        ),
+                        BlocProvider.value(
+                          value: context.read<MenuScrollBarCubit>(),
+                        ),
+                        BlocProvider.value(
+                          value: context.read<MenusPageBloc>(),
+                        ),
+                      ],
+                      child: AddDishesPage(),
+                    ),
+                  ),
+                );
               },
             ),
           ],
@@ -118,7 +158,7 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Preview Order')),
+      appBar: DetailsAppBar(pageTitle: "New Order"),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
@@ -133,51 +173,56 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
           ),
         ),
       ),
-      body: BlocConsumer<NewOrderFormBloc, NewOrderFormState>(
+      body: BlocConsumer<NewOrderCubit, NewOrderState>(
         builder: (context, state) {
-          final courses = state.courses;
-          final hasAnyDish = courses.any((c) => c.disheIndices.isNotEmpty);
-
-          if (!hasAnyDish) {
-            return Center(
-              child: Text(
-                'Nothing in this order yet',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            );
+          if (state.status == NewOrderStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
           }
-
-          final theme = Theme.of(context);
-
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              for (
-                var courseIndex = 0;
-                courseIndex < courses.length;
-                courseIndex++
-              ) ...[
-                if (courseIndex > 0) const SizedBox(height: 24),
-                _courseSection(
-                  context,
-                  theme,
-                  courses[courseIndex],
-                  courseIndex,
-                ),
-              ],
-              const SizedBox(height: 24),
-              _CreateNewCourseCard(
-                accentColor: theme.colorScheme.primary,
-                onTap: () {
-                  context.read<NewOrderFormBloc>().add(
-                    AddCourse(course: Course(disheIndices: [])),
-                  );
-                },
-              ),
-            ],
+          return BlocConsumer<NewOrderFormBloc, NewOrderFormState>(
+            builder: (context, state) {
+              final courses = state.courses;
+              final theme = Theme.of(context);
+              return ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  for (
+                    var courseIndex = 0;
+                    courseIndex < courses.length;
+                    courseIndex++
+                  ) ...[
+                    if (courseIndex > 0) const SizedBox(height: 24),
+                    _courseSection(
+                      context,
+                      theme,
+                      courses[courseIndex],
+                      courseIndex,
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+                  _CreateNewCourseCard(
+                    accentColor: theme.colorScheme.primary,
+                    onTap: () {
+                      context.read<NewOrderFormBloc>().add(
+                        AddCourse(course: Course(disheIndices: [])),
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+            listener: (context, state) {},
           );
         },
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state.status == NewOrderStatus.success) {
+            Navigator.of(context).pop();
+          }
+          if (state.status == NewOrderStatus.getSuccess) {
+            context.read<NewOrderFormBloc>().add(
+              InitializeOrder(order: state.order),
+            );
+          }
+        },
       ),
     );
   }

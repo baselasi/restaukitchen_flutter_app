@@ -4,7 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
-import 'package:restaukitchen_app/page/order_combinations_form/add_dishes_page.dart';
+import 'package:restaukitchen_app/page/order_combinations_form/select_combinations_dishes_page.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/bloc/add_dishes_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
@@ -102,8 +102,6 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
     return children;
   }
 
-  
-
   void _onEdit() async {
     final result = await Navigator.push(
       context,
@@ -120,7 +118,7 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
               create: (context) => AddDishesCubit(combination: null),
             ),
           ],
-          child: AddDishesPage(
+          child: SelectCombinationsDishesPage(
             price: widget.combinationIndice.combinationPrice,
             combinationId: widget.combinationIndice.combinationId,
             combinationDimension: Dimension(
@@ -176,7 +174,7 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.combinationIndice.combinationName,
+                              widget.combinationIndice.combinationName ?? '',
                               style: const TextStyle(
                                 color: _titleColor,
                                 fontSize: 16,
@@ -281,70 +279,6 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                               size: 22,
                             ),
                           ),
-                          // const Spacer(),
-                          // DecoratedBox(
-                          //   decoration: BoxDecoration(
-                          //     color: _qtyTrayBg,
-                          //     borderRadius: BorderRadius.circular(10),
-                          //   ),
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.symmetric(
-                          //       horizontal: 4,
-                          //       vertical: 4,
-                          //     ),
-                          //     child: Row(
-                          //       mainAxisSize: MainAxisSize.min,
-                          //       children: [
-                          //         InkWell(
-                          //           onTap: _quantity > 1
-                          //               ? () => _setQuantity(_quantity - 1)
-                          //               : null,
-                          //           borderRadius: BorderRadius.circular(8),
-                          //           child: Padding(
-                          //             padding: const EdgeInsets.symmetric(
-                          //               horizontal: 10,
-                          //               vertical: 6,
-                          //             ),
-                          //             child: Icon(
-                          //               Icons.remove,
-                          //               size: 20,
-                          //               color: _quantity > 1
-                          //                   ? iconMuted
-                          //                   : iconMuted.withValues(alpha: 0.4),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //         SizedBox(
-                          //           width: 28,
-                          //           child: Text(
-                          //             '$_quantity',
-                          //             textAlign: TextAlign.center,
-                          //             style: TextStyle(
-                          //               color: primary,
-                          //               fontSize: 16,
-                          //               fontWeight: FontWeight.w700,
-                          //             ),
-                          //           ),
-                          //         ),
-                          //         InkWell(
-                          //           onTap: () => _setQuantity(_quantity + 1),
-                          //           borderRadius: BorderRadius.circular(8),
-                          //           child: Padding(
-                          //             padding: const EdgeInsets.symmetric(
-                          //               horizontal: 10,
-                          //               vertical: 6,
-                          //             ),
-                          //             child: Icon(
-                          //               Icons.add,
-                          //               size: 20,
-                          //               color: secondary,
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                     ],

@@ -4,7 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/models/dimesnion_assignment.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
-import 'package:restaukitchen_app/page/order_combinations_form/add_dishes_page.dart';
+import 'package:restaukitchen_app/page/order_combinations_form/select_combinations_dishes_page.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/bloc/add_dishes_cubit.dart';
 
 class DimensionsSelectionPage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
             ),
             BlocProvider.value(value: context.read<CombinationGetCubit>()),
           ],
-          child: AddDishesPage(
+          child: SelectCombinationsDishesPage(
             combination: state.combination,
             price: dimensionAssignment.price,
             combinationDimension: dimensionAssignment.dimension,

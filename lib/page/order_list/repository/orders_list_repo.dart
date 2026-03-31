@@ -94,7 +94,7 @@ class OrdersListRepo {
     _ordersController = null;
   }
 
-  Future<OrderResponse> getOrders(String? categoryName) async {
+  Future<OrderResponse> getOrdersByCategoryName(String? categoryName) async {
     final response = await _apiService.getPrivate(
       '/api/order${categoryName != null ? '/filter/$categoryName' : '/kitchen'}',
     );
@@ -102,6 +102,19 @@ class OrdersListRepo {
       return OrderResponse.fromJson(jsonDecode(response.body));
     } catch (e) {
       throw Exception('Failed to get orders: $e');
+    }
+  }
+
+  Future<OrderResponse> getOrderByDinnerTableNumber(
+    String dinnerTableNumber,
+  ) async {
+    try {
+      final response = await _apiService.getPrivate(
+        '/api/order/dinner-table?dinnerTableNumber=$dinnerTableNumber',
+      );
+      return OrderResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Failed to get order: $e');
     }
   }
 
@@ -115,7 +128,8 @@ class OrdersListRepo {
       throw Exception('Failed to get archived orders: $e');
     }
   }
-   Future<OrderResponse> getDeletedOrders(DateTime date) async {
+
+  Future<OrderResponse> getDeletedOrders(DateTime date) async {
     final response = await _apiService.getPrivate(
       '/api/order/deleted?date=${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
     );

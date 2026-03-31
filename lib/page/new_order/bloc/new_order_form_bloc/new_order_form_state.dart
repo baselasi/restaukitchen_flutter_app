@@ -28,8 +28,9 @@ class NewOrderFormState extends Equatable {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({String? id}) {
     return {
+      if (id != null) 'id': id,
       'dishIndices': courses
           .expand((course) => course.toOrderPayload())
           .toList(),

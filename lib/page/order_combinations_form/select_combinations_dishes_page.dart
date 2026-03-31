@@ -10,7 +10,7 @@ import 'package:restaukitchen_app/page/order_combinations_form/bloc/combination_
 import 'package:restaukitchen_app/page/order_combinations_form/components/menu_combination_section.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
-class AddDishesPage extends StatefulWidget {
+class SelectCombinationsDishesPage extends StatefulWidget {
   final Combination? combination;
   final String? combinationId;
   final String? combinationDimensionName;
@@ -18,7 +18,7 @@ class AddDishesPage extends StatefulWidget {
   final double? price;
   final String? combinationDimensionId;
   final CombinationIndice? combinationIndice;
-  const AddDishesPage({
+  const SelectCombinationsDishesPage({
     super.key,
     this.combination,
     this.combinationId,
@@ -30,10 +30,10 @@ class AddDishesPage extends StatefulWidget {
   });
 
   @override
-  State<AddDishesPage> createState() => _AddDishesPageState();
+  State<SelectCombinationsDishesPage> createState() => _SelectCombinationsDishesPageState();
 }
 
-class _AddDishesPageState extends State<AddDishesPage> {
+class _SelectCombinationsDishesPageState extends State<SelectCombinationsDishesPage> {
   int _quantity = 1;
   final TextEditingController _noteController = TextEditingController();
   List<CombinationMenuSectionCubit>? _sectionCubits;

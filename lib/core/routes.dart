@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/page/combination_list/combination_list.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/orders_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/table_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/home_page.dart';
@@ -12,15 +13,13 @@ import 'package:restaukitchen_app/page/order_list/orders_list.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
 import 'package:restaukitchen_app/page/tabels_list/tabels_list.dart';
-import 'package:restaukitchen_app/page/table_form/bloc/table_form_cubit.dart';
-import 'package:restaukitchen_app/page/table_form/table_form_repo/table_form_repo.dart';
-import 'package:restaukitchen_app/page/table_form/table_from.dart';
 
 enum Pages {
   home,
   menus,
   orders,
   tables,
+  combinations,
   // settings,
 }
 
@@ -57,6 +56,8 @@ Widget buildPage(Pages page) {
         create: (context) => TabelsListCubit(tablesRepo: TablesRepo()),
         child: const TabelsList(),
       );
+    case Pages.combinations:
+      return const CombinationList();
   }
 }
 
@@ -70,5 +71,7 @@ Widget getPageTitle(Pages page) {
       return const Text('Orders Page');
     case Pages.tables:
       return const Text('Tables Page');
+    case Pages.combinations:
+      return const Text('Combinations Page');
   }
 }

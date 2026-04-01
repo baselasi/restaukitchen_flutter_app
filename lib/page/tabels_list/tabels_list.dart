@@ -93,7 +93,7 @@ class _TabelsListState extends State<TabelsList>
                 heroTag: 'fab_action_2',
                 onPressed: () {
                   _toggleFab();
-                  // TODO: second action
+               
                 },
                 icon: const Icon(Icons.qr_code),
                 label: const Text('Ordina tavoli'),

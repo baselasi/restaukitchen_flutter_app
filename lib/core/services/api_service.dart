@@ -6,7 +6,7 @@ import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 
 class ApiService {
   // Hardcoded base URL - Update this with your actual API base URL
-  final String _baseUrl = 'http://192.168.1.246:8080';
+  final String _baseUrl = 'https://restaukitchen.com';
 
   ApiService();
 

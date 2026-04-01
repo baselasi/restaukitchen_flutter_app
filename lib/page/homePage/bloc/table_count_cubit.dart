@@ -15,6 +15,7 @@ class TableCountCubit extends Cubit<TableCountState> {
       emit(TableCountState(status: TableCountStatus.error));
     }
   }
+
 }
 
 class TableCountState extends Equatable {
@@ -23,7 +24,7 @@ class TableCountState extends Equatable {
   const TableCountState({this.tableCount, required this.status});
 
   @override
-  List<Object?> get props => [tableCount,status];
+  List<Object?> get props => [tableCount, status];
 }
 
 enum TableCountStatus { initial, loading, loaded, error }

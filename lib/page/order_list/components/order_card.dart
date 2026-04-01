@@ -524,27 +524,29 @@ class _DishRow extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        dish.dishName,
+                        dish.dishName ?? '',
                         style: theme.textTheme.bodyMedium,
                       ),
                     ),
-                    if (dish.dishDimensionName.isNotEmpty) ...[
+                    if (dish.dishDimensionName?.isNotEmpty ?? false) ...[
                       const SizedBox(width: 6),
-                      _DimensionPill(name: dish.dishDimensionName),
+                      _DimensionPill(name: dish.dishDimensionName ?? ''),
                     ],
                   ],
                 ),
                 // Ingredient pills
-                if (dish.dishesWithIngredients.isNotEmpty)
+                if (dish.dishesWithIngredients?.isNotEmpty ?? false)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Wrap(
                       spacing: 6,
                       runSpacing: 4,
-                      children: dish.dishesWithIngredients
-                          .expand((d) => d.ingredientsName)
-                          .map((name) => _IngredientPill(name: name))
-                          .toList(),
+                      children:
+                          dish.dishesWithIngredients
+                              ?.expand((d) => d.ingredientsName)
+                              .map((name) => _IngredientPill(name: name))
+                              .toList() ??
+                          [],
                     ),
                   ),
               ],
@@ -553,7 +555,7 @@ class _DishRow extends StatelessWidget {
 
           // Price
           Text(
-            '€${dish.dishPrice.toStringAsFixed(2)}',
+            '€${dish.dishPrice?.toStringAsFixed(2)}',
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),

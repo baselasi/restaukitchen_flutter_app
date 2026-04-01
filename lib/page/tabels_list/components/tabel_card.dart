@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/services/api_service.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/menu_scroll_bar_cubit/menu_scroll_bar_cubit.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
+import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
+import 'package:restaukitchen_app/page/new_order/repository/new_order_repository.dart';
+import 'package:restaukitchen_app/page/order_list/repository/orders_list_repo.dart';
+import 'package:restaukitchen_app/page/preview_order/preview_order_page.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/qr_code_dialog.dart';
+import 'package:restaukitchen_app/page/tabels_list/components/total_covers_dialog.dart';
 import 'package:restaukitchen_app/page/tabels_list/models/tabel.dart';
 import 'package:restaukitchen_app/page/table_form/bloc/table_form_cubit.dart';
 import 'package:restaukitchen_app/page/table_form/table_form_repo/table_form_repo.dart';
@@ -128,7 +137,50 @@ class _TabelCardState extends State<TabelCard> {
                     _CardAction(
                       icon: Icons.receipt_long_outlined,
                       color: const Color(0xFF26A69A),
-                      onTap: widget.onOrder,
+                      onTap: () async {
+                        final totalCovers = await TotalCoversDialog.show(
+                          context,
+                        );
+                        if (!context.mounted || totalCovers == null) {
+                          return;
+                        }
+                        Navigator.of(context).push(
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => MenusPageBloc(),
+                                ),
+                                BlocProvider(
+                                  create: (context) => MenuScrollBarCubit(),
+                                ),
+                                BlocProvider(
+                                  create: (context) => NewOrderFormBloc(
+                                    tableNumber: widget.tabel.number,
+                                    totalCovers: totalCovers,
+                                  ),
+                                ),
+                                BlocProvider(
+                                  create: (context) => NewOrderCubit(
+                                    newOrderRepo: NewOrderRepository(
+                                      apiService: ApiService(),
+                                    ),
+                                    ordersListRepo: OrdersListRepo(
+                                      apiService: ApiService(),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              child: PreviewOrderPage(
+                                dinnerTableNumber: widget.tabel.number
+                                    .toString(),
+                                orderId: widget.tabel.orderIDs.isNotEmpty ? widget.tabel.orderIDs.first : null,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     _CardAction(
                       icon: Icons.qr_code_2,

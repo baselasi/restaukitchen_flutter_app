@@ -97,7 +97,9 @@ class _MenusPageState extends State<MenusPage> {
                     elevation: 8,
                     backgroundColor: Colors.white,
                     flexibleSpace: MenusScrollBar(
-                      menus: state.menus,
+                      menus: state.menus
+                          .map((menu) => menu.toMenuScrollBarItem())
+                          .toList(),
                       selectedMenuIndex: state.selectedMenu,
                       onMenuSelected: (index) {
                         context.read<MenusPageBloc>().add(

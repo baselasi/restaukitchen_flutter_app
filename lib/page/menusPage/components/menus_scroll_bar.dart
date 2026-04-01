@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
+import 'package:restaukitchen_app/page/menusPage/models/menu_scroll_bar_item.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class MenusScrollBar extends StatelessWidget {
-  final List<Menu> menus;
+  final List<MenuScrollBarItem> menus;
   final int selectedMenuIndex;
   final Function(int) onMenuSelected;
 
@@ -36,19 +36,11 @@ class MenusScrollBar extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
-                  vertical: 10,
                 ),
                 decoration: BoxDecoration(
                   color: isSelected ? LightTheme.secondaryColor : Colors.white,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey[300]!, width: 1),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.black.withValues(alpha: 0.2),
-                  //     blurRadius: 4,
-                  //     offset: const Offset(0, 2),
-                  //   ),
-                  // ],
                 ),
                 child: Center(
                   child: Text(

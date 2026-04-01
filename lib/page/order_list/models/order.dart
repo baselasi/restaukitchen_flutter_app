@@ -42,7 +42,7 @@ class Order extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       // if (id != null) "id": id,
-      'dishIndices': dishIndices?.map((course) => course.toJson()).toList(),
+      'dishIndices': dishIndices?.map((course) => course.toOrderPayload()).toList(),
       'tableNumber': tableNumber,
       'totalCovers': totalCovers,
       // 'total': total,
@@ -112,6 +112,7 @@ class OrderResponse extends Equatable {
   const OrderResponse({required this.orders});
 
   factory OrderResponse.fromJson(List<dynamic> json) {
+    print(json);
     return OrderResponse(
       orders: json.map((order) => Order.fromJson(order)).toList(),
     );

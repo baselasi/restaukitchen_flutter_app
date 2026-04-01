@@ -166,9 +166,16 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
           child: PrimaryButton(
             text: 'Create Order',
             onPressed: () {
-              context.read<NewOrderCubit>().createOrder(
-                newOrderFormState: context.read<NewOrderFormBloc>().state,
-              );
+              if(widget.orderId != null) {
+                context.read<NewOrderCubit>().updateOrder(
+                  orderId: widget.orderId!,
+                  newOrderFormState: context.read<NewOrderFormBloc>().state,
+                );
+              } else {
+                context.read<NewOrderCubit>().createOrder(
+                  newOrderFormState: context.read<NewOrderFormBloc>().state,
+                );
+              }
             },
           ),
         ),

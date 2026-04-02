@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/combination_menu_creation_form.dart';
 import 'package:restaukitchen_app/page/combination_form/components/dimension_with_price_card.dart';
 
@@ -17,14 +18,8 @@ class CombinationDimensionCreationForm extends StatefulWidget {
 
 class _CombinationDimensionCreationFormState
     extends State<CombinationDimensionCreationForm> {
-  /// Stable key per dimension for selection and price map (id when present, else name).
-  String _dimensionKey(String? id, String name) => id ?? name;
-
   final TextEditingController _combinationNameController =
       TextEditingController();
-
-  String? _selectedKey;
-  final Map<String, String> _priceByDimensionKey = {};
 
   @override
   void initState() {
@@ -72,39 +67,47 @@ class _CombinationDimensionCreationFormState
           }
           if (state.status == GetDimensionsStatus.loaded) {
             final dimensions = state.dimensions ?? [];
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              children: [
-                TextField(
-                  controller: _combinationNameController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Combination name',
-                    hintText: 'Enter a name for this combination',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                for (final d in dimensions)
-                  DimensionWithPriceCard(
-                    dimension: d,
-                    isSelected: _selectedKey == _dimensionKey(d.id, d.name),
-                    priceText:
-                        _priceByDimensionKey[_dimensionKey(d.id, d.name)] ??
-                            '',
-                    onSelect: () {
-                      final key = _dimensionKey(d.id, d.name);
-                      setState(() {
-                        _selectedKey = key;
-                      });
-                    },
-                    onPriceChanged: (value) {
-                      final key = _dimensionKey(d.id, d.name);
-                      setState(() {
-                        _priceByDimensionKey[key] = value;
-                      });
-                    },
-                  ),
-              ],
+            return BlocBuilder<
+              CombinationDimensionCreationCubit,
+              CombinationDimensionCreationState
+            >(
+              builder: (context, state) {
+                return ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  children: [
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: _combinationNameController,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        labelText: 'Combination name',
+                        hintText: 'Enter a name for this combination',
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    for (final d in dimensions)
+                      DimensionWithPriceCard(
+                        dimension: d,
+                        isSelected: state.dimensionsById.containsKey(d.id),
+                        priceText: state.dimensionsById[d.id]?.price ?? '',
+                        onSelect: () {
+                          if (state.dimensionsById.containsKey(d.id)) {
+                            context
+                                .read<CombinationDimensionCreationCubit>()
+                                .removeDimensionEntry(d.id!);
+                          } else {
+                            context
+                                .read<CombinationDimensionCreationCubit>()
+                                .setDimensionEntry(d.id!, d);
+                          }
+                        },
+                        onPriceChanged: (value) => context
+                            .read<CombinationDimensionCreationCubit>()
+                            .updatePrice(d.id!, value),
+                      ),
+                  ],
+                );
+              },
             );
           }
           return const Center(child: CircularProgressIndicator());

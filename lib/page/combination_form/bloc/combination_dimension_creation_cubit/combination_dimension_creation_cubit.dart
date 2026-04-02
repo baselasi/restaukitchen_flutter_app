@@ -39,6 +39,14 @@ class CombinationDimensionCreationCubit
     );
   }
 
+  void removeDimensionEntry(String id) {
+    emit(
+      state.copyWith(
+        dimensionsById: Map.from(state.dimensionsById)..remove(id),
+      ),
+    );
+  }
+
   void updatePrice(String id, String price) {
     final entry = state.dimensionsById[id];
     if (entry == null) return;

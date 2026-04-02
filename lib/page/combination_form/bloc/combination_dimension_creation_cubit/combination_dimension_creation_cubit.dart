@@ -82,6 +82,23 @@ class CombinationDimensionCreationState extends Equatable {
     );
   }
 
+  bool get isValid {
+    if (combinationName == null || combinationName!.trim().isEmpty) {
+      return false;
+    }
+    if (dimensionsById.isEmpty) return false;
+    for (final entry in dimensionsById.values) {
+      final dimensionId = entry.dimension.id;
+      if (dimensionId == null || dimensionId.trim().isEmpty) {
+        return false;
+      }
+      if (double.tryParse(entry.price.trim()) == null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   @override
   List<Object?> get props => [dimensionsById, combinationName];
 }

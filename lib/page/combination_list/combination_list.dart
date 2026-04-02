@@ -4,7 +4,9 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/repository/dimensions_repo.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
+import 'package:restaukitchen_app/page/combination_form/bloc/combination_post_cubit/combination_post_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/combination_dimension_creation_form.dart';
+import 'package:restaukitchen_app/page/combination_form/repository/combination_form_repo.dart';
 
 class CombinationList extends StatelessWidget {
   const CombinationList({super.key});
@@ -25,6 +27,11 @@ class CombinationList extends StatelessWidget {
                   ),
                   BlocProvider(
                     create: (context) => CombinationDimensionCreationCubit(),
+                  ),
+                  BlocProvider(
+                    create: (context) => CombinationPostCubit(
+                      combinationFormRepo: CombinationFormRepo(),
+                    ),
                   ),
                 ],
                 child: CombinationDimensionCreationForm(),

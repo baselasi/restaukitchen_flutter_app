@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/core/models/dimesnion_assignment.dart';
-import 'package:restaukitchen_app/page/combination_page/models/menu_combination.dart';
 import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
 
 class Combination extends Equatable {
@@ -74,3 +73,6 @@ class CombinationResponse extends Equatable {
   @override
   List<Object?> get props => [combination];
 }
+
+
+

@@ -5,8 +5,10 @@ import 'package:restaukitchen_app/core/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
+import 'package:restaukitchen_app/page/combination_form/bloc/combination_post_cubit/combination_post_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/combination_menu_creation_form.dart';
 import 'package:restaukitchen_app/page/combination_form/components/dimension_with_price_card.dart';
+import 'package:restaukitchen_app/page/combination_form/models/create_combination_request.dart';
 
 class CombinationDimensionCreationForm extends StatefulWidget {
   const CombinationDimensionCreationForm({super.key});
@@ -35,6 +37,7 @@ class _CombinationDimensionCreationFormState
 
   @override
   Widget build(BuildContext context) {
+    final formState = context.watch<CombinationDimensionCreationCubit>().state;
     return Scaffold(
       backgroundColor: const Color(0xFFF5F3FF),
       appBar: DetailsAppBar(pageTitle: 'Add Dimension'),
@@ -43,14 +46,26 @@ class _CombinationDimensionCreationFormState
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: PrimaryButton(
+            isDisabled: !formState.isValid,
             text: 'Next',
             onPressed: () {
-              Navigator.of(context).push(
-                PageTransition(
-                  type: PageTransitionType.rightToLeft,
-                  child: CombinationMenuCreationForm(),
-                ),
-              );
+              final postState = context.read<CombinationPostCubit>().state;
+              if (postState.status == CombinationPostStatus.success) {
+                Navigator.of(context).push(
+                  PageTransition(
+                    type: PageTransitionType.rightToLeft,
+                    child: CombinationMenuCreationForm(),
+                  ),
+                );
+                return;
+              } else {
+                if (!formState.isValid) {
+                  return;
+                }
+                context.read<CombinationPostCubit>().createCombination(
+                  CreateCombinationRequest.fromFormState(formState),
+                );
+              }
             },
           ),
         ),
@@ -79,6 +94,9 @@ class _CombinationDimensionCreationFormState
                     TextField(
                       controller: _combinationNameController,
                       textCapitalization: TextCapitalization.words,
+                      onChanged: (value) => context
+                          .read<CombinationDimensionCreationCubit>()
+                          .setCombinationName(value),
                       decoration: const InputDecoration(
                         labelText: 'Combination name',
                         hintText: 'Enter a name for this combination',

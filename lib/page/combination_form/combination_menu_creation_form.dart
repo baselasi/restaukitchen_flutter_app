@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 
 class CombinationMenuCreationForm extends StatelessWidget {
   const CombinationMenuCreationForm({super.key});
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: DetailsAppBar(pageTitle: 'Add Menu'),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: PrimaryButton(text: 'Create Menu', onPressed: () {}),
+        ),
+      ),
+    );
   }
 }

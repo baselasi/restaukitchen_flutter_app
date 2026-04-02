@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/descriptionInput/description_entity.dart';
-import 'package:restaukitchen_app/core/models/dish.dart';
 
 class DescriptionCubit extends Cubit<DescriptionState> {
   List<String> availableLanguages = ['English', 'Spanish', 'French'];

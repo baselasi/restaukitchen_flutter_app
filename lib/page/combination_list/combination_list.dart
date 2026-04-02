@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/bloc/get_dimensions_cubit.dart';
+import 'package:restaukitchen_app/core/repository/dimensions_repo.dart';
 import 'package:restaukitchen_app/page/combination_form/combination_dimension_creation_form.dart';
 
 class CombinationList extends StatelessWidget {
@@ -13,7 +16,15 @@ class CombinationList extends StatelessWidget {
           Navigator.of(context).push(
             PageTransition(
               type: PageTransitionType.rightToLeft,
-              child: CombinationDimensionCreationForm(),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) =>
+                        GetDimensionsCubit(dimensionsRepo: DimensionsRepo()),
+                  ),
+                ],
+                child: CombinationDimensionCreationForm(),
+              ),
             ),
           );
         },

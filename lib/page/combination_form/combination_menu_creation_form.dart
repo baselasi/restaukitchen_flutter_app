@@ -3,7 +3,8 @@ import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 
 class CombinationMenuCreationForm extends StatelessWidget {
-  const CombinationMenuCreationForm({super.key});
+  final String combinationId;
+  const CombinationMenuCreationForm({super.key, required this.combinationId});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

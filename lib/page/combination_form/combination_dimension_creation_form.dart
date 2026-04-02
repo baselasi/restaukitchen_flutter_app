@@ -22,6 +22,7 @@ class _CombinationDimensionCreationFormState
     extends State<CombinationDimensionCreationForm> {
   final TextEditingController _combinationNameController =
       TextEditingController();
+  bool _formHasChanged = false;
 
   @override
   void initState() {
@@ -50,14 +51,20 @@ class _CombinationDimensionCreationFormState
             text: 'Next',
             onPressed: () {
               final postState = context.read<CombinationPostCubit>().state;
-              if (postState.status == CombinationPostStatus.success) {
+              if (postState.status == CombinationPostStatus.success &&
+                  !_formHasChanged) {
                 Navigator.of(context).push(
                   PageTransition(
                     type: PageTransitionType.rightToLeft,
-                    child: CombinationMenuCreationForm(),
+                    child: CombinationMenuCreationForm(
+                      combinationId: postState.combinationResponse!.id,
+                    ),
                   ),
                 );
                 return;
+              } else if (postState.status == CombinationPostStatus.success &&
+                  _formHasChanged) {
+                print('Form has changed');
               } else {
                 if (!formState.isValid) {
                   return;
@@ -71,60 +78,85 @@ class _CombinationDimensionCreationFormState
         ),
       ),
       body: BlocConsumer<GetDimensionsCubit, GetDimensionsState>(
-        builder: (context, state) {
-          if (state.status == GetDimensionsStatus.loading) {
+        builder: (context, dimensionsState) {
+          if (dimensionsState.status == GetDimensionsStatus.loading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state.status == GetDimensionsStatus.error) {
+          if (dimensionsState.status == GetDimensionsStatus.error) {
             return Center(
-              child: Text(state.errorMessage ?? 'Error loading dimensions'),
+              child: Text(
+                dimensionsState.errorMessage ?? 'Error loading dimensions',
+              ),
             );
           }
-          if (state.status == GetDimensionsStatus.loaded) {
-            final dimensions = state.dimensions ?? [];
-            return BlocBuilder<
-              CombinationDimensionCreationCubit,
-              CombinationDimensionCreationState
-            >(
-              builder: (context, state) {
-                return ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  children: [
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: _combinationNameController,
-                      textCapitalization: TextCapitalization.words,
-                      onChanged: (value) => context
-                          .read<CombinationDimensionCreationCubit>()
-                          .setCombinationName(value),
-                      decoration: const InputDecoration(
-                        labelText: 'Combination name',
-                        hintText: 'Enter a name for this combination',
+          if (dimensionsState.status == GetDimensionsStatus.loaded) {
+            final dimensions = dimensionsState.dimensions ?? [];
+            return BlocConsumer<CombinationPostCubit, CombinationPostState>(
+              builder: (context, posState) {
+                if (posState.status == CombinationPostStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return BlocConsumer<
+                  CombinationDimensionCreationCubit,
+                  CombinationDimensionCreationState
+                >(
+                  builder: (context, state) {
+                    return ListView(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      children: [
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _combinationNameController,
+                          textCapitalization: TextCapitalization.words,
+                          onChanged: (value) => context
+                              .read<CombinationDimensionCreationCubit>()
+                              .setCombinationName(value),
+                          decoration: const InputDecoration(
+                            labelText: 'Combination name',
+                            hintText: 'Enter a name for this combination',
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        for (final d in dimensions)
+                          DimensionWithPriceCard(
+                            dimension: d,
+                            isSelected: state.dimensionsById.containsKey(d.id),
+                            priceText: state.dimensionsById[d.id]?.price ?? '',
+                            onSelect: () {
+                              if (state.dimensionsById.containsKey(d.id)) {
+                                context
+                                    .read<CombinationDimensionCreationCubit>()
+                                    .removeDimensionEntry(d.id!);
+                              } else {
+                                context
+                                    .read<CombinationDimensionCreationCubit>()
+                                    .setDimensionEntry(d.id!, d);
+                              }
+                            },
+                            onPriceChanged: (value) => context
+                                .read<CombinationDimensionCreationCubit>()
+                                .updatePrice(d.id!, value),
+                          ),
+                      ],
+                    );
+                  },
+                  listener: (context, state) {
+                    _formHasChanged = true;
+                  },
+                );
+              },
+              listener: (context, state) {
+                if (state.status == CombinationPostStatus.success) {
+                  _formHasChanged = false;
+                  Navigator.of(context).push(
+                    PageTransition(
+                      type: PageTransitionType.rightToLeft,
+                      child: CombinationMenuCreationForm(
+                        combinationId: state.combinationResponse!.id,
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    for (final d in dimensions)
-                      DimensionWithPriceCard(
-                        dimension: d,
-                        isSelected: state.dimensionsById.containsKey(d.id),
-                        priceText: state.dimensionsById[d.id]?.price ?? '',
-                        onSelect: () {
-                          if (state.dimensionsById.containsKey(d.id)) {
-                            context
-                                .read<CombinationDimensionCreationCubit>()
-                                .removeDimensionEntry(d.id!);
-                          } else {
-                            context
-                                .read<CombinationDimensionCreationCubit>()
-                                .setDimensionEntry(d.id!, d);
-                          }
-                        },
-                        onPriceChanged: (value) => context
-                            .read<CombinationDimensionCreationCubit>()
-                            .updatePrice(d.id!, value),
-                      ),
-                  ],
-                );
+                  );
+                }
               },
             );
           }

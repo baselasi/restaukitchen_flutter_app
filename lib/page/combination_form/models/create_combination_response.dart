@@ -1,37 +1,21 @@
-import 'package:equatable/equatable.dart';
+import 'package:restaukitchen_app/core/models/base_post_response.dart';
 
 /// Parsed body returned after creating a combination (POST success).
-class CreateCombinationResponse extends Equatable {
-  final String id;
-  final String name;
-  final String restaurant;
-  final bool deleted;
-
+class CreateCombinationResponse extends BasePostResponse {
   const CreateCombinationResponse({
-    required this.id,
-    required this.name,
-    required this.restaurant,
-    required this.deleted,
+    required super.id,
+    required super.name,
+    required super.restaurant,
+    required super.deleted,
   });
 
   factory CreateCombinationResponse.fromJson(Map<String, dynamic> json) {
+    final base = BasePostResponse.fromJson(json);
     return CreateCombinationResponse(
-      id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      restaurant: json['restaurant'] as String? ?? '',
-      deleted: json['deleted'] as bool? ?? false,
+      id: base.id,
+      name: base.name,
+      restaurant: base.restaurant,
+      deleted: base.deleted,
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'restaurant': restaurant,
-      'deleted': deleted,
-    };
-  }
-
-  @override
-  List<Object?> get props => [id, name, restaurant, deleted];
 }

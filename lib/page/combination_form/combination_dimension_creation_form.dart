@@ -65,6 +65,14 @@ class _CombinationDimensionCreationFormState
               } else if (postState.status == CombinationPostStatus.success &&
                   _formHasChanged) {
                 print('Form has changed');
+                Navigator.of(context).push(
+                  PageTransition(
+                    type: PageTransitionType.rightToLeft,
+                    child: CombinationMenuCreationForm(
+                      combinationId: postState.combinationResponse!.id,
+                    ),
+                  ),
+                );
               } else {
                 if (!formState.isValid) {
                   return;

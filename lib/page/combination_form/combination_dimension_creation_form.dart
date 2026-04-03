@@ -5,6 +5,7 @@ import 'package:restaukitchen_app/core/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
+import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_post_cubit/combination_post_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/combination_menu_creation_form.dart';
 import 'package:restaukitchen_app/page/combination_form/components/dimension_with_price_card.dart';
@@ -56,20 +57,25 @@ class _CombinationDimensionCreationFormState
                 Navigator.of(context).push(
                   PageTransition(
                     type: PageTransitionType.rightToLeft,
-                    child: CombinationMenuCreationForm(
-                      combinationId: postState.combinationResponse!.id,
+                    child: BlocProvider.value(
+                      value: context.read<CombinationMenuCreationFormCubit>(),
+                      child: CombinationMenuCreationForm(
+                        combinationId: postState.combinationResponse!.id,
+                      ),
                     ),
                   ),
                 );
                 return;
               } else if (postState.status == CombinationPostStatus.success &&
                   _formHasChanged) {
-                print('Form has changed');
                 Navigator.of(context).push(
                   PageTransition(
                     type: PageTransitionType.rightToLeft,
-                    child: CombinationMenuCreationForm(
-                      combinationId: postState.combinationResponse!.id,
+                    child: BlocProvider.value(
+                      value: context.read<CombinationMenuCreationFormCubit>(),
+                      child: CombinationMenuCreationForm(
+                        combinationId: postState.combinationResponse!.id,
+                      ),
                     ),
                   ),
                 );
@@ -159,8 +165,11 @@ class _CombinationDimensionCreationFormState
                   Navigator.of(context).push(
                     PageTransition(
                       type: PageTransitionType.rightToLeft,
-                      child: CombinationMenuCreationForm(
-                        combinationId: state.combinationResponse!.id,
+                      child: BlocProvider.value(
+                        value: context.read<CombinationMenuCreationFormCubit>(),
+                        child: CombinationMenuCreationForm(
+                          combinationId: state.combinationResponse!.id,
+                        ),
                       ),
                     ),
                   );

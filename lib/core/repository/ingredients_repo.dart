@@ -23,4 +23,18 @@ class IngredientsRepo {
       throw Exception(e);
     }
   }
+
+  Future<void> addIngredientsToMenu(
+    String menuId,
+    List<String> ingredients,
+  ) async {
+    try {
+      await getIt<ApiService>().postRawPayload(
+        '/api/create-ingredients/$menuId',
+        jsonEncode(ingredients),
+      );
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

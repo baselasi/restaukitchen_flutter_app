@@ -91,6 +91,25 @@ class ApiService {
     }
   }
 
+  // Private POST - Token required
+  Future<http.Response> postRawPayload(
+    String endpoint,
+    String body,
+  ) async {
+    try {
+      final url = Uri.parse('$_baseUrl$endpoint');
+      final headers = await _getHeadersWithToken();
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // Private PUT - Token required
   Future<http.Response> putPrivate(
     String endpoint,

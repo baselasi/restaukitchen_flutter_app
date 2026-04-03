@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/bloc/get_dimensions_cubit.dart';
+import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
@@ -57,8 +58,16 @@ class _CombinationDimensionCreationFormState
                 Navigator.of(context).push(
                   PageTransition(
                     type: PageTransitionType.rightToLeft,
-                    child: BlocProvider.value(
-                      value: context.read<CombinationMenuCreationFormCubit>(),
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: context
+                              .read<CombinationMenuCreationFormCubit>(),
+                        ),
+                        BlocProvider(
+                          create: (context) => GetIngredientsCubit(),
+                        ),
+                      ],
                       child: CombinationMenuCreationForm(
                         combinationId: postState.combinationResponse!.id,
                       ),
@@ -71,8 +80,16 @@ class _CombinationDimensionCreationFormState
                 Navigator.of(context).push(
                   PageTransition(
                     type: PageTransitionType.rightToLeft,
-                    child: BlocProvider.value(
-                      value: context.read<CombinationMenuCreationFormCubit>(),
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: context
+                              .read<CombinationMenuCreationFormCubit>(),
+                        ),
+                        BlocProvider(
+                          create: (context) => GetIngredientsCubit(),
+                        ),
+                      ],
                       child: CombinationMenuCreationForm(
                         combinationId: postState.combinationResponse!.id,
                       ),
@@ -165,8 +182,16 @@ class _CombinationDimensionCreationFormState
                   Navigator.of(context).push(
                     PageTransition(
                       type: PageTransitionType.rightToLeft,
-                      child: BlocProvider.value(
-                        value: context.read<CombinationMenuCreationFormCubit>(),
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(
+                            value: context
+                                .read<CombinationMenuCreationFormCubit>(),
+                          ),
+                          BlocProvider(
+                            create: (context) => GetIngredientsCubit(),
+                          ),
+                        ],
                         child: CombinationMenuCreationForm(
                           combinationId: state.combinationResponse!.id,
                         ),

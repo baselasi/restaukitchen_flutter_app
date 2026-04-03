@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/bloc/add_ingredents_to_menu_cubit.dart';
+import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
+import 'package:restaukitchen_app/page/combination_form/components/add_ingredients_page.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 /// Card for a single combination menu group: dishes, optional ingredients, actions.
@@ -248,7 +253,30 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: FilledButton.icon(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final ingredients = await Navigator.of(context).push(
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: BlocProvider.value(
+                              value: context.read<GetIngredientsCubit>(),
+                              child: BlocProvider(
+                                create: (context) => AddIngredientsToMenuCubit(
+                                  ingredientsRepo: IngredientsRepo(),
+                                ),
+                                child: AddIngredientsPage(
+                                  initialSelected: menu.ingredients,
+                                  menuId: menu.id,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                        if (ingredients != null) {
+                          context
+                              .read<CombinationMenuCreationFormCubit>()
+                              .addIngredientToMenu(menu.id, ingredients);
+                        }
+                      },
                       icon: const Icon(Icons.tune, size: 20),
                       label: const Text('Add Ingredients'),
                       style: FilledButton.styleFrom(

@@ -6,9 +6,11 @@ import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
+import 'package:restaukitchen_app/page/combination_form/bloc/add_dishes_to_menu_cubit/add_dishes_to_menu_combination_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/components/add_dishes_page.dart';
 import 'package:restaukitchen_app/page/combination_form/components/add_ingredients_page.dart';
+import 'package:restaukitchen_app/page/combination_form/repository/combination_form_repo.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
@@ -64,6 +66,11 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
             BlocProvider(create: (context) => MenusPageBloc()),
             BlocProvider.value(
               value: context.read<CombinationMenuCreationFormCubit>(),
+            ),
+            BlocProvider(
+              create: (context) => AddDishesToMenuCombinationCubit(
+                combinationFormRepo: CombinationFormRepo(),
+              ),
             ),
           ],
           child: AddDishesPageToCombinationsPage(

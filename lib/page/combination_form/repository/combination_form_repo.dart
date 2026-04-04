@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:restaukitchen_app/core/models/base_post_response.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
+import 'package:restaukitchen_app/page/combination_form/models/add_dishes_to_combiantions_request.dart';
 import 'package:restaukitchen_app/page/combination_form/models/create_combination_request.dart';
 import 'package:restaukitchen_app/page/combination_form/models/create_combination_response.dart';
 import 'package:restaukitchen_app/page/combination_form/models/create_menu_combination_request.dart';
@@ -32,6 +33,17 @@ class CombinationFormRepo {
         payload.toJson(),
       );
       return BasePostResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addDishesToMenu(AddDishesToCombiantionsRequest payload) async {
+    try {
+      await _apiService.postPrivate(
+        '/api/create-dish-combination',
+        payload.toJson(),
+      );
     } catch (e) {
       rethrow;
     }

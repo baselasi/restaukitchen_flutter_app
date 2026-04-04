@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/page/combination_form/bloc/add_dishes_to_menu_cubit/add_dishes_to_menu_combination_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_events.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_state.dart';
@@ -56,14 +57,17 @@ class _AddDishesPageToCombinationsPageState
           child: PrimaryButton(
             text: 'Save Order',
             onPressed: () {
-              Navigator.of(context).pop(_selectedDishes);
+              context.read<AddDishesToMenuCombinationCubit>().addDishesToMenu(
+                widget.combinationId,
+                _selectedDishes.toList(),
+              );
             },
           ),
         ),
       ),
       appBar: DetailsAppBar(pageTitle: 'Add Dishes'),
       body: BlocBuilder<MenusPageBloc, MenusPageState>(
-        builder: (context, state) {
+        builder: (context, getMenuState) {
           return RefreshIndicator(
             onRefresh: () async {
               final state = context.read<MenusPageBloc>().state;
@@ -77,38 +81,61 @@ class _AddDishesPageToCombinationsPageState
                 );
               }
             },
-            child: CustomScrollView(
-              slivers: [
-                if (state is MenusPageLoaded) ...[
-                  SliverAppBar(
-                    automaticallyImplyLeading: false,
-                    pinned: true,
-                    floating: false,
-                    elevation: 8,
-                    backgroundColor: Colors.white,
-                    flexibleSpace: MenusScrollBar(
-                      menus: state.menus
-                          .map((menu) => menu.toMenuScrollBarItem())
-                          .toList(),
-                      selectedMenuIndex: state.selectedMenu,
-                      onMenuSelected: (index) {
-                        context.read<MenusPageBloc>().add(
-                          ChangeMenu(menuIndex: index, menus: state.menus),
-                        );
-                      },
-                    ),
-                  ),
-                  ..._buildDishesSlivers(state, _selectedDishes),
-                ],
-                if (state is MenusPageLoading)
-                  SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-                // SliverAppBar (top bar)
-                if (state is MenusPageError)
-                  SliverFillRemaining(child: Center(child: Text(state.error))),
-              ],
-            ),
+            child:
+                BlocConsumer<
+                  AddDishesToMenuCombinationCubit,
+                  AddDishesToMenuCombinationState
+                >(
+                  builder: (context, postDishesState) {
+                    if (postDishesState.status ==
+                        AddDishesToMenuCombinationStatus.loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return CustomScrollView(
+                      slivers: [
+                        if (getMenuState is MenusPageLoaded) ...[
+                          SliverAppBar(
+                            automaticallyImplyLeading: false,
+                            pinned: true,
+                            floating: false,
+                            elevation: 8,
+                            backgroundColor: Colors.white,
+                            flexibleSpace: MenusScrollBar(
+                              menus: getMenuState.menus
+                                  .map((menu) => menu.toMenuScrollBarItem())
+                                  .toList(),
+                              selectedMenuIndex: getMenuState.selectedMenu,
+                              onMenuSelected: (index) {
+                                context.read<MenusPageBloc>().add(
+                                  ChangeMenu(
+                                    menuIndex: index,
+                                    menus: getMenuState.menus,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          ..._buildDishesSlivers(getMenuState, _selectedDishes),
+                        ],
+                        if (getMenuState is MenusPageLoading)
+                          SliverFillRemaining(
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        // SliverAppBar (top bar)
+                        if (getMenuState is MenusPageError)
+                          SliverFillRemaining(
+                            child: Center(child: Text(getMenuState.error)),
+                          ),
+                      ],
+                    );
+                  },
+                  listener: (context, postDishesState) {
+                    if (postDishesState.status ==
+                        AddDishesToMenuCombinationStatus.success) {
+                      Navigator.of(context).pop(_selectedDishes);
+                    }
+                  },
+                ),
           );
         },
       ),

@@ -27,7 +27,7 @@ class MenusScrollBar extends StatelessWidget {
           final isSelected = index == selectedMenuIndex;
 
           return Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: 16),
             child: InkWell(
               onTap: () {
                 onMenuSelected(index);
@@ -35,7 +35,7 @@ class MenusScrollBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
+                  horizontal: 16,
                 ),
                 decoration: BoxDecoration(
                   color: isSelected ? LightTheme.secondaryColor : Colors.white,

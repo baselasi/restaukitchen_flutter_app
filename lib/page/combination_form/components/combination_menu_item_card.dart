@@ -7,7 +7,9 @@ import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
+import 'package:restaukitchen_app/page/combination_form/components/add_dishes_page.dart';
 import 'package:restaukitchen_app/page/combination_form/components/add_ingredients_page.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 /// Card for a single combination menu group: dishes, optional ingredients, actions.
@@ -26,7 +28,6 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
 
   static const Color _labelColor = Color(0xFF6B7280);
   static const Color _dishRowBg = Color(0xFFEDEAF7);
-  static const Color _secondaryButtonBg = Color(0xFFE8E4F3);
   static const Color _badgeBg = Color(0xFFE5E7EB);
 
   Future<void> _addIngredients() async {
@@ -50,6 +51,33 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
       context.read<CombinationMenuCreationFormCubit>().addIngredientToMenu(
         widget.menu.id,
         ingredients,
+      );
+    }
+  }
+
+  Future<void> _addDishes() async {
+    final dishes = await Navigator.of(context).push(
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => MenusPageBloc()),
+            BlocProvider.value(
+              value: context.read<CombinationMenuCreationFormCubit>(),
+            ),
+          ],
+          child: AddDishesPageToCombinationsPage(
+            combinationId: widget.menu.id,
+            initialSelectedDishes: widget.menu.dishes,
+          ),
+        ),
+      ),
+    );
+    if (dishes != null && mounted) {
+      final dishesList = dishes.toList();
+      context.read<CombinationMenuCreationFormCubit>().addDishToMenu(
+        widget.menu.id,
+        dishesList,
       );
     }
   }
@@ -231,7 +259,9 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                   children: [
                     Expanded(
                       child: OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          _addDishes();
+                        },
                         icon: Icon(Icons.add_circle_outline, color: primary),
                         label: Text(
                           'Add Dishes',

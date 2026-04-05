@@ -28,37 +28,12 @@ class HomePage extends StatelessWidget {
                 // Handle QR code generation
               },
             ),
-            const SizedBox(height: 12),
-            _buildActionButton(
-              context,
-              title: 'Gestisci menu',
-              icon: Icons.restaurant_menu,
-              color: LightTheme.primaryColor,
-              textColor: Colors.white,
-              onTap: () {
-                // Handle menu management
-              },
-            ),
-            const SizedBox(height: 12),
-            _buildActionButton(
-              context,
-              title: 'Impostazioni',
-              icon: Icons.settings,
-              color: Colors.green,
-              textColor: Colors.white,
-              onTap: () {
-                // Handle settings
-              },
-            ),
             const SizedBox(height: 24),
             // Tavoli Card
             _buildTavoliCard(context),
             const SizedBox(height: 16),
             // Ordine Card
             _buildOrdineCard(context),
-            const SizedBox(height: 16),
-            // Staff Card
-            _buildStaffCard(context),
             const SizedBox(height: 16),
           ],
         ),
@@ -103,160 +78,24 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildTavoliCard(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Icon and Title
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: LightTheme.primaryColor.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.table_restaurant,
-                    color: LightTheme.primaryColor,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Tavoli',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            // Tables Count (Free and Occupied)
-            const TablesCountWidget(),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(16),
       ),
+      child: const TablesCountWidget(),
     );
   }
 
   Widget _buildOrdineCard(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Icon and Title
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: LightTheme.primaryColor.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.receipt_long,
-                    color: LightTheme.primaryColor,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Ordine',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            // Order Count
-            const OrderCountWidget(),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(16),
       ),
-    );
-  }
-
-  Widget _buildStaffCard(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Icon and Title
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: LightTheme.primaryColor.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.people,
-                    color: LightTheme.primaryColor,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Staff',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            // Staff Button
-            Material(
-              color: Colors.purple[100],
-              borderRadius: BorderRadius.circular(8),
-              child: InkWell(
-                onTap: () {
-                  // Handle staff management
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  child: Center(
-                    child: Text(
-                      'Staff',
-                      style: TextStyle(
-                        color: Colors.purple[700],
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      child: const OrderCountWidget(),
     );
   }
 }
@@ -278,90 +117,157 @@ class _TablesCountWidgetState extends State<TablesCountWidget> {
 
   @override
   Widget build(BuildContext context) {
+    const titleColor = Color(0xFF212121);
+    const subtitleColor = Color(0xFF757575);
+    const freeGreen = Color(0xFF4CAF50);
+
     return BlocBuilder<TableCountCubit, TableCountState>(
       builder: (context, state) {
         final freeCount = state.tableCount?.freeTable ?? 0;
         final occupiedCount = state.tableCount?.occupiedTable ?? 0;
+        final totalTables =
+            state.tableCount?.totalTables ?? (freeCount + occupiedCount);
         final isLoading = state.status == TableCountStatus.loading;
 
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Free Tables
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.green[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Liberi:',
-                    style: TextStyle(
-                      color: Colors.green[700],
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Disponibilità tavoli',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: titleColor,
                   ),
-                  if (isLoading)
-                    const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  else
-                    Text(
-                      '$freeCount',
-                      style: TextStyle(
-                        color: Colors.green[700],
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                ],
-              ),
+                ),
+                Text(
+                  isLoading ? '…' : '$totalTables tavoli totali',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: subtitleColor,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            // Occupied Tables
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.red[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 128,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'Occupati:',
-                    style: TextStyle(
-                      color: Colors.red[700],
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                  Expanded(
+                    child: _TableAvailabilityStatCard(
+                      indicatorColor: freeGreen,
+                      label: 'LIBERI',
+                      count: freeCount,
+                      numberColor: titleColor,
+                      isLoading: isLoading,
                     ),
                   ),
-                  if (isLoading)
-                    const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  else
-                    Text(
-                      '$occupiedCount',
-                      style: TextStyle(
-                        color: Colors.red[700],
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _TableAvailabilityStatCard(
+                      indicatorColor: Colors.red,
+                      label: 'OCCUPATI',
+                      count: occupiedCount,
+                      numberColor: Colors.red,
+                      isLoading: isLoading,
                     ),
+                  ),
                 ],
               ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class _TableAvailabilityStatCard extends StatelessWidget {
+  const _TableAvailabilityStatCard({
+    required this.indicatorColor,
+    required this.label,
+    required this.count,
+    required this.numberColor,
+    required this.isLoading,
+  });
+
+  final Color indicatorColor;
+  final String label;
+  final int count;
+  final Color numberColor;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    const labelStyle = TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.6,
+      color: Color(0xFF757575),
+    );
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE0E0E0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: indicatorColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(label, style: labelStyle),
+            ],
+          ),
+          Expanded(
+            child: Center(
+              child: isLoading
+                  ? SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: indicatorColor,
+                      ),
+                    )
+                  : Text(
+                      count.toString().padLeft(1, '0'),
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: numberColor,
+                        height: 1,
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -383,41 +289,51 @@ class _OrderCountWidgetState extends State<OrderCountWidget> {
 
   @override
   Widget build(BuildContext context) {
+    const titleColor = Color(0xFF212121);
+    const subtitleColor = Color(0xFF757575);
+
     return BlocBuilder<OrdersCountCubit, OrdersCountState>(
       builder: (context, state) {
         final ordersCount = state.ordersCount ?? 0;
+        final isLoading = state.status == OrdersCountStatus.loading;
 
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          decoration: BoxDecoration(
-            color: Colors.orange[50],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Aperti:',
-                style: TextStyle(
-                  color: Colors.orange[700],
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-
-              if (state.status == OrdersCountStatus.loading)
-                const CircularProgressIndicator()
-              else
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
                 Text(
-                  '$ordersCount',
+                  'Ordini',
                   style: TextStyle(
-                    color: Colors.orange[700],
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: titleColor,
                   ),
                 ),
-            ],
-          ),
+                Text(
+                  isLoading ? '…' : '$ordersCount ordini aperti',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: subtitleColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 128,
+              child: _TableAvailabilityStatCard(
+                indicatorColor: Colors.red,
+                label: 'APERTI',
+                count: ordersCount,
+                numberColor: Colors.red,
+                isLoading: isLoading,
+              ),
+            ),
+          ],
         );
       },
     );

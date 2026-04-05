@@ -30,7 +30,6 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       child: AppBar(
         backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
         elevation: 0,
         centerTitle: true,
         title: Column(

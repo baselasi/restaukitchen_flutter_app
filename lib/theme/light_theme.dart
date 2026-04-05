@@ -27,7 +27,7 @@ class LightTheme {
         centerTitle: true,
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: primaryColor),
       ),
       cardTheme: CardThemeData(
         elevation: 2,

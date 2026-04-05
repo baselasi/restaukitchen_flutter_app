@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/repository/dimensions_repo.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
@@ -8,9 +9,24 @@ import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_cr
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_post_cubit/combination_post_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/combination_dimension_creation_form.dart';
 import 'package:restaukitchen_app/page/combination_form/repository/combination_form_repo.dart';
+import 'package:restaukitchen_app/page/combination_list/bloc/combination_get_cubit/combination_get_list_cubit.dart';
+import 'package:restaukitchen_app/page/combination_list/components/combination_list_item_card.dart';
 
-class CombinationList extends StatelessWidget {
+class CombinationList extends StatefulWidget {
   const CombinationList({super.key});
+
+  @override
+  State<CombinationList> createState() => _CombinationListState();
+}
+
+class _CombinationListState extends State<CombinationList> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CombinationGetListCubit>().getCombinations(
+      context.read<AuthCubit>().state.user?.restaurant ?? "",
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +61,28 @@ class CombinationList extends StatelessWidget {
         },
         child: Icon(Icons.add),
       ),
-      body: Column(children: [Text('Combinations')]),
+      body: BlocConsumer<CombinationGetListCubit, CombinationGetListState>(
+        builder: (context, state) {
+          if (state.status == CombinationGetListStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state.status == CombinationGetListStatus.error) {
+            return Center(child: Text(state.errorMessage ?? 'Error'));
+          }
+          if (state.status == CombinationGetListStatus.loaded) {
+            final list = state.combinations!;
+            return ListView.builder(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                return CombinationListItemCard(item: list[index]);
+              },
+            );
+          }
+          return const SizedBox.shrink();
+        },
+        listener: (context, state) {},
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/page/combination_list/bloc/delete_combination_cubit/delete_combination_cubit.dart';
 import 'package:restaukitchen_app/page/combination_list/models/combination_list_item.dart';
+import 'package:restaukitchen_app/core/widgets/square_action_button.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 /// Horizontal card: image + "Change image", title, price range, action icon buttons.
@@ -119,7 +120,7 @@ class CombinationListItemCard extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              _SquareActionButton(
+                              SquareActionButton(
                                 child: Icon(
                                   Icons.delete_outline_rounded,
                                   size: 22,
@@ -132,7 +133,7 @@ class CombinationListItemCard extends StatelessWidget {
                                 },
                               ),
                               const SizedBox(width: 8),
-                              _SquareActionButton(
+                              SquareActionButton(
                                 onTap: onEdit,
                                 child: Icon(
                                   Icons.edit_outlined,
@@ -166,26 +167,6 @@ class CombinationListItemCard extends StatelessWidget {
             },
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SquareActionButton extends StatelessWidget {
-  final Widget child;
-  final VoidCallback? onTap;
-
-  const _SquareActionButton({required this.child, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: SizedBox(width: 44, height: 44, child: Center(child: child)),
       ),
     );
   }

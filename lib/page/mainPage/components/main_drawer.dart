@@ -8,23 +8,26 @@ import 'package:restaukitchen_app/theme/light_theme.dart';
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
 
-  // Get icon for each page
+  static const Color _textDark = Color(0xFF333333);
+  static const Color _textMuted = Color(0xFF888888);
+  static const Color _borderLight = Color(0xFFE0E0E0);
+  static const Color _pillBg = Color(0xFFEEEEEE);
+
   IconData _getPageIcon(Pages page) {
     switch (page) {
       case Pages.home:
-        return Icons.home;
+        return Icons.home_outlined;
       case Pages.menus:
-        return Icons.menu;
+        return Icons.restaurant_menu;
       case Pages.orders:
-        return Icons.card_giftcard;
+        return Icons.receipt_long_outlined;
       case Pages.tables:
-        return Icons.table_restaurant;
+        return Icons.table_restaurant_outlined;
       case Pages.combinations:
-        return Icons.menu;
+        return Icons.layers_outlined;
     }
   }
 
-  // Get label for each page
   String _getPageLabel(Pages page) {
     switch (page) {
       case Pages.home:
@@ -50,76 +53,115 @@ class MainDrawer extends StatelessWidget {
         final currentPage = state.page;
 
         return Drawer(
-          child: Container(
-            color: LightTheme.primaryColor,
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(16),
+              bottomRight: Radius.circular(16),
+            ),
+            side: BorderSide(color: _borderLight, width: 1),
+          ),
+          child: SafeArea(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(16),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 1, 30, 1),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
+                      ),
                     ),
-                  ),
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    height: 150,
-                    fit: BoxFit.contain,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 90,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
-                // Menu Items
                 Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(16),
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     itemCount: Pages.values.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 4),
                     itemBuilder: (context, index) {
                       final page = Pages.values[index];
                       final isSelected = page == currentPage;
 
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: isSelected
-                              ? LightTheme.secondaryColor
-                              : Colors.transparent,
-                        ),
+                      return Material(
+                        color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
                             mainPageCubit.setPage(page);
                             Navigator.pop(context);
                           },
+                          borderRadius: BorderRadius.circular(24),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  _getPageIcon(page),
-                                  color: isSelected
-                                      ? LightTheme.primaryColor
-                                      : LightTheme.secondaryColor,
-                                  size: 30,
-                                ),
-                                const SizedBox(width: 16),
-                                Text(
-                                  _getPageLabel(page),
-                                  style: TextStyle(
-                                    color: isSelected
-                                        ? LightTheme.primaryColor
-                                        : LightTheme.secondaryColor,
-                                    fontSize: 24,
-                                    fontWeight: isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.normal,
+                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            child: IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Container(
+                                    width: 4,
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? LightTheme.primaryColor
+                                          : Colors.transparent,
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(2),
+                                        bottomLeft: Radius.circular(2),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isSelected ? _pillBg : null,
+                                        borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(24),
+                                          bottomRight: Radius.circular(24),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            _getPageIcon(page),
+                                            color: isSelected
+                                                ? LightTheme.primaryColor
+                                                : _textMuted,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            _getPageLabel(page),
+                                            style: TextStyle(
+                                              color: isSelected
+                                                  ? LightTheme.primaryColor
+                                                  : _textMuted,
+                                              fontSize: 16,
+                                              fontWeight: isSelected
+                                                  ? FontWeight.w600
+                                                  : FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -127,32 +169,26 @@ class MainDrawer extends StatelessWidget {
                     },
                   ),
                 ),
-                // Logout Button
-                Container(
-                  padding: const EdgeInsets.all(16),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
                   child: InkWell(
                     onTap: () {
                       authCubit.logout();
                       Navigator.pop(context);
                     },
+                    borderRadius: BorderRadius.circular(8),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Row(
                         children: [
-                          const Icon(
-                            Icons.exit_to_app,
-                            color: LightTheme.secondaryColor,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 16),
-                          const Text(
+                          Icon(Icons.logout, color: _textMuted, size: 22),
+                          const SizedBox(width: 12),
+                          Text(
                             'Esci',
                             style: TextStyle(
-                              color: LightTheme.secondaryColor,
-                              fontSize: 24,
+                              color: _textMuted,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],

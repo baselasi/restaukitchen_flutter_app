@@ -207,10 +207,7 @@ class _SheetBody extends StatelessWidget {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text(
-            'No menus configured',
-            style: TextStyle(color: Colors.grey[600]),
-          ),
+          child: Text('No menus', style: TextStyle(color: Colors.grey[600])),
         ),
       );
     }

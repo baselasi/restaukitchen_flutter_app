@@ -1,59 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String pageTitle;
   const DetailsAppBar({super.key, required this.pageTitle});
 
   @override
-  Size get preferredSize => const Size.fromHeight(65);
+  Size get preferredSize => const Size.fromHeight(50);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    // final pageTitle = getPageTitle(page);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          bottom: BorderSide(color: LightTheme.primaryColor, width: 1),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: LightTheme.primaryColor.withValues(alpha: 0.2),
-            blurRadius: 4,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        centerTitle: true,
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Logo
-            Image.asset(
-              'assets/images/logo.png',
-              height: 25,
-              fit: BoxFit.contain,
-            ),
-            DefaultTextStyle(
-              style:
-                  theme.textTheme.titleSmall?.copyWith(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ) ??
-                  const TextStyle(color: Colors.black, fontSize: 14),
-              child: Text(pageTitle),
-            ),
-          ],
-        ),
-      ),
+    return AppBar(
+      elevation: 0,
+      centerTitle: false,
+      title: Text(pageTitle),
+      iconTheme: IconThemeData(color: Colors.white, size: 24),
     );
   }
 }

@@ -12,9 +12,9 @@ class OrderActionsCubit extends Cubit<OrderActionsState> {
     emit(OrderActionsState.loading());
     try {
       await _ordersListRepo.deleteOrder(orderId);
-      emit(OrderActionsState.success());
+      if (!isClosed) emit(OrderActionsState.success());
     } catch (e) {
-      emit(OrderActionsState.error(e.toString()));
+      if (!isClosed) emit(OrderActionsState.error(e.toString()));
     }
   }
 
@@ -22,9 +22,9 @@ class OrderActionsCubit extends Cubit<OrderActionsState> {
     emit(OrderActionsState.loading());
     try {
       await _ordersListRepo.archiveOrder(orderId);
-      emit(OrderActionsState.success());
+      if (!isClosed) emit(OrderActionsState.success());
     } catch (e) {
-      emit(OrderActionsState.error(e.toString()));
+      if (!isClosed) emit(OrderActionsState.error(e.toString()));
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/models/ingredients.dart';
 import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 
 class AddIngredientsToMenuCubit extends Cubit<AddIngredientsToMenuState> {
@@ -10,15 +11,28 @@ class AddIngredientsToMenuCubit extends Cubit<AddIngredientsToMenuState> {
 
   Future<void> addIngredientsToMenu(
     String menuId,
-    List<String> ingredients,
+    List<String> ingredientsIds,
   ) async {
-    emit(AddIngredientsToMenuState.loading(ingredients));
+    emit(AddIngredientsToMenuState.loading(ingredientsIds));
     try {
-      await _ingredientsRepo.addIngredientsToMenu(menuId, ingredients);
-      if (!isClosed) emit(AddIngredientsToMenuState.success(ingredients));
+      final response = await _ingredientsRepo.addIngredientsToMenu(
+        menuId,
+        ingredientsIds,
+      );
+
+      // final List<Ingredient> ingredients = response.ingredients
+      //     .where((ingredient) => ingredient.hasDimensionIds(dimensionIds))
+      //     .toList();
+      if (!isClosed) {
+        emit(
+          AddIngredientsToMenuState.success(
+            response.ingredients.map((e) => e.id!).toList(),
+          ),
+        );
+      }
     } catch (e) {
       if (!isClosed) {
-        emit(AddIngredientsToMenuState.error(ingredients, e.toString()));
+        emit(AddIngredientsToMenuState.error(ingredientsIds, e.toString()));
       }
     }
   }

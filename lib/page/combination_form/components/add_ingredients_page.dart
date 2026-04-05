@@ -10,7 +10,9 @@ import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class AddIngredientsPage extends StatefulWidget {
   final String menuId;
+  final List<String> combinationDimensionIds;
   const AddIngredientsPage({
+    required this.combinationDimensionIds,
     super.key,
     required this.menuId,
     this.initialSelected = const [],
@@ -34,6 +36,7 @@ class _AddIngredientsPageState extends State<AddIngredientsPage> {
         GetIngredientsStatus.loaded) {
       context.read<GetIngredientsCubit>().getIngredientsByRestaurantId(
         context.read<AuthCubit>().state.user!.restaurant!,
+        dimensionIds: widget.combinationDimensionIds,
       );
     }
   }

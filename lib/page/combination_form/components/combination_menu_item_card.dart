@@ -19,8 +19,12 @@ import 'package:restaukitchen_app/theme/light_theme.dart';
 /// Card for a single combination menu group: dishes, optional ingredients, actions.
 class CombinationMenuItemCard extends StatefulWidget {
   final CombinationMenuModel menu;
-
-  const CombinationMenuItemCard({super.key, required this.menu});
+  final List<String> combinationDimensionIds;
+  const CombinationMenuItemCard({
+    super.key,
+    required this.menu,
+    required this.combinationDimensionIds,
+  });
 
   @override
   State<CombinationMenuItemCard> createState() =>
@@ -38,14 +42,15 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
     final ingredients = await Navigator.of(context).push(
       PageTransition(
         type: PageTransitionType.rightToLeft,
-        child: BlocProvider.value(
-          value: context.read<GetIngredientsCubit>(),
+        child: BlocProvider(
+          create: (context) => GetIngredientsCubit(),
           child: BlocProvider(
             create: (context) =>
                 AddIngredientsToMenuCubit(ingredientsRepo: IngredientsRepo()),
             child: AddIngredientsPage(
               initialSelected: widget.menu.ingredients,
               menuId: widget.menu.id,
+              combinationDimensionIds: widget.combinationDimensionIds,
             ),
           ),
         ),

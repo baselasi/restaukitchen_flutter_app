@@ -43,8 +43,9 @@ class _CombinationDimensionCreationFormState
   void _navigateToMenuCreationForm(
     String combinationId,
     CombinationPostState postState,
-  ) {
-    Navigator.of(context).push(
+    List<String> combinationDimensionIds,
+  ) async {
+    final result = await Navigator.of(context).push(
       PageTransition(
         type: PageTransitionType.rightToLeft,
         child: MultiBlocProvider(
@@ -52,7 +53,7 @@ class _CombinationDimensionCreationFormState
             BlocProvider.value(
               value: context.read<CombinationMenuCreationFormCubit>(),
             ),
-            BlocProvider(create: (context) => GetIngredientsCubit()),
+          
             BlocProvider(
               create: (context) => AddDishesToMenuCombinationCubit(
                 combinationFormRepo: CombinationFormRepo(),
@@ -61,10 +62,14 @@ class _CombinationDimensionCreationFormState
           ],
           child: CombinationMenuCreationForm(
             combinationId: postState.combinationResponse!.id,
+            combinationDimensionIds: combinationDimensionIds,
           ),
         ),
       ),
     );
+    if (result != null && mounted) {
+      Navigator.of(context).pop(true);
+    }
   }
 
   @override
@@ -87,6 +92,9 @@ class _CombinationDimensionCreationFormState
                 _navigateToMenuCreationForm(
                   postState.combinationResponse!.id,
                   postState,
+                  formState.dimensionsById.values
+                      .map((e) => e.dimension.id!)
+                      .toList(),
                 );
                 return;
               } else if (postState.status == CombinationPostStatus.success &&
@@ -94,6 +102,9 @@ class _CombinationDimensionCreationFormState
                 _navigateToMenuCreationForm(
                   postState.combinationResponse!.id,
                   postState,
+                  formState.dimensionsById.values
+                      .map((e) => e.dimension.id!)
+                      .toList(),
                 );
               } else {
                 if (!formState.isValid) {
@@ -181,6 +192,9 @@ class _CombinationDimensionCreationFormState
                   _navigateToMenuCreationForm(
                     state.combinationResponse!.id,
                     state,
+                    formState.dimensionsById.values
+                        .map((e) => e.dimension.id!)
+                        .toList(),
                   );
                 }
               },

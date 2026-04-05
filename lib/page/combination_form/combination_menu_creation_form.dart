@@ -12,7 +12,12 @@ import 'package:restaukitchen_app/page/menusPage/repository/menus_page_repo.dart
 
 class CombinationMenuCreationForm extends StatelessWidget {
   final String combinationId;
-  const CombinationMenuCreationForm({super.key, required this.combinationId});
+  final List<String> combinationDimensionIds;
+  const CombinationMenuCreationForm({
+    super.key,
+    required this.combinationId,
+    required this.combinationDimensionIds,
+  });
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -45,6 +50,7 @@ class CombinationMenuCreationForm extends StatelessWidget {
                               DeleteMenuCubit(menusPageRepo: MenusPageRepo()),
                           child: CombinationMenuItemCard(
                             key: ValueKey(menu.id),
+                            combinationDimensionIds: combinationDimensionIds,
                             menu: menu,
                           ),
                         ),
@@ -56,7 +62,12 @@ class CombinationMenuCreationForm extends StatelessWidget {
                   top: false,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                    child: PrimaryButton(text: 'Create Menu', onPressed: () {}),
+                    child: PrimaryButton(
+                      text: 'Done',
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
                   ),
                 ),
               );

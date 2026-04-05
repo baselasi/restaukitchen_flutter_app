@@ -132,7 +132,7 @@ class _AddDishesPageToCombinationsPageState
                   listener: (context, postDishesState) {
                     if (postDishesState.status ==
                         AddDishesToMenuCombinationStatus.success) {
-                      Navigator.of(context).pop(_selectedDishes);
+                      Navigator.of(context).pop(postDishesState.dishes);
                     }
                   },
                 ),

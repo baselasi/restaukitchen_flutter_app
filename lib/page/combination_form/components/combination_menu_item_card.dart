@@ -11,6 +11,7 @@ import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_cr
 import 'package:restaukitchen_app/page/combination_form/components/add_dishes_page.dart';
 import 'package:restaukitchen_app/page/combination_form/components/add_ingredients_page.dart';
 import 'package:restaukitchen_app/page/combination_form/repository/combination_form_repo.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
@@ -194,11 +195,19 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                 ...List.generate(menu.dishes.length, (index) {
                   return Padding(
                     padding: const EdgeInsets.only(left: 16, bottom: 8),
-                    child: _DishRow(
-                      dish: menu.dishes[index],
-                      onRemove: () => context
-                          .read<CombinationMenuCreationFormCubit>()
-                          .removeDishAt(menu.id, index),
+                    child: BlocProvider(
+                      create: (context) => DeleteDishCubit(),
+                      child: _DishRow(
+                        dish: menu.dishes[index],
+                        onRemove: () {
+                          context
+                              .read<CombinationMenuCreationFormCubit>()
+                              .removeDishAt(
+                                menu.id,
+                                menu.dishes[index].id ?? "",
+                              );
+                        },
+                      ),
                     ),
                   );
                 }),
@@ -336,60 +345,75 @@ class _DishRow extends StatelessWidget {
       child: const Icon(Icons.restaurant, color: Color(0xFF9CA3AF), size: 24),
     );
 
-    return Material(
-      color: const Color(0xFFEDEAF7),
-      borderRadius: BorderRadius.circular(10),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: SizedBox(
-                width: 48,
-                height: 48,
-                child: imageId != null
-                    ? PublicImage(
-                        imageUrl: '/api/public/dish-image/$imageId',
-                        fit: BoxFit.cover,
-                        placeholder: placeholder,
-                        errorWidget: placeholder,
-                      )
-                    : placeholder,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    dish.name,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF111827),
-                    ),
+    return BlocConsumer<DeleteDishCubit, DeleteDishState>(
+      builder: (context, state) {
+        if (state.status == DeleteDishStatus.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Material(
+          color: const Color(0xFFEDEAF7),
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: imageId != null
+                        ? PublicImage(
+                            imageUrl: '/api/public/dish-image/$imageId',
+                            fit: BoxFit.cover,
+                            placeholder: placeholder,
+                            errorWidget: placeholder,
+                          )
+                        : placeholder,
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Qty: 1',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: _subtitleColor,
-                    ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        dish.name,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF111827),
+                        ),
+                      ),
+                      // const SizedBox(height: 2),
+                      // Text(
+                      //   'Qty: 1',
+                      //   style: theme.textTheme.bodySmall?.copyWith(
+                      //     color: _subtitleColor,
+                      //   ),
+                      // ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () {
+                    context.read<DeleteDishCubit>().deleteDish(dish.id ?? "");
+                  },
+                  icon: const Icon(Icons.close, size: 20),
+                  color: _subtitleColor,
+                  tooltip: 'Remove',
+                ),
+              ],
             ),
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              onPressed: onRemove,
-              icon: const Icon(Icons.close, size: 20),
-              color: _subtitleColor,
-              tooltip: 'Remove',
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
+      listener: (context, state) {
+        if (state.status == DeleteDishStatus.isSucess) {
+          // context.read<CombinationMenuCreationFormCubit>().removeDishFromMenu(dish.id);
+          onRemove();
+        }
+      },
     );
   }
 }

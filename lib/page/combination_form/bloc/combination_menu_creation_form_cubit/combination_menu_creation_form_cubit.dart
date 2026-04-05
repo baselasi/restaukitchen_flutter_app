@@ -38,25 +38,42 @@ class CombinationMenuCreationFormCubit
     emit(state.copyWith(combinationMenus: menus));
   }
 
-  void removeDishAt(String menuId, int dishIndex) {
+  void removeDishAt(String menuId, String dishId) {
     final menus = state.combinationMenus.map((menu) {
       if (menu.id != menuId) return menu;
-      final dishes = List<Dish>.from(menu.dishes)..removeAt(dishIndex);
+      final dishes = List<Dish>.from(menu.dishes)..removeWhere((dish) => dish.id == dishId);
       return menu.copyWith(dishes: dishes);
     }).toList();
     emit(state.copyWith(combinationMenus: menus));
   }
+
+  void replaceMenuDishes(String menuId, List<Dish> dishes) {
+    final menu = state.combinationMenus.firstWhere((menu) => menu.id == menuId);
+    emit(
+      state.copyWith(
+        combinationMenus: [
+          ...state.combinationMenus,
+          menu.copyWith(dishes: dishes),
+        ],
+      ),
+    );
+  }
 }
+
+
+enum CombinationMenuCreationFormStatus { initial, loading, success, error }
 
 class CombinationMenuCreationFormState extends Equatable {
   final String combinationName;
   final String combinationId;
   final List<CombinationMenuModel> combinationMenus;
+  final CombinationMenuCreationFormStatus status;
 
   const CombinationMenuCreationFormState({
     required this.combinationName,
     required this.combinationId,
     required this.combinationMenus,
+    required this.status,
   });
 
   factory CombinationMenuCreationFormState.initial() {
@@ -64,6 +81,7 @@ class CombinationMenuCreationFormState extends Equatable {
       combinationName: '',
       combinationId: '',
       combinationMenus: [],
+      status: CombinationMenuCreationFormStatus.initial,
     );
   }
 
@@ -71,18 +89,20 @@ class CombinationMenuCreationFormState extends Equatable {
     String? combinationName,
     String? combinationId,
     List<CombinationMenuModel>? combinationMenus,
+    CombinationMenuCreationFormStatus? status,
   }) {
     return CombinationMenuCreationFormState(
       combinationName: combinationName ?? this.combinationName,
       combinationId: combinationId ?? this.combinationId,
       combinationMenus: combinationMenus ?? this.combinationMenus,
+      status: status ?? this.status,
     );
   }
 
   bool get haveEmtyMenus => combinationMenus.every((menu) => !menu.haveDishes);
 
   @override
-  List<Object?> get props => [combinationName, combinationId, combinationMenus];
+  List<Object?> get props => [combinationName, combinationId, combinationMenus, status];
 }
 
 class CombinationMenuModel extends Equatable {

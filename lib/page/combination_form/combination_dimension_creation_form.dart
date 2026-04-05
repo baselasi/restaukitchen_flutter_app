@@ -5,12 +5,14 @@ import 'package:restaukitchen_app/core/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/page/combination_form/bloc/add_dishes_to_menu_cubit/add_dishes_to_menu_combination_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_post_cubit/combination_post_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/combination_menu_creation_form.dart';
 import 'package:restaukitchen_app/page/combination_form/components/dimension_with_price_card.dart';
 import 'package:restaukitchen_app/page/combination_form/models/create_combination_request.dart';
+import 'package:restaukitchen_app/page/combination_form/repository/combination_form_repo.dart';
 
 class CombinationDimensionCreationForm extends StatefulWidget {
   const CombinationDimensionCreationForm({super.key});
@@ -38,6 +40,33 @@ class _CombinationDimensionCreationFormState
     super.dispose();
   }
 
+  void _navigateToMenuCreationForm(
+    String combinationId,
+    CombinationPostState postState,
+  ) {
+    Navigator.of(context).push(
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: context.read<CombinationMenuCreationFormCubit>(),
+            ),
+            BlocProvider(create: (context) => GetIngredientsCubit()),
+            BlocProvider(
+              create: (context) => AddDishesToMenuCombinationCubit(
+                combinationFormRepo: CombinationFormRepo(),
+              ),
+            ),
+          ],
+          child: CombinationMenuCreationForm(
+            combinationId: postState.combinationResponse!.id,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final formState = context.watch<CombinationDimensionCreationCubit>().state;
@@ -55,46 +84,16 @@ class _CombinationDimensionCreationFormState
               final postState = context.read<CombinationPostCubit>().state;
               if (postState.status == CombinationPostStatus.success &&
                   !_formHasChanged) {
-                Navigator.of(context).push(
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(
-                          value: context
-                              .read<CombinationMenuCreationFormCubit>(),
-                        ),
-                        BlocProvider(
-                          create: (context) => GetIngredientsCubit(),
-                        ),
-                      ],
-                      child: CombinationMenuCreationForm(
-                        combinationId: postState.combinationResponse!.id,
-                      ),
-                    ),
-                  ),
+                _navigateToMenuCreationForm(
+                  postState.combinationResponse!.id,
+                  postState,
                 );
                 return;
               } else if (postState.status == CombinationPostStatus.success &&
                   _formHasChanged) {
-                Navigator.of(context).push(
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(
-                          value: context
-                              .read<CombinationMenuCreationFormCubit>(),
-                        ),
-                        BlocProvider(
-                          create: (context) => GetIngredientsCubit(),
-                        ),
-                      ],
-                      child: CombinationMenuCreationForm(
-                        combinationId: postState.combinationResponse!.id,
-                      ),
-                    ),
-                  ),
+                _navigateToMenuCreationForm(
+                  postState.combinationResponse!.id,
+                  postState,
                 );
               } else {
                 if (!formState.isValid) {
@@ -179,24 +178,9 @@ class _CombinationDimensionCreationFormState
               listener: (context, state) {
                 if (state.status == CombinationPostStatus.success) {
                   _formHasChanged = false;
-                  Navigator.of(context).push(
-                    PageTransition(
-                      type: PageTransitionType.rightToLeft,
-                      child: MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(
-                            value: context
-                                .read<CombinationMenuCreationFormCubit>(),
-                          ),
-                          BlocProvider(
-                            create: (context) => GetIngredientsCubit(),
-                          ),
-                        ],
-                        child: CombinationMenuCreationForm(
-                          combinationId: state.combinationResponse!.id,
-                        ),
-                      ),
-                    ),
+                  _navigateToMenuCreationForm(
+                    state.combinationResponse!.id,
+                    state,
                   );
                 }
               },

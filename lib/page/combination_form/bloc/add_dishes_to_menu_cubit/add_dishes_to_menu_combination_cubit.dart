@@ -15,14 +15,14 @@ class AddDishesToMenuCombinationCubit
   Future<void> addDishesToMenu(String menuId, List<Dish> dishes) async {
     emit(AddDishesToMenuCombinationState.loading());
     try {
-      await _combinationFormRepo.addDishesToMenu(
+      final response = await _combinationFormRepo.addDishesToMenu(
         AddDishesToCombiantionsRequest(
           menuId: menuId,
           dishIds: dishes.map((e) => e.id!).toList(),
         ),
       );
       if (!isClosed) {
-        emit(AddDishesToMenuCombinationState.success(dishes));
+        emit(AddDishesToMenuCombinationState.success(response.dishes));
       }
     } catch (e) {
       if (!isClosed) {

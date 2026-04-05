@@ -191,3 +191,18 @@ class Dish extends Equatable {
     category,
   ];
 }
+
+class DishResponse extends Equatable {
+  final List<Dish> dishes;
+
+  const DishResponse({required this.dishes});
+
+  factory DishResponse.fromJson(List<dynamic> json) {
+    return DishResponse(
+      dishes: json.map((dish) => Dish.fromJson(dish)).toList(),
+    );
+  }
+
+  @override
+  List<Object?> get props => [dishes];
+}

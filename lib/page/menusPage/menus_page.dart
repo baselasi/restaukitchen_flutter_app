@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_cubit.dart';
+import 'package:restaukitchen_app/core/components/form/descriptionInput/description_cubit.dart';
+import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
+import 'package:restaukitchen_app/page/dishForm/bloc/dish_form_cubit.dart';
+import 'package:restaukitchen_app/page/dishForm/dish_form.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/dish_image_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
@@ -84,6 +90,34 @@ class _MenusPageState extends State<MenusPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final menuState = context.read<MenusPageBloc>().state;
+          if (menuState is MenusPageLoaded && menuState.menus.isNotEmpty) {
+            Navigator.of(context).push(
+              PageTransition(
+                type: PageTransitionType.rightToLeft,
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider<DimensionCubit>(
+                      create: (context) =>
+                          DimensionCubit(dimensionAssignments: []),
+                    ),
+                    BlocProvider(create: (context) => CategorySelectorCubit()),
+                    BlocProvider(create: (context) => DescriptionCubit()),
+                    BlocProvider(create: (context) => DishFormCubit()),
+                  ],
+                  child: DishForm(
+                    menuId: menuState.menus[menuState.selectedMenu].id,
+                    dish: null,
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+        child: Icon(Icons.add),
+      ),
       body: BlocBuilder<MenusPageBloc, MenusPageState>(
         builder: (context, state) {
           return RefreshIndicator(

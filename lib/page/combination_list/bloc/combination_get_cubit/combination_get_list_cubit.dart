@@ -30,6 +30,17 @@ class CombinationGetListCubit extends Cubit<CombinationGetListState> {
     }
   }
 
+  void removeCombination(String combinationId) {
+    final combinations = state.combinations
+        ?.where((combination) => combination.id != combinationId)
+        .toList();
+    if (!isClosed) {
+      emit(
+        CombinationGetListState.loaded(combinations ?? [], state.isRefreshing),
+      );
+    }
+  }
+
   @override
   Future<void> close() {
     emit(CombinationGetListState.initial());

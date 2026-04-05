@@ -10,8 +10,10 @@ import 'package:restaukitchen_app/page/combination_form/bloc/combination_post_cu
 import 'package:restaukitchen_app/page/combination_form/combination_dimension_creation_form.dart';
 import 'package:restaukitchen_app/page/combination_form/repository/combination_form_repo.dart';
 import 'package:restaukitchen_app/page/combination_list/bloc/combination_get_cubit/combination_get_list_cubit.dart';
+import 'package:restaukitchen_app/page/combination_list/bloc/delete_combination_cubit/delete_combination_cubit.dart';
 import 'package:restaukitchen_app/page/combination_list/components/combination_edit_preview_bottom_sheet.dart';
 import 'package:restaukitchen_app/page/combination_list/components/combination_list_item_card.dart';
+import 'package:restaukitchen_app/page/combination_list/repository/combination_list_repo.dart';
 
 class CombinationList extends StatefulWidget {
   const CombinationList({super.key});
@@ -72,6 +74,7 @@ class _CombinationListState extends State<CombinationList> {
           }
           if (state.status == CombinationGetListStatus.loaded) {
             final list = state.combinations!;
+
             return RefreshIndicator(
               onRefresh: () async {
                 await context.read<CombinationGetListCubit>().getCombinations(
@@ -79,22 +82,37 @@ class _CombinationListState extends State<CombinationList> {
                   refresh: true,
                 );
               },
-              child: ListView.builder(
-                clipBehavior: Clip.none,
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
-                itemCount: list.length,
-                itemBuilder: (context, index) {
-                  final item = list[index];
-                  return CombinationListItemCard(
-                    item: item,
-                    onEdit: () => showCombinationEditPreviewBottomSheet(
-                      context,
-                      combinationId: item.id,
+              child: list.isEmpty
+                  ? ListView(
+                      children: [
+                        const SizedBox(height: 200),
+                        const Center(child: Text('No combinations')),
+                      ],
+                    )
+                  : ListView.builder(
+                      clipBehavior: Clip.none,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
+                      itemCount: list.length,
+                      itemBuilder: (context, index) {
+                        final item = list[index];
+                        return BlocProvider(
+                          create: (context) => DeleteCombinationCubit(
+                            combinationListRepo: CombinationListRepo(),
+                          ),
+                          child: CombinationListItemCard(
+                            item: item,
+                            onEdit: () => showCombinationEditPreviewBottomSheet(
+                              context,
+                              combinationId: item.id,
+                            ),
+                            onDelete: () => context
+                                .read<CombinationGetListCubit>()
+                                .removeCombination(item.id),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             );
           }
           return const SizedBox.shrink();

@@ -14,4 +14,12 @@ class CombinationListRepo {
     );
     return CombinationListItemResponse.fromJson(jsonDecode(response.body));
   }
+
+  Future<void> deleteCombination(String combinationId) async {
+    try {
+      await _apiService.deletePrivate('/api/combination/$combinationId');
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

@@ -44,12 +44,12 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
   static const Color _divider = Color(0xFFE5E7EB);
   static const Color _iconColor = Color(0xFF4B5563);
 
-  late int _quantity;
+  // late int _quantity;
 
   @override
   void initState() {
     super.initState();
-    _quantity = widget.combinationIndice.combinationQuantity;
+    // _quantity = widget.combinationIndice.combinationQuantity;
   }
 
   @override
@@ -57,7 +57,7 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.combinationIndice.combinationQuantity !=
         widget.combinationIndice.combinationQuantity) {
-      _quantity = widget.combinationIndice.combinationQuantity;
+      // _quantity = widget.combinationIndice.combinationQuantity;
     }
   }
 

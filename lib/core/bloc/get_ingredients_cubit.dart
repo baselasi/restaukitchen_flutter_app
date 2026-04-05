@@ -6,12 +6,21 @@ import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 class GetIngredientsCubit extends Cubit<GetIngredientsState> {
   GetIngredientsCubit() : super(GetIngredientsState.initial());
 
-  Future<void> getIngredientsByRestaurantId(String restaurantId) async {
+  Future<void> getIngredientsByRestaurantId(
+    String restaurantId, {
+    List<String>? dimensionIds,
+  }) async {
     emit(GetIngredientsState.loading());
     try {
-      final ingredients = await IngredientsRepo().getIngredientsByRestaurantId(
+      List<Ingredient> ingredients = [];
+      final response = await IngredientsRepo().getIngredientsByRestaurantId(
         restaurantId,
       );
+      if (dimensionIds != null) {
+        ingredients = response.ingredients
+            .where((ingredient) => ingredient.hasDimensionIds(dimensionIds))
+            .toList();
+      }
       emit(GetIngredientsState.loaded(ingredients));
     } catch (e) {
       emit(GetIngredientsState.error(e.toString()));

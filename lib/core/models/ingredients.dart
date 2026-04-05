@@ -26,10 +26,15 @@ class Ingredient extends Equatable {
     );
   }
 
-
   bool hasDimensionId(String dimensionId) {
     return dimensionAssignments.any(
       (assignment) => assignment.dimension.id == dimensionId,
+    );
+  }
+
+  bool hasDimensionIds(List<String> dimensionIds) {
+    return dimensionAssignments.any(
+      (assignment) => dimensionIds.contains(assignment.dimension.id),
     );
   }
 
@@ -47,4 +52,18 @@ class Ingredient extends Equatable {
 
   @override
   List<Object?> get props => [id, name, dimensionAssignments];
+}
+
+class IngredientResponse extends Equatable {
+  final List<Ingredient> ingredients;
+
+  const IngredientResponse({required this.ingredients});
+
+  factory IngredientResponse.fromJson(List<dynamic> json) {
+    return IngredientResponse(
+      ingredients: json.map((e) => Ingredient.fromJson(e)).toList(),
+    );
+  }
+  @override
+  List<Object?> get props => [ingredients];
 }

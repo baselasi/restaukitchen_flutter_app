@@ -66,4 +66,16 @@ class MenusPageRepo {
       throw Exception('Error uploading dish image: $e');
     }
   }
+
+  Future<void> deleteMenu(String menuId) async {
+    try {
+      final ApiService apiService = getIt<ApiService>();
+      final response = await apiService.deletePrivate('/api/menu/$menuId');
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Failed to delete menu');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

@@ -26,27 +26,31 @@ class DimensionCubit extends Cubit<DimensionState> {
     );
     try {
       final dimensions = await DimensionRepo().getDimensions();
-      emit(
-        DimensionState(
-          allDimensions: dimensions.dimensions,
-          status: DimensionStateStatus.loaded,
-          dimensionAssignments: state.dimensionAssignments,
-          availableDimensions: dimensions.dimensions,
-          isEmpty:
-              state.dimensionAssignments == null ||
-              state.dimensionAssignments!.isEmpty,
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          DimensionState(
+            allDimensions: dimensions.dimensions,
+            status: DimensionStateStatus.loaded,
+            dimensionAssignments: state.dimensionAssignments,
+            availableDimensions: dimensions.dimensions,
+            isEmpty:
+                state.dimensionAssignments == null ||
+                state.dimensionAssignments!.isEmpty,
+          ),
+        );
+      }
     } catch (e) {
-      emit(
-        DimensionState(
-          status: DimensionStateStatus.error,
-          isEmpty:
-              state.dimensionAssignments == null ||
-              state.dimensionAssignments!.isEmpty,
-          dimensionAssignments: state.dimensionAssignments,
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          DimensionState(
+            status: DimensionStateStatus.error,
+            isEmpty:
+                state.dimensionAssignments == null ||
+                state.dimensionAssignments!.isEmpty,
+            dimensionAssignments: state.dimensionAssignments,
+          ),
+        );
+      }
     }
   }
 

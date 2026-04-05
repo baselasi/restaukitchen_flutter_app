@@ -19,6 +19,16 @@ class CombinationPostCubit extends Cubit<CombinationPostState> {
       if (!isClosed) emit(CombinationPostState.error(e.toString()));
     }
   }
+
+  Future<void> updateCombination(CreateCombinationRequest payload, String combinationId) async {
+    emit(CombinationPostState.loading());
+    try {
+      final response = await _combinationFormRepo.updateCombination(payload, combinationId);
+      if (!isClosed) emit(CombinationPostState.success(response));
+    } catch (e) {
+      if (!isClosed) emit(CombinationPostState.error(e.toString()));
+    }
+  }
 }
 
 enum CombinationPostStatus { initial, loading, success, error }

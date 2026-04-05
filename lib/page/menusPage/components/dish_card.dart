@@ -11,6 +11,7 @@ import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/core/dialogs/loading_overlay.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
+import 'package:restaukitchen_app/core/widgets/square_action_button.dart';
 import 'package:restaukitchen_app/page/dishForm/bloc/dish_form_cubit.dart';
 import 'package:restaukitchen_app/page/dishForm/dish_form.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
@@ -42,6 +43,34 @@ class _DishCardState extends State<DishCard> {
 
   final ImagePicker _picker = ImagePicker();
 
+  /// Base dish price plus per-dimension prices (non-deleted assignments).
+  List<double> _collectDishPrices() {
+    final prices = <double>[];
+    final base = widget.dish.price;
+    if (base != null) prices.add(base);
+    final assignments = widget.dish.dimensionAssignments;
+    if (assignments != null) {
+      for (final a in assignments) {
+        if (a.deleted == true) continue;
+        final parsed = num.tryParse(a.price ?? '');
+        if (parsed != null) prices.add(parsed.toDouble());
+      }
+    }
+    return prices;
+  }
+
+  String _dishPriceRangeLabel() {
+    final prices = _collectDishPrices();
+    if (prices.isEmpty) return '—';
+    prices.sort();
+    final min = prices.first;
+    final max = prices.last;
+    final a = min.toStringAsFixed(2);
+    final b = max.toStringAsFixed(2);
+    if (min == max) return '€$a';
+    return '€$a – €$b';
+  }
+
   Future<void> _pickImage(ImageSource source, {bool isUpdate = false}) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -63,8 +92,46 @@ class _DishCardState extends State<DishCard> {
     }
   }
 
+  void _openDishForm(BuildContext context) {
+    Navigator.of(context).push(
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<DimensionCubit>(
+              create: (context) => DimensionCubit(
+                dimensionAssignments: widget.dish.dimensionAssignments,
+              ),
+            ),
+            BlocProvider(create: (context) => CategorySelectorCubit()),
+            BlocProvider(create: (context) => DescriptionCubit()),
+            BlocProvider(create: (context) => DishFormCubit()),
+          ],
+          child: DishForm(menuId: widget.menuId, dish: widget.dish),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await ConfirmDialog.show(
+      context: context,
+      title: 'Delete Dish',
+      message:
+          'Are you sure you want to delete "${widget.dish.name}"? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+    );
+
+    if (confirmed == true && context.mounted) {
+      context.read<DeleteDishCubit>().deleteDish(widget.dish.id ?? "");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final priceRangeLabel = _dishPriceRangeLabel();
     return BlocListener<DeleteDishCubit, DeleteDishState>(
       listener: (context, state) {
         if (state.status == DeleteDishStatus.isLoading) {
@@ -91,98 +158,94 @@ class _DishCardState extends State<DishCard> {
         }
       },
       child: Card(
-        elevation: 2,
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        elevation: 10,
+        shadowColor: Colors.black.withValues(alpha: 0.5),
+        surfaceTintColor: Colors.transparent,
+        color: theme.colorScheme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Photo section with edit photo button
-            Stack(
+        clipBehavior: Clip.antiAlias,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  width: double.infinity,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                    ),
-                    color: Colors.grey[200],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                    ),
-                    child: DishImageWidget(
-                      dish: widget.dish,
-                      key: Key(widget.dish.id ?? ""),
-                      placeholder: _buildPlaceholderImage(),
-                    ),
-                  ),
-                ),
-                // Edit photo button
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        _pickImage(
-                          ImageSource.gallery,
-                          isUpdate:
-                              widget.dish.dishImagesId?.isNotEmpty == true,
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          color: Colors.white,
-                          size: 20,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: SizedBox(
+                        width: 96,
+                        height: 96,
+                        child: DishImageWidget(
+                          dish: widget.dish,
+                          key: Key(widget.dish.id ?? ''),
+                          placeholder: _buildThumbnailPlaceholder(),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-            // Content section
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Dish name
-                  Text(
-                    widget.dish.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Price and availability
-                  Row(
-                    children: [
-                      if (widget.dish.price != null)
-                        Text(
-                          '€${widget.dish.price!.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: LightTheme.primaryColor,
+                    const SizedBox(height: 8),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          _pickImage(
+                            ImageSource.gallery,
+                            isUpdate:
+                                widget.dish.dishImagesId?.isNotEmpty == true,
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.photo_camera_outlined,
+                                size: 16,
+                                color: LightTheme.primaryColor,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Change image',
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: LightTheme.primaryColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      const SizedBox(width: 12),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.dish.name,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        priceRangeLabel,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.black54,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -207,100 +270,54 @@ class _DishCardState extends State<DishCard> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  // Action buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      // Edit button
-                      TextButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: MultiBlocProvider(
-                                providers: [
-                                  BlocProvider<DimensionCubit>(
-                                    create: (context) => DimensionCubit(
-                                      dimensionAssignments:
-                                          widget.dish.dimensionAssignments,
-                                    ),
-                                  ),
-                                  BlocProvider(
-                                    create: (context) =>
-                                        CategorySelectorCubit(),
-                                  ),
-                                  BlocProvider(
-                                    create: (context) => DescriptionCubit(),
-                                  ),
-                                  BlocProvider(
-                                    create: (context) => DishFormCubit(),
-                                  ),
-                                ],
-                                child: DishForm(
-                                  menuId: widget.menuId,
-                                  dish: widget.dish,
-                                ),
+                      const Spacer(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SquareActionButton(
+                              onTap: () => _confirmDelete(context),
+                              child: Icon(
+                                Icons.delete_outline_rounded,
+                                size: 22,
+                                color: Colors.red,
                               ),
                             ),
-                          );
-                        },
-                        icon: const Icon(Icons.edit, size: 18),
-                        label: const Text('Edit'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: LightTheme.primaryColor,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Delete button
-                      TextButton.icon(
-                        onPressed: () async {
-                          final confirmed = await ConfirmDialog.show(
-                            context: context,
-                            title: 'Delete Dish',
-                            message:
-                                'Are you sure you want to delete "${widget.dish.name}"? This action cannot be undone.',
-                            confirmText: 'Delete',
-                            cancelText: 'Cancel',
-                          );
-
-                          if (confirmed == true) {
-                            context.read<DeleteDishCubit>().deleteDish(
-                              widget.dish.id ?? "",
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.delete, size: 18),
-                        label: const Text('Delete'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.red,
+                            const SizedBox(width: 8),
+                            SquareActionButton(
+                              onTap: () {
+                                widget.onEdit?.call();
+                                _openDishForm(context);
+                              },
+                              child: Icon(
+                                Icons.edit_outlined,
+                                size: 20,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildPlaceholderImage() {
-    return Container(
-      width: double.infinity,
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
-        ),
-        color: Colors.grey[200],
+  Widget _buildThumbnailPlaceholder() {
+    return ColoredBox(
+      color: Colors.grey[200]!,
+      child: Icon(
+        Icons.restaurant_menu,
+        size: 36,
+        color: Colors.grey[400],
       ),
-      child: Icon(Icons.restaurant_menu, size: 64, color: Colors.grey[400]),
     );
   }
 }

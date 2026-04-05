@@ -14,9 +14,13 @@ class TabelsListCubit extends Cubit<TabelsListState> {
     try {
       final response = await _tablesRepo.getTables();
       final tabels = response.tabels;
-      emit(TabelsListState.loaded(tabels));
+      if (!isClosed) {
+        emit(TabelsListState.loaded(tabels));
+      }
     } catch (e) {
-      emit(TabelsListState.error(e.toString()));
+      if (!isClosed) {
+        emit(TabelsListState.error(e.toString()));
+      }
     }
   }
 

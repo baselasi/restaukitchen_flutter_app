@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/page/combination_list/bloc/combination_get_cubit/combination_get_list_cubit.dart';
 import 'package:restaukitchen_app/page/combination_list/combination_list.dart';
+import 'package:restaukitchen_app/page/combination_list/repository/combination_list_repo.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/orders_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/table_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/home_page.dart';
@@ -57,21 +59,25 @@ Widget buildPage(Pages page) {
         child: const TabelsList(),
       );
     case Pages.combinations:
-      return const CombinationList();
+      return BlocProvider<CombinationGetListCubit>(
+        create: (context) =>
+            CombinationGetListCubit(combinationListRepo: CombinationListRepo()),
+        child: const CombinationList(),
+      );
   }
 }
 
 Widget getPageTitle(Pages page) {
   switch (page) {
     case Pages.home:
-      return const Text('Home Page');
+      return const Text('Home');
     case Pages.menus:
-      return const Text('Menus Page');
+      return const Text('Menus');
     case Pages.orders:
-      return const Text('Orders Page');
+      return const Text('Orders');
     case Pages.tables:
-      return const Text('Tables Page');
+      return const Text('Tables');
     case Pages.combinations:
-      return const Text('Combinations Page');
+      return const Text('Combinations');
   }
 }

@@ -12,9 +12,16 @@ import 'package:restaukitchen_app/page/combination_form/combination_menu_creatio
 import 'package:restaukitchen_app/page/combination_form/components/dimension_with_price_card.dart';
 import 'package:restaukitchen_app/page/combination_form/models/create_combination_request.dart';
 import 'package:restaukitchen_app/page/combination_form/repository/combination_form_repo.dart';
+import 'package:restaukitchen_app/page/combination_page/models/combination.dart';
 
 class CombinationDimensionCreationForm extends StatefulWidget {
-  const CombinationDimensionCreationForm({super.key});
+  final String? combinationId;
+  final Combination? combination;
+  const CombinationDimensionCreationForm({
+    super.key,
+    this.combinationId,
+    this.combination,
+  });
 
   @override
   State<CombinationDimensionCreationForm> createState() =>
@@ -25,11 +32,19 @@ class _CombinationDimensionCreationFormState
     extends State<CombinationDimensionCreationForm> {
   final TextEditingController _combinationNameController =
       TextEditingController();
-  bool _formHasChanged = false;
 
   @override
   void initState() {
     super.initState();
+    if (widget.combination != null) {
+      context
+          .read<CombinationDimensionCreationCubit>()
+          .createStateFromCombination(widget.combination!);
+      _combinationNameController.text = widget.combination!.name;
+      context
+          .read<CombinationMenuCreationFormCubit>()
+          .createStateFromCombination(widget.combination!);
+    }
     context.read<GetDimensionsCubit>().getDimensions();
   }
 
@@ -41,7 +56,6 @@ class _CombinationDimensionCreationFormState
 
   void _navigateToMenuCreationForm(
     String combinationId,
-    CombinationPostState postState,
     List<String> combinationDimensionIds,
   ) async {
     final result = await Navigator.of(context).push(
@@ -59,7 +73,7 @@ class _CombinationDimensionCreationFormState
             ),
           ],
           child: CombinationMenuCreationForm(
-            combinationId: postState.combinationResponse!.id,
+            combinationId: combinationId,
             combinationDimensionIds: combinationDimensionIds,
           ),
         ),
@@ -85,25 +99,48 @@ class _CombinationDimensionCreationFormState
             text: 'Next',
             onPressed: () {
               final postState = context.read<CombinationPostCubit>().state;
+
               if (postState.status == CombinationPostStatus.success &&
-                  !_formHasChanged) {
+                  formState.formHasChanged != true) {
                 _navigateToMenuCreationForm(
                   postState.combinationResponse!.id,
-                  postState,
                   formState.dimensionsById.values
                       .map((e) => e.dimension.id!)
                       .toList(),
                 );
                 return;
               } else if (postState.status == CombinationPostStatus.success &&
-                  _formHasChanged) {
+                  formState.formHasChanged == true) {
+                // _navigateToMenuCreationForm(
+                //   postState.combinationResponse!.id,
+                //   postState,
+                //   formState.dimensionsById.values
+                //       .map((e) => e.dimension.id!)
+                //       .toList(),
+                // );
+                final combinationId = widget.combination != null
+                    ? widget.combination!.id
+                    : postState.combinationResponse!.id;
+                context.read<CombinationPostCubit>().updateCombination(
+                  CreateCombinationRequest.fromFormState(formState),
+                  combinationId,
+                );
+              } else if (widget.combination != null &&
+                  formState.formHasChanged == true) {
+                final combinationId = widget.combination!.id;
+                context.read<CombinationPostCubit>().updateCombination(
+                  CreateCombinationRequest.fromFormState(formState),
+                  combinationId,
+                );
+              } else if (widget.combination != null &&
+                  formState.formHasChanged != true) {
                 _navigateToMenuCreationForm(
-                  postState.combinationResponse!.id,
-                  postState,
+                  widget.combination!.id,
                   formState.dimensionsById.values
                       .map((e) => e.dimension.id!)
                       .toList(),
                 );
+                return;
               } else {
                 if (!formState.isValid) {
                   return;
@@ -179,17 +216,13 @@ class _CombinationDimensionCreationFormState
                       ],
                     );
                   },
-                  listener: (context, state) {
-                    _formHasChanged = true;
-                  },
+                  listener: (context, state) {},
                 );
               },
               listener: (context, state) {
                 if (state.status == CombinationPostStatus.success) {
-                  _formHasChanged = false;
                   _navigateToMenuCreationForm(
                     state.combinationResponse!.id,
-                    state,
                     formState.dimensionsById.values
                         .map((e) => e.dimension.id!)
                         .toList(),

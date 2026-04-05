@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
+import 'package:restaukitchen_app/page/combination_page/models/combination.dart';
+import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
 
 class CombinationMenuCreationFormCubit
     extends Cubit<CombinationMenuCreationFormState> {
@@ -10,6 +12,19 @@ class CombinationMenuCreationFormCubit
 
   void addMenu(CombinationMenuModel menu) {
     emit(state.copyWith(combinationMenus: [...state.combinationMenus, menu]));
+  }
+
+  void createStateFromCombination(Combination combination) {
+    emit(
+      CombinationMenuCreationFormState(
+        combinationName: combination.name,
+        combinationId: combination.id,
+        combinationMenus: combination.menuList
+            .map((menu) => CombinationMenuModel.fromCombinationMenu(menu))
+            .toList(),
+        status: CombinationMenuCreationFormStatus.initial,
+      ),
+    );
   }
 
   void removeMenu(String menuId) {
@@ -41,7 +56,8 @@ class CombinationMenuCreationFormCubit
   void removeDishAt(String menuId, String dishId) {
     final menus = state.combinationMenus.map((menu) {
       if (menu.id != menuId) return menu;
-      final dishes = List<Dish>.from(menu.dishes)..removeWhere((dish) => dish.id == dishId);
+      final dishes = List<Dish>.from(menu.dishes)
+        ..removeWhere((dish) => dish.id == dishId);
       return menu.copyWith(dishes: dishes);
     }).toList();
     emit(state.copyWith(combinationMenus: menus));
@@ -59,7 +75,6 @@ class CombinationMenuCreationFormCubit
     );
   }
 }
-
 
 enum CombinationMenuCreationFormStatus { initial, loading, success, error }
 
@@ -102,7 +117,12 @@ class CombinationMenuCreationFormState extends Equatable {
   bool get haveEmtyMenus => combinationMenus.every((menu) => !menu.haveDishes);
 
   @override
-  List<Object?> get props => [combinationName, combinationId, combinationMenus, status];
+  List<Object?> get props => [
+    combinationName,
+    combinationId,
+    combinationMenus,
+    status,
+  ];
 }
 
 class CombinationMenuModel extends Equatable {
@@ -127,6 +147,15 @@ class CombinationMenuModel extends Equatable {
       name: name,
       ingredients: ingredients ?? this.ingredients,
       dishes: dishes ?? this.dishes,
+    );
+  }
+
+  factory CombinationMenuModel.fromCombinationMenu(Menu menu) {
+    return CombinationMenuModel(
+      id: menu.id,
+      name: menu.name,
+      ingredients: menu.ingredients,
+      dishes: menu.dishes,
     );
   }
 

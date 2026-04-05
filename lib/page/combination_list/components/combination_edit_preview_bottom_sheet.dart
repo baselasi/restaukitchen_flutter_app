@@ -6,11 +6,11 @@ import 'package:restaukitchen_app/page/combination_page/repository/combination_p
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 /// Read-only preview of a combination: menus as sections and dishes as rows.
-Future<void> showCombinationEditPreviewBottomSheet(
+Future<Combination?> showCombinationEditPreviewBottomSheet(
   BuildContext context, {
   required String combinationId,
 }) {
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<Combination?>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
@@ -160,7 +160,9 @@ class _CombinationEditPreviewSheet extends StatelessWidget {
                         child: SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: () => navigator.pop(),
+                            onPressed: () {
+                              navigator.pop(state.combination!);
+                            },
                             style: FilledButton.styleFrom(
                               backgroundColor: LightTheme.primaryColor,
                               foregroundColor: Colors.white,

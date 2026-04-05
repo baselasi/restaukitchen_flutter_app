@@ -14,6 +14,9 @@ import 'package:restaukitchen_app/page/combination_list/bloc/delete_combination_
 import 'package:restaukitchen_app/page/combination_list/components/combination_edit_preview_bottom_sheet.dart';
 import 'package:restaukitchen_app/page/combination_list/components/combination_list_item_card.dart';
 import 'package:restaukitchen_app/page/combination_list/repository/combination_list_repo.dart';
+import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
+import 'package:restaukitchen_app/page/combination_page/models/combination.dart';
+import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
 
 class CombinationList extends StatefulWidget {
   const CombinationList({super.key});
@@ -31,36 +34,45 @@ class _CombinationListState extends State<CombinationList> {
     );
   }
 
+  void navigateToCombinationDimensionCreationForm(Combination? combination) {
+    Navigator.of(context).push(
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  GetDimensionsCubit(dimensionsRepo: DimensionsRepo()),
+            ),
+            BlocProvider(
+              create: (context) => CombinationDimensionCreationCubit(),
+            ),
+            BlocProvider(
+              create: (context) => CombinationPostCubit(
+                combinationFormRepo: CombinationFormRepo(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => CombinationMenuCreationFormCubit(),
+            ),
+            BlocProvider(
+              create: (context) => CombinationGetCubit(
+                combinationPageRepo: CombinationPageRepo(),
+              ),
+            ),
+          ],
+          child: CombinationDimensionCreationForm(combination: combination),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-            PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) =>
-                        GetDimensionsCubit(dimensionsRepo: DimensionsRepo()),
-                  ),
-                  BlocProvider(
-                    create: (context) => CombinationDimensionCreationCubit(),
-                  ),
-                  BlocProvider(
-                    create: (context) => CombinationPostCubit(
-                      combinationFormRepo: CombinationFormRepo(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => CombinationMenuCreationFormCubit(),
-                  ),
-                ],
-                child: CombinationDimensionCreationForm(),
-              ),
-            ),
-          );
+          navigateToCombinationDimensionCreationForm(null);
         },
         child: Icon(Icons.add),
       ),
@@ -102,10 +114,18 @@ class _CombinationListState extends State<CombinationList> {
                           ),
                           child: CombinationListItemCard(
                             item: item,
-                            onEdit: () => showCombinationEditPreviewBottomSheet(
-                              context,
-                              combinationId: item.id,
-                            ),
+                            onEdit: () async {
+                              final result =
+                                  await showCombinationEditPreviewBottomSheet(
+                                    context,
+                                    combinationId: item.id,
+                                  );
+                              if (result != null) {
+                                navigateToCombinationDimensionCreationForm(
+                                  result,
+                                );
+                              }
+                            },
                             onDelete: () => context
                                 .read<CombinationGetListCubit>()
                                 .removeCombination(item.id),

@@ -25,6 +25,21 @@ class CombinationFormRepo {
     }
   }
 
+  Future<CreateCombinationResponse> updateCombination(
+    CreateCombinationRequest payload,
+    String combinationId,
+  ) async {
+    try {
+      final response = await _apiService.postPrivate(
+        '/api/update-combination/$combinationId',
+        payload.toJson(),
+      );
+      return CreateCombinationResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<BasePostResponse> createMenuCombination(
     CreateMenuCombinationRequest payload,
   ) async {

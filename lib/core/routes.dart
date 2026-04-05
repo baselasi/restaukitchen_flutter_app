@@ -70,14 +70,14 @@ Widget buildPage(Pages page) {
 Widget getPageTitle(Pages page) {
   switch (page) {
     case Pages.home:
-      return const Text('Home Page');
+      return const Text('Home');
     case Pages.menus:
-      return const Text('Menus Page');
+      return const Text('Menus');
     case Pages.orders:
-      return const Text('Orders Page');
+      return const Text('Orders');
     case Pages.tables:
-      return const Text('Tables Page');
+      return const Text('Tables');
     case Pages.combinations:
-      return const Text('Combinations Page');
+      return const Text('Combinations');
   }
 }

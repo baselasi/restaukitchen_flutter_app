@@ -10,6 +10,7 @@ import 'package:restaukitchen_app/page/combination_form/bloc/combination_post_cu
 import 'package:restaukitchen_app/page/combination_form/combination_dimension_creation_form.dart';
 import 'package:restaukitchen_app/page/combination_form/repository/combination_form_repo.dart';
 import 'package:restaukitchen_app/page/combination_list/bloc/combination_get_cubit/combination_get_list_cubit.dart';
+import 'package:restaukitchen_app/page/combination_list/components/combination_edit_preview_bottom_sheet.dart';
 import 'package:restaukitchen_app/page/combination_list/components/combination_list_item_card.dart';
 
 class CombinationList extends StatefulWidget {
@@ -71,12 +72,29 @@ class _CombinationListState extends State<CombinationList> {
           }
           if (state.status == CombinationGetListStatus.loaded) {
             final list = state.combinations!;
-            return ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                return CombinationListItemCard(item: list[index]);
+            return RefreshIndicator(
+              onRefresh: () async {
+                await context.read<CombinationGetListCubit>().getCombinations(
+                  context.read<AuthCubit>().state.user?.restaurant ?? '',
+                  refresh: true,
+                );
               },
+              child: ListView.builder(
+                clipBehavior: Clip.none,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  final item = list[index];
+                  return CombinationListItemCard(
+                    item: item,
+                    onEdit: () => showCombinationEditPreviewBottomSheet(
+                      context,
+                      combinationId: item.id,
+                    ),
+                  );
+                },
+              ),
             );
           }
           return const SizedBox.shrink();

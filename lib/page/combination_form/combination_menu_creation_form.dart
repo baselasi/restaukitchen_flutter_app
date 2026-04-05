@@ -20,59 +20,53 @@ class CombinationMenuCreationForm extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CombinationMenuCreationFormCubit(),
-      child:
-          BlocBuilder<
-            CombinationMenuCreationFormCubit,
-            CombinationMenuCreationFormState
-          >(
-            builder: (context, state) {
-              return Scaffold(
-                backgroundColor: const Color(0xFFF5F3FF),
-                appBar: DetailsAppBar(pageTitle: 'Add Menu'),
-                body: SafeArea(
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                    children: [
-                      BlocProvider(
-                        create: (context) => CreateCombinationMenuCubit(
-                          combinationFormRepo: CombinationFormRepo(),
-                        ),
-                        child: CombinationActionCard(
-                          combinationId: combinationId,
-                        ),
-                      ),
-                      for (final menu in state.combinationMenus) ...[
-                        const SizedBox(height: 16),
-                        BlocProvider(
-                          create: (context) =>
-                              DeleteMenuCubit(menusPageRepo: MenusPageRepo()),
-                          child: CombinationMenuItemCard(
-                            key: ValueKey(menu.id),
-                            combinationDimensionIds: combinationDimensionIds,
-                            menu: menu,
-                          ),
-                        ),
-                      ],
-                    ],
+    return BlocBuilder<
+      CombinationMenuCreationFormCubit,
+      CombinationMenuCreationFormState
+    >(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: const Color(0xFFF5F3FF),
+          appBar: DetailsAppBar(pageTitle: 'Add Menu'),
+          body: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              children: [
+                BlocProvider(
+                  create: (context) => CreateCombinationMenuCubit(
+                    combinationFormRepo: CombinationFormRepo(),
                   ),
+                  child: CombinationActionCard(combinationId: combinationId),
                 ),
-                bottomNavigationBar: SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                    child: PrimaryButton(
-                      text: 'Done',
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
+                for (final menu in state.combinationMenus) ...[
+                  const SizedBox(height: 16),
+                  BlocProvider(
+                    create: (context) =>
+                        DeleteMenuCubit(menusPageRepo: MenusPageRepo()),
+                    child: CombinationMenuItemCard(
+                      key: ValueKey(menu.id),
+                      combinationDimensionIds: combinationDimensionIds,
+                      menu: menu,
                     ),
                   ),
-                ),
-              );
-            },
+                ],
+              ],
+            ),
           ),
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: PrimaryButton(
+                text: 'Done',
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

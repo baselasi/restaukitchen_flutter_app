@@ -13,9 +13,9 @@ class ArchiveListCubit extends Cubit<ArchiveListState> {
   Future<void> getArchiveList(DateTime date) async {
     emit(ArchiveListState.loading());
     try {
-      final orders = isDeletedList == null
-          ? await _repo.getArchivedOrders(date)
-          : await _repo.getDeletedOrders(date);
+      final orders = isDeletedList == true
+          ? await _repo.getDeletedOrders(date)
+          : await _repo.getArchivedOrders(date);
       emit(ArchiveListState.loaded(orders.orders));
     } catch (e) {
       emit(ArchiveListState.error(e.toString()));

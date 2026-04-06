@@ -18,7 +18,6 @@ class PublicImage extends StatelessWidget {
     this.errorWidget,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Uint8List?>(
@@ -29,7 +28,7 @@ class PublicImage extends StatelessWidget {
         //   return Center(child: CircularProgressIndicator());
         // }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return  Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator());
         }
 
         if (snapshot.hasError || snapshot.data == null) {
@@ -45,13 +44,7 @@ class PublicImage extends StatelessWidget {
   Future<Uint8List?> _loadImage(String url) async {
     try {
       final apiService = getIt<ApiService>();
-      // setState(() {
-      //   _isLoading = true;
-      // });
       final response = await http.get(Uri.parse("${apiService.baseUrl}$url"));
-      // setState(() {
-      //   _isLoading = false;
-      // });
       if (response.statusCode == 200) {
         return response.bodyBytes;
       } else {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/core/services/user_service.dart';
+import 'package:restaukitchen_app/core/widgets/public_image.dart';
 import 'package:restaukitchen_app/page/settings_page/bloc/restaurant_info_cubit/restaurant_info_cubit.dart';
 import 'package:restaukitchen_app/page/settings_page/models/restaurant.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
@@ -51,7 +52,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 restaurant: state.restaurant!,
                 titleColor: SettingsPage._titleColor,
                 subtitleColor: SettingsPage._subtitleColor,
-              
               ),
             );
           }
@@ -67,13 +67,11 @@ class _BusinessProfileCard extends StatelessWidget {
     required this.restaurant,
     required this.titleColor,
     required this.subtitleColor,
- 
   });
 
   final Restaurant restaurant;
   final Color titleColor;
   final Color subtitleColor;
-
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +98,7 @@ class _BusinessProfileCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _RestaurantCoverBanner(
+                  restaurant: restaurant,
                   onEditBackground: () {},
                   onEditCornerImage: () {},
                 ),
@@ -155,7 +154,6 @@ class _BusinessProfileCard extends StatelessWidget {
               ],
             ),
           ),
-         
         ],
       ),
     );
@@ -166,11 +164,12 @@ class _RestaurantCoverBanner extends StatelessWidget {
   const _RestaurantCoverBanner({
     required this.onEditBackground,
     required this.onEditCornerImage,
+    required this.restaurant,
   });
 
   final VoidCallback onEditBackground;
   final VoidCallback onEditCornerImage;
-
+  final Restaurant restaurant;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -181,11 +180,25 @@ class _RestaurantCoverBanner extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Positioned.fill(
-              child: Image.asset(
-                _restaurantLogoAsset,
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
+            PublicImage(
+              imageUrl:
+                  "/api/public/restaurant-image/${restaurant.restaurantImage.first}",
+              fit: BoxFit.fill,
+              placeholder: ColoredBox(
+                color: Colors.grey[200]!,
+                child: Icon(
+                  Icons.restaurant_menu,
+                  size: 36,
+                  color: Colors.grey[400],
+                ),
+              ),
+              errorWidget: ColoredBox(
+                color: Colors.grey[200]!,
+                child: Icon(
+                  Icons.restaurant_menu,
+                  size: 36,
+                  color: Colors.grey[400],
+                ),
               ),
             ),
             Positioned(
@@ -196,7 +209,10 @@ class _RestaurantCoverBanner extends StatelessWidget {
             Positioned(
               left: 12,
               bottom: 12,
-              child: _CornerImageWithEdit(onEdit: onEditCornerImage),
+              child: _CornerImageWithEdit(
+                onEdit: onEditCornerImage,
+                restaurant: restaurant,
+              ),
             ),
           ],
         ),
@@ -235,25 +251,48 @@ class _EditFab extends StatelessWidget {
 }
 
 class _CornerImageWithEdit extends StatelessWidget {
-  const _CornerImageWithEdit({required this.onEdit});
-
+  const _CornerImageWithEdit({required this.onEdit, required this.restaurant});
+  final Restaurant restaurant;
   final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: 90,
       height: 90,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: LightTheme.primaryColor.withValues(alpha: 0.5),
+            blurRadius: 5,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: LightTheme.primaryColor, width: 3),
+      ),
       child: Stack(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: 90,
-              height: 90,
-              color: Colors.grey[200],
-              child: Image.asset(_restaurantLogoAsset, fit: BoxFit.cover),
+          PublicImage(
+            imageUrl:
+                "/api/public/restaurant-logo/${restaurant.restaurantImage.first}",
+            fit: BoxFit.scaleDown,
+            placeholder: ColoredBox(
+              color: Colors.grey[200]!,
+              child: Icon(
+                Icons.restaurant_menu,
+                size: 36,
+                color: Colors.grey[400],
+              ),
+            ),
+            errorWidget: ColoredBox(
+              color: Colors.grey[200]!,
+              child: Icon(
+                Icons.restaurant_menu,
+                size: 36,
+                color: Colors.grey[400],
+              ),
             ),
           ),
           Positioned(right: 0, bottom: 0, child: _EditFab(onTap: onEdit)),
@@ -304,4 +343,3 @@ class _DetailRow extends StatelessWidget {
     );
   }
 }
-

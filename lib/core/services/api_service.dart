@@ -92,18 +92,11 @@ class ApiService {
   }
 
   // Private POST - Token required
-  Future<http.Response> postRawPayload(
-    String endpoint,
-    String body,
-  ) async {
+  Future<http.Response> postRawPayload(String endpoint, String body) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
       final headers = await _getHeadersWithToken();
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: body,
-      );
+      final response = await http.post(url, headers: headers, body: body);
       return response;
     } catch (e) {
       rethrow;
@@ -166,6 +159,40 @@ class ApiService {
 
       // Add file
       request.files.add(await http.MultipartFile.fromPath('image', file.path));
+
+      // Add additional fields if provided
+      if (fields != null) {
+        request.fields.addAll(fields);
+      }
+
+      // Send request
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<http.Response> uploadRestaurantImage(
+    String endpoint,
+    File image,
+    File logo, {
+    Map<String, String>? fields,
+  }) async {
+    try {
+      final url = Uri.parse('$_baseUrl$endpoint');
+      final token = await this.token;
+
+      var request = http.MultipartRequest('POST', url);
+
+      // Add authorization header
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // Add file
+      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      request.files.add(await http.MultipartFile.fromPath('logo', logo.path));
 
       // Add additional fields if provided
       if (fields != null) {

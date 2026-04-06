@@ -3,22 +3,28 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/models/image.dart';
-import 'package:restaukitchen_app/page/menusPage/repository/menus_page_repo.dart';
+import 'package:restaukitchen_app/page/settings_page/respository/restaurant_repo.dart';
 
 class ChangeRestaurantImageCubit extends Cubit<ChangeRestaurantImageState> {
-  ChangeRestaurantImageCubit()
-    : super(ChangeRestaurantImageState(status: ChangeRestaurantImageStatus.init));
+  final RestaurantRepo _restaurantRepo;
+  ChangeRestaurantImageCubit({required RestaurantRepo restaurantRepo})
+    : _restaurantRepo = restaurantRepo,
+      super(
+        ChangeRestaurantImageState(status: ChangeRestaurantImageStatus.init),
+      );
 
-  Future<void> uploadDishImage(
+  Future<void> uploadRestaurantImage(
     String dishId,
-    File image, {
-    bool isUpdate = false,
-  }) async {
-    emit(ChangeRestaurantImageState(status: ChangeRestaurantImageStatus.loading));
+    File? logo,
+    File? image, ) async {
+    emit(
+      ChangeRestaurantImageState(status: ChangeRestaurantImageStatus.loading),
+    );
     try {
-      final imageResponse = await MenusPageRepo().uploadDishImage(
+      final imageResponse = await _restaurantRepo.uploadRestaurantImage(
         dishId,
         image,
+        logo,
       );
       emit(
         ChangeRestaurantImageState(
@@ -27,7 +33,9 @@ class ChangeRestaurantImageCubit extends Cubit<ChangeRestaurantImageState> {
         ),
       );
     } catch (e) {
-      emit(ChangeRestaurantImageState(status: ChangeRestaurantImageStatus.error));
+      emit(
+        ChangeRestaurantImageState(status: ChangeRestaurantImageStatus.error),
+      );
     }
   }
 

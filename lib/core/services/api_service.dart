@@ -177,22 +177,28 @@ class ApiService {
 
   Future<http.Response> uploadRestaurantImage(
     String endpoint,
-    File image,
-    File logo, {
+    File? image,
+    File? logo, {
     Map<String, String>? fields,
   }) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
       final token = await this.token;
 
-      var request = http.MultipartRequest('POST', url);
+      var request = http.MultipartRequest('PATCH', url);
 
       // Add authorization header
       request.headers['Authorization'] = 'Bearer $token';
+      if (logo != null) {
+        request.files.add(await http.MultipartFile.fromPath('logo', logo.path));
+      }
 
       // Add file
-      request.files.add(await http.MultipartFile.fromPath('image', image.path));
-      request.files.add(await http.MultipartFile.fromPath('logo', logo.path));
+      if (image != null) {
+        request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      }
+
+      
 
       // Add additional fields if provided
       if (fields != null) {

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/page/settings_page/bloc/change_restaurant_image_cubit/change_restaurant_image_cubit.dart';
 import 'package:restaukitchen_app/page/settings_page/components/restaurant_cover_banner.dart';
 import 'package:restaukitchen_app/page/settings_page/models/restaurant.dart';
+import 'package:restaukitchen_app/page/settings_page/respository/restaurant_repo.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class BusinessProfileCard extends StatelessWidget {
@@ -31,10 +34,15 @@ class BusinessProfileCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RestaurantCoverBanner(
-                restaurant: restaurant,
-                onEditBackground: () {},
-                onEditCornerImage: () {},
+              BlocProvider(
+                create: (context) => ChangeRestaurantImageCubit(
+                  restaurantRepo: RestaurantRepo(),
+                ),
+                child: RestaurantCoverBanner(
+                  restaurant: restaurant,
+                  onEditBackground: () {},
+                  onEditCornerImage: () {},
+                ),
               ),
               const SizedBox(height: 20),
               Row(

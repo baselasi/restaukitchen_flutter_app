@@ -21,13 +21,13 @@ class RestaurantRepo {
 
   Future<ImageResponse> uploadRestaurantImage(
     String restaurantId,
-    File image,
-    File logo,
+    File? image,
+    File? logo,
   ) async {
     try {
       final ApiService apiService = getIt<ApiService>();
       final response = await apiService.uploadRestaurantImage(
-        '/api/dish-image',
+        '/api/restaurant-image',
         image,
         logo,
         fields: {'id': restaurantId},

@@ -12,18 +12,14 @@ import 'package:restaukitchen_app/core/components/form/categorySelector/category
 import 'package:restaukitchen_app/page/order_list/bloc/orders_drawer_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_page_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/orders_list.dart';
+import 'package:restaukitchen_app/page/settings_page/bloc/restaurant_info_cubit/restaurant_info_cubit.dart';
+import 'package:restaukitchen_app/page/settings_page/respository/restaurant_repo.dart';
+import 'package:restaukitchen_app/page/settings_page/settings_page.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
 import 'package:restaukitchen_app/page/tabels_list/tabels_list.dart';
 
-enum Pages {
-  home,
-  menus,
-  orders,
-  tables,
-  combinations,
-  // settings,
-}
+enum Pages { home, menus, orders, tables, combinations, settings }
 
 Widget buildPage(Pages page) {
   switch (page) {
@@ -64,6 +60,12 @@ Widget buildPage(Pages page) {
             CombinationGetListCubit(combinationListRepo: CombinationListRepo()),
         child: const CombinationList(),
       );
+    case Pages.settings:
+      return BlocProvider<RestaurantInfoCubit>(
+        create: (context) =>
+            RestaurantInfoCubit(restaurantRepo: RestaurantRepo()),
+        child: const SettingsPage(),
+      );
   }
 }
 
@@ -79,5 +81,7 @@ Widget getPageTitle(Pages page) {
       return const Text('Tables');
     case Pages.combinations:
       return const Text('Combinations');
+    case Pages.settings:
+      return const Text('Settings');
   }
 }

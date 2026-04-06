@@ -25,6 +25,8 @@ class MainDrawer extends StatelessWidget {
         return Icons.table_restaurant_outlined;
       case Pages.combinations:
         return Icons.layers_outlined;
+      case Pages.settings:
+        return Icons.settings_outlined;
     }
   }
 
@@ -40,6 +42,8 @@ class MainDrawer extends StatelessWidget {
         return 'Tables';
       case Pages.combinations:
         return 'Combinations';
+      case Pages.settings:
+        return 'Settings';
     }
   }
 
@@ -185,6 +189,33 @@ class MainDrawer extends StatelessWidget {
                           const SizedBox(width: 12),
                           Text(
                             'Esci',
+                            style: TextStyle(
+                              color: _textMuted,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                   Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                  child: InkWell(
+                    onTap: () {
+                      mainPageCubit.setPage(Pages.settings);
+                      Navigator.pop(context);
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          Icon(Icons.logout, color: _textMuted, size: 22),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Settings',
                             style: TextStyle(
                               color: _textMuted,
                               fontSize: 16,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/page/restaurant_form/restaurant_form.dart';
 import 'package:restaukitchen_app/page/settings_page/bloc/change_restaurant_image_cubit/change_restaurant_image_cubit.dart';
 import 'package:restaukitchen_app/page/settings_page/components/restaurant_cover_banner.dart';
 import 'package:restaukitchen_app/page/settings_page/models/restaurant.dart';
@@ -46,26 +48,32 @@ class BusinessProfileCard extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          restaurant.name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: titleColor,
-                          ),
-                        ),
-                      ],
+                  Text(
+                    restaurant.name,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: titleColor,
                     ),
+                  ),
+
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: RestaurantForm(restaurant: restaurant),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit),
+                    color: LightTheme.primaryColor,
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               _DetailRow(
                 icon: Icons.location_on_outlined,
                 iconColor: LightTheme.primaryColor,

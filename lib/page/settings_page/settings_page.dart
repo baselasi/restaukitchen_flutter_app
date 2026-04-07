@@ -27,43 +27,26 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
 
-      body: BlocBuilder<RestaurantInfoCubit, RestaurantInfoState>(
-        builder: (context, state) {
-          if (state.status == RestaurantInfoStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state.status == RestaurantInfoStatus.error) {
-            return Center(
-              child: Text(
-                state.errorMessage ?? 'Error loading restaurant info',
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            BusinessProfileCard(),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: () async {
+                await context.read<AuthCubit>().logout();
+              },
+              icon: const Icon(Icons.logout),
+              label: const Text('Logout'),
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Colors.red.shade600,
               ),
-            );
-          }
-          if (state.status == RestaurantInfoStatus.loaded) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  BusinessProfileCard(restaurant: state.restaurant!),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: () async {
-                      await context.read<AuthCubit>().logout();
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Logout'),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.red.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
+            ),
+          ],
+        ),
       ),
     );
   }

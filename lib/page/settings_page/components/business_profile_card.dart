@@ -13,16 +13,17 @@ import 'package:restaukitchen_app/theme/light_theme.dart';
 class BusinessProfileCard extends StatelessWidget {
   const BusinessProfileCard({
     super.key,
-    required this.restaurant,
     this.titleColor = const Color(0xFF3F4B8E),
   });
 
-  final Restaurant restaurant;
   final Color titleColor;
 
   static const BorderRadius _cardRadius = BorderRadius.all(Radius.circular(20));
 
-  Future<void> _editRestaurant(BuildContext context) async {
+  Future<void> _editRestaurant(
+    BuildContext context,
+    Restaurant restaurant,
+  ) async {
     final bool? result = await Navigator.of(context).push(
       PageTransition(
         type: PageTransitionType.rightToLeft,
@@ -51,70 +52,88 @@ class BusinessProfileCard extends StatelessWidget {
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocProvider(
-                create: (context) => ChangeRestaurantImageCubit(
-                  restaurantRepo: RestaurantRepo(),
-                ),
-                child: RestaurantCoverBanner(
-                  restaurant: restaurant,
-                  onEditBackground: () {},
-                  onEditCornerImage: () {},
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    restaurant.name,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: titleColor,
+          child: BlocBuilder<RestaurantInfoCubit, RestaurantInfoState>(
+            builder: (context, state) {
+              if (state.status == RestaurantInfoStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state.status == RestaurantInfoStatus.error) {
+                return Center(
+                  child: Text(
+                    state.errorMessage ?? 'Error loading restaurant info',
+                  ),
+                );
+              }
+              if (state.status == RestaurantInfoStatus.loaded) {
+                final restaurant = state.restaurant!;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BlocProvider(
+                      create: (context) => ChangeRestaurantImageCubit(
+                        restaurantRepo: RestaurantRepo(),
+                      ),
+                      child: RestaurantCoverBanner(
+                        restaurant: restaurant,
+                        onEditBackground: () {},
+                        onEditCornerImage: () {},
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          restaurant.name,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: titleColor,
+                          ),
+                        ),
 
-                  IconButton(
-                    onPressed: () async {
-                      _editRestaurant(context);
-                    },
-                    icon: const Icon(Icons.edit),
-                    color: LightTheme.primaryColor,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _DetailRow(
-                icon: Icons.location_on_outlined,
-                iconColor: LightTheme.primaryColor,
-                textColor: Color(0xFF374151),
-                text: restaurant.street,
-              ),
-              const SizedBox(height: 16),
-              _DetailRow(
-                icon: Icons.phone_outlined,
-                iconColor: LightTheme.primaryColor,
-                textColor: Color(0xFF374151),
-                text: restaurant.city,
-              ),
-              const SizedBox(height: 16),
-              _DetailRow(
-                icon: Icons.payments_outlined,
-                iconColor: LightTheme.primaryColor,
-                textColor: Color(0xFF374151),
-                text: restaurant.currency,
-              ),
-              const SizedBox(height: 16),
-              _DetailRow(
-                icon: Icons.language_outlined,
-                iconColor: LightTheme.primaryColor,
-                textColor: Color(0xFF374151),
-                text: restaurant.country,
-              ),
-            ],
+                        IconButton(
+                          onPressed: () async {
+                            _editRestaurant(context, restaurant);
+                          },
+                          icon: const Icon(Icons.edit),
+                          color: LightTheme.primaryColor,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _DetailRow(
+                      icon: Icons.location_on_outlined,
+                      iconColor: LightTheme.primaryColor,
+                      textColor: Color(0xFF374151),
+                      text: restaurant.street,
+                    ),
+                    const SizedBox(height: 16),
+                    _DetailRow(
+                      icon: Icons.phone_outlined,
+                      iconColor: LightTheme.primaryColor,
+                      textColor: Color(0xFF374151),
+                      text: restaurant.city,
+                    ),
+                    const SizedBox(height: 16),
+                    _DetailRow(
+                      icon: Icons.payments_outlined,
+                      iconColor: LightTheme.primaryColor,
+                      textColor: Color(0xFF374151),
+                      text: restaurant.currency,
+                    ),
+                    const SizedBox(height: 16),
+                    _DetailRow(
+                      icon: Icons.language_outlined,
+                      iconColor: LightTheme.primaryColor,
+                      textColor: Color(0xFF374151),
+                      text: restaurant.country,
+                    ),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            },
           ),
         ),
       ),

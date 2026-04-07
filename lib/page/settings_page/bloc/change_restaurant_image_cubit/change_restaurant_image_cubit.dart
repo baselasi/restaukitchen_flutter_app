@@ -16,9 +16,13 @@ class ChangeRestaurantImageCubit extends Cubit<ChangeRestaurantImageState> {
   Future<void> uploadRestaurantImage(
     String dishId,
     File? logo,
-    File? image, ) async {
+    File? image,
+  ) async {
     emit(
-      ChangeRestaurantImageState(status: ChangeRestaurantImageStatus.loading),
+      ChangeRestaurantImageState(
+        status: ChangeRestaurantImageStatus.loading,
+        isLogo: logo != null,
+      ),
     );
     try {
       final imageResponse = await _restaurantRepo.uploadRestaurantImage(
@@ -30,6 +34,7 @@ class ChangeRestaurantImageCubit extends Cubit<ChangeRestaurantImageState> {
         ChangeRestaurantImageState(
           status: ChangeRestaurantImageStatus.success,
           imageResponse: imageResponse,
+          isLogo: logo != null,
         ),
       );
     } catch (e) {
@@ -49,7 +54,12 @@ enum ChangeRestaurantImageStatus { init, loading, error, success }
 class ChangeRestaurantImageState extends Equatable {
   final ChangeRestaurantImageStatus status;
   final ImageResponse? imageResponse;
-  const ChangeRestaurantImageState({required this.status, this.imageResponse});
+  final bool? isLogo;
+  const ChangeRestaurantImageState({
+    required this.status,
+    this.imageResponse,
+    this.isLogo,
+  });
 
   @override
   List<Object?> get props => [status];

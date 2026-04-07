@@ -106,31 +106,39 @@ class _RestaurantCoverBannerState extends State<RestaurantCoverBanner> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            PublicImage(
-              key: Key(widget.restaurant.restaurantImage.first),
-              onImageLoaded: (image) {
-                _storeLoadedImage(image, isLogo: false);
+            BlocBuilder<ChangeRestaurantImageCubit, ChangeRestaurantImageState>(
+              builder: (context, state) {
+                if (state.status == ChangeRestaurantImageStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return PublicImage(
+                  key: Key(widget.restaurant.restaurantImage.first),
+                  onImageLoaded: (image) {
+                    _storeLoadedImage(image, isLogo: false);
+                  },
+                  imageUrl:
+                      "/api/public/restaurant-image/${widget.restaurant.restaurantImage.first}",
+                  fit: BoxFit.fill,
+                  placeholder: ColoredBox(
+                    color: Colors.grey[200]!,
+                    child: Icon(
+                      Icons.restaurant_menu,
+                      size: 36,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                  errorWidget: ColoredBox(
+                    color: Colors.grey[200]!,
+                    child: Icon(
+                      Icons.restaurant_menu,
+                      size: 36,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                );
               },
-              imageUrl:
-                  "/api/public/restaurant-image/${widget.restaurant.restaurantImage.first}",
-              fit: BoxFit.fill,
-              placeholder: ColoredBox(
-                color: Colors.grey[200]!,
-                child: Icon(
-                  Icons.restaurant_menu,
-                  size: 36,
-                  color: Colors.grey[400],
-                ),
-              ),
-              errorWidget: ColoredBox(
-                color: Colors.grey[200]!,
-                child: Icon(
-                  Icons.restaurant_menu,
-                  size: 36,
-                  color: Colors.grey[400],
-                ),
-              ),
             ),
+
             Positioned(
               bottom: 2,
               right: 2,
@@ -149,20 +157,31 @@ class _RestaurantCoverBannerState extends State<RestaurantCoverBanner> {
             Positioned(
               left: 12,
               bottom: 12,
-              child: _CornerImageWithEdit(
-                onEdit: () {
-                  _pickImage(
-                    ImageSource.gallery,
-                    logo: _logo,
-                    image: _image,
-                    isLogo: true,
-                  );
-                },
-                restaurant: widget.restaurant,
-                onImageLoaded: (image) {
-                  _storeLoadedImage(image, isLogo: true);
-                },
-              ),
+              child:
+                  BlocBuilder<
+                    ChangeRestaurantImageCubit,
+                    ChangeRestaurantImageState
+                  >(
+                    builder: (context, state) {
+                      if (state.status == ChangeRestaurantImageStatus.loading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      return _CornerImageWithEdit(
+                        onEdit: () {
+                          _pickImage(
+                            ImageSource.gallery,
+                            logo: _logo,
+                            image: _image,
+                            isLogo: true,
+                          );
+                        },
+                        restaurant: widget.restaurant,
+                        onImageLoaded: (image) {
+                          _storeLoadedImage(image, isLogo: true);
+                        },
+                      );
+                    },
+                  ),
             ),
           ],
         ),

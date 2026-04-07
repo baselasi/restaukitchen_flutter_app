@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/page/menusPage/models/image.dart';
+import 'package:restaukitchen_app/page/restaurant_form/model/city_model.dart';
 import 'package:restaukitchen_app/page/settings_page/models/restaurant.dart';
 
 class RestaurantRepo {
@@ -50,6 +51,17 @@ class RestaurantRepo {
       return List<String>.from(jsonDecode(response.body));
     } catch (e) {
       throw Exception('Error getting countries: $e');
+    }
+  }
+
+  Future<CityResponse> getCities(String country, String search) async {
+    try {
+      final response = await _apiService.getPublic(
+        '/api/public/city/search?prefix=$search&country=$country',
+      );
+      return CityResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Error getting cities: $e');
     }
   }
 }

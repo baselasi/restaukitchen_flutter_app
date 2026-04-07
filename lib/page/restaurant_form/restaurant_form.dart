@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/page/restaurant_form/component/city_autocomplite.dart';
 import 'package:restaukitchen_app/page/restaurant_form/component/countries_select.dart';
+import 'package:restaukitchen_app/page/restaurant_form/model/city_model.dart';
 import 'package:restaukitchen_app/page/settings_page/models/restaurant.dart';
 
 class RestaurantFormResult {
   final String name;
   final String country;
+  final String city;
+  final String cityId;
   final String currency;
   final String address;
   final String description;
@@ -15,6 +19,8 @@ class RestaurantFormResult {
   const RestaurantFormResult({
     required this.name,
     required this.country,
+    required this.city,
+    required this.cityId,
     required this.currency,
     required this.address,
     required this.description,
@@ -39,6 +45,7 @@ class _RestaurantFormState extends State<RestaurantForm> {
   final TextEditingController _descriptionController = TextEditingController();
 
   String? _selectedCountry;
+  CityModel? _selectedCity;
   late String _selectedCurrency;
 
   bool get _isEditing => widget.restaurant != null;
@@ -52,6 +59,12 @@ class _RestaurantFormState extends State<RestaurantForm> {
     _descriptionController.text = widget.restaurant?.description ?? '';
 
     _selectedCountry = widget.restaurant?.country;
+    if (widget.restaurant != null) {
+      _selectedCity = CityModel(
+        id: widget.restaurant!.cityId,
+        name: widget.restaurant!.city,
+      );
+    }
 
     _selectedCurrency = _currencyOptions.firstWhere(
       (currency) =>
@@ -77,6 +90,8 @@ class _RestaurantFormState extends State<RestaurantForm> {
       RestaurantFormResult(
         name: _nameController.text.trim(),
         country: _selectedCountry!,
+        city: _selectedCity!.name,
+        cityId: _selectedCity!.id,
         currency: _selectedCurrency,
         address: _addressController.text.trim(),
         description: _descriptionController.text.trim(),
@@ -115,7 +130,16 @@ class _RestaurantFormState extends State<RestaurantForm> {
                           onChanged: (value) {
                             setState(() {
                               _selectedCountry = value;
+                              _selectedCity = null;
                             });
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        CityAutocomplite(
+                          country: _selectedCountry,
+                          value: _selectedCity,
+                          onSelected: (city) {
+                            _selectedCity = city;
                           },
                         ),
                         const SizedBox(height: 16),

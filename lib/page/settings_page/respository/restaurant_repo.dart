@@ -41,4 +41,15 @@ class RestaurantRepo {
       throw Exception('Error uploading dish image: $e');
     }
   }
+
+  Future<List<String>> getCountries() async {
+    try {
+      final response = await _apiService.getPublic(
+        '/api/public/city/countries',
+      );
+      return List<String>.from(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Error getting countries: $e');
+    }
+  }
 }

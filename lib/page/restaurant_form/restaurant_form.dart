@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/page/restaurant_form/component/countries_select.dart';
 import 'package:restaukitchen_app/page/settings_page/models/restaurant.dart';
 
 class RestaurantFormResult {
@@ -30,7 +31,6 @@ class RestaurantForm extends StatefulWidget {
 }
 
 class _RestaurantFormState extends State<RestaurantForm> {
-  static const List<String> _countryOptions = ['Italy', 'Lebanon'];
   static const List<String> _currencyOptions = ['\$', 'L.L.', 'Euro'];
 
   final _formKey = GlobalKey<FormState>();
@@ -38,7 +38,7 @@ class _RestaurantFormState extends State<RestaurantForm> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  late String _selectedCountry;
+  String? _selectedCountry;
   late String _selectedCurrency;
 
   bool get _isEditing => widget.restaurant != null;
@@ -51,10 +51,7 @@ class _RestaurantFormState extends State<RestaurantForm> {
     _addressController.text = widget.restaurant?.street ?? '';
     _descriptionController.text = widget.restaurant?.description ?? '';
 
-    _selectedCountry = _countryOptions.firstWhere(
-      (country) => country.toLowerCase() == widget.restaurant?.country.toLowerCase(),
-      orElse: () => _countryOptions.first,
-    );
+    _selectedCountry = widget.restaurant?.country;
 
     _selectedCurrency = _currencyOptions.firstWhere(
       (currency) =>
@@ -79,7 +76,7 @@ class _RestaurantFormState extends State<RestaurantForm> {
     Navigator.of(context).pop(
       RestaurantFormResult(
         name: _nameController.text.trim(),
-        country: _selectedCountry,
+        country: _selectedCountry!,
         currency: _selectedCurrency,
         address: _addressController.text.trim(),
         description: _descriptionController.text.trim(),
@@ -113,29 +110,12 @@ class _RestaurantFormState extends State<RestaurantForm> {
                           textInputAction: TextInputAction.next,
                         ),
                         const SizedBox(height: 16),
-                        DropdownButtonFormField<String>(
-                          initialValue: _selectedCountry,
-                          decoration: InputDecoration(
-                            labelText: 'Country *',
-                            labelStyle: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          items: _countryOptions.map((country) {
-                            return DropdownMenuItem<String>(
-                              value: country,
-                              child: Text(country),
-                            );
-                          }).toList(),
+                        CountriesSelect(
+                          value: _selectedCountry,
                           onChanged: (value) {
-                            if (value == null) return;
                             setState(() {
                               _selectedCountry = value;
                             });
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select a country';
-                            }
-                            return null;
                           },
                         ),
                         const SizedBox(height: 16),

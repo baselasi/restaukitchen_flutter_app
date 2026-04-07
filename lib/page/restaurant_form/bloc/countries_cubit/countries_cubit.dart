@@ -20,17 +20,21 @@ class CountriesCubit extends Cubit<CountriesState> {
     emit(CountriesState(countries: [], status: CountriesStatus.loading));
     try {
       final countries = await _restaurantRepo.getCountries();
-      emit(
-        CountriesState(countries: countries, status: CountriesStatus.loaded),
-      );
+      if (!isClosed) {
+        emit(
+          CountriesState(countries: countries, status: CountriesStatus.loaded),
+        );
+      }
     } catch (e) {
-      emit(
-        CountriesState(
-          countries: [],
-          error: e.toString(),
-          status: CountriesStatus.error,
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          CountriesState(
+            countries: [],
+            error: e.toString(),
+            status: CountriesStatus.error,
+          ),
+        );
+      }
     }
   }
 }

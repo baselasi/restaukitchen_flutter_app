@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/page/restaurant_form/bloc/retaurant_form_cubit/retaurant_form_cubit.dart';
 import 'package:restaukitchen_app/page/restaurant_form/restaurant_form.dart';
 import 'package:restaukitchen_app/page/settings_page/bloc/change_restaurant_image_cubit/change_restaurant_image_cubit.dart';
+import 'package:restaukitchen_app/page/settings_page/bloc/restaurant_info_cubit/restaurant_info_cubit.dart';
 import 'package:restaukitchen_app/page/settings_page/components/restaurant_cover_banner.dart';
 import 'package:restaukitchen_app/page/settings_page/models/restaurant.dart';
 import 'package:restaukitchen_app/page/settings_page/respository/restaurant_repo.dart';
@@ -19,6 +21,22 @@ class BusinessProfileCard extends StatelessWidget {
   final Color titleColor;
 
   static const BorderRadius _cardRadius = BorderRadius.all(Radius.circular(20));
+
+  Future<void> _editRestaurant(BuildContext context) async {
+    final bool? result = await Navigator.of(context).push(
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: BlocProvider(
+          create: (context) =>
+              RestaurantFormCubit(restaurantRepo: RestaurantRepo()),
+          child: RestaurantForm(restaurant: restaurant),
+        ),
+      ),
+    );
+    if (result == true && context.mounted) {
+      context.read<RestaurantInfoCubit>().getRestaurantInfo(restaurant.id);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +78,8 @@ class BusinessProfileCard extends StatelessWidget {
                   ),
 
                   IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: RestaurantForm(restaurant: restaurant),
-                        ),
-                      );
+                    onPressed: () async {
+                      _editRestaurant(context);
                     },
                     icon: const Icon(Icons.edit),
                     color: LightTheme.primaryColor,

@@ -64,4 +64,12 @@ class RestaurantRepo {
       throw Exception('Error getting cities: $e');
     }
   }
+
+  Future<void> updateRestaurant(Restaurant restaurant) async {
+    try {
+      await _apiService.putPrivate('/api/restaurant', restaurant.toJson());
+    } catch (e) {
+      throw Exception('Error updating restaurant: $e');
+    }
+  }
 }

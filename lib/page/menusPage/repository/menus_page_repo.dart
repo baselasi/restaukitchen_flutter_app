@@ -78,4 +78,35 @@ class MenusPageRepo {
       throw Exception(e);
     }
   }
+
+  Future<void> createMenu(CreateMenuRequest payload) async {
+    try {
+      final ApiService apiService = getIt<ApiService>();
+      final response = await apiService.postPrivate(
+        '/api/create-menu',
+        payload.toJson(),
+      );
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Failed to create menu');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  
+  Future<void> updateMenu(CreateMenuRequest payload) async {
+    try {
+      final ApiService apiService = getIt<ApiService>();
+      final response = await apiService.putPrivate(
+        '/api/menu',
+        payload.toJson(),
+      );
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Failed to create menu');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

@@ -147,7 +147,7 @@ class MainDrawer extends StatelessWidget {
                                             color: isSelected
                                                 ? LightTheme.primaryColor
                                                 : _textMuted,
-                                            size: 22,
+                                            size: 26,
                                           ),
                                           const SizedBox(width: 12),
                                           Text(
@@ -156,7 +156,7 @@ class MainDrawer extends StatelessWidget {
                                               color: isSelected
                                                   ? LightTheme.primaryColor
                                                   : _textMuted,
-                                              fontSize: 16,
+                                              fontSize: 18,
                                               fontWeight: isSelected
                                                   ? FontWeight.w600
                                                   : FontWeight.w500,
@@ -251,7 +251,7 @@ class MainDrawer extends StatelessWidget {
                                       color: currentPage == Pages.settings
                                           ? LightTheme.primaryColor
                                           : _textMuted,
-                                      size: 22,
+                                      size: 26,
                                     ),
                                     const SizedBox(width: 12),
                                     Text(
@@ -260,7 +260,7 @@ class MainDrawer extends StatelessWidget {
                                         color: currentPage == Pages.settings
                                             ? LightTheme.primaryColor
                                             : _textMuted,
-                                        fontSize: 16,
+                                        fontSize: 18,
                                         fontWeight:
                                             currentPage == Pages.settings
                                             ? FontWeight.w600

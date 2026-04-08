@@ -8,7 +8,7 @@ import 'package:restaukitchen_app/page/homePage/bloc/table_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/home_page.dart';
 import 'package:restaukitchen_app/page/menusPage/menus_page.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
-import 'package:restaukitchen_app/core/components/form/categorySelector/category_repo.dart';
+import 'package:restaukitchen_app/core/repository/category_repo.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_drawer_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_page_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/orders_list.dart';

@@ -3,21 +3,19 @@ import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/core/repository/category_repo.dart';
 import 'package:restaukitchen_app/core/models/category.dart';
 
-class CategorySelectorCubit extends Cubit<CategorySelectorState> {
-  CategorySelectorCubit()
+class GetCategoryCubit extends Cubit<GetCategoryCubitState> {
+  GetCategoryCubit()
     : super(
-        CategorySelectorState(
+        GetCategoryCubitState(
           categories: [],
-          selectedCategory: null,
           status: CategorySelectorStatus.initial,
         ),
       );
 
-  Future<void> getCategories(Category? selectedCategory) async {
+  Future<void> getCategories() async {
     emit(
-      CategorySelectorState(
+      GetCategoryCubitState(
         categories: [],
-        selectedCategory: null,
         status: CategorySelectorStatus.loading,
       ),
     );
@@ -25,47 +23,30 @@ class CategorySelectorCubit extends Cubit<CategorySelectorState> {
       final categoriesResponse = await CategoryRepo().getCategories();
       final categories = categoriesResponse.categories;
       emit(
-        CategorySelectorState(
+        GetCategoryCubitState(
           categories: categories,
-          selectedCategory: selectedCategory,
           status: CategorySelectorStatus.loaded,
         ),
       );
     } catch (e) {
       emit(
-        CategorySelectorState(
+        GetCategoryCubitState(
           categories: [],
-          selectedCategory: null,
           status: CategorySelectorStatus.error,
         ),
       );
     }
   }
-
-  Future<void> selectCategory(Category category) async {
-    emit(
-      CategorySelectorState(
-        categories: state.categories,
-        selectedCategory: category,
-        status: CategorySelectorStatus.loaded,
-      ),
-    );
-  }
 }
 
 enum CategorySelectorStatus { initial, loading, loaded, error }
 
-class CategorySelectorState extends Equatable {
+class GetCategoryCubitState extends Equatable {
   final List<Category> categories;
-  final Category? selectedCategory;
   final CategorySelectorStatus status;
 
-  const CategorySelectorState({
-    required this.categories,
-    required this.selectedCategory,
-    required this.status,
-  });
+  const GetCategoryCubitState({required this.categories, required this.status});
 
   @override
-  List<Object?> get props => [categories, selectedCategory, status];
+  List<Object?> get props => [categories, status];
 }

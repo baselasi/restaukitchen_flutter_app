@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
+import 'package:restaukitchen_app/core/bloc/get_category_cubit.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/core/services/user_service.dart';
-import 'package:restaukitchen_app/page/menusPage/bloc/delete_menu_cubit.dart';
+import 'package:restaukitchen_app/page/categories_list/categories_list.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menus_list/menus_list.dart';
 import 'package:restaukitchen_app/page/settings_page/bloc/restaurant_info_cubit/restaurant_info_cubit.dart';
@@ -86,7 +87,17 @@ class _CatalogueSection extends StatelessWidget {
       title: 'Categories',
       subtitle: 'Organize dishes into menu sections',
       icon: Icons.category_rounded,
-      onTap: (context) {},
+      onTap: (context) {
+        Navigator.of(context).push(
+          PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: BlocProvider(
+              create: (context) => GetCategoryCubit(),
+              child: const CategoriesList(),
+            ),
+          ),
+        );
+      },
     ),
     _CatalogueItem(
       title: 'Ingredients',

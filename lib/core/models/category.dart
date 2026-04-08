@@ -37,3 +37,20 @@ class CategoriesResponse extends Equatable {
   @override
   List<Object?> get props => [categories];
 }
+
+class CreateCategoryRequest extends Equatable {
+  final String name;
+  final String? id;
+  const CreateCategoryRequest({required this.name, this.id});
+
+  factory CreateCategoryRequest.fromJson(Map<String, dynamic> json) {
+    return CreateCategoryRequest(name: json['name'] as String);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name, if (id != null) 'id': id};
+  }
+
+  @override
+  List<Object?> get props => [name, id];
+}

@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:restaukitchen_app/core/components/form/categorySelector/category_repo.dart';
+import 'package:restaukitchen_app/core/repository/category_repo.dart';
 import 'package:restaukitchen_app/core/models/category.dart';
 
 class OrdersCategoryCubit extends Cubit<OrdersCategoryState> {

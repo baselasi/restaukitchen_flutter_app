@@ -3,13 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/bloc/get_category_cubit.dart';
+import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
-import 'package:restaukitchen_app/page/dimension_list/bloc/post_dimesions_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/repository/dimensions_repo.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/core/services/user_service.dart';
 import 'package:restaukitchen_app/page/categories_list/categories_list.dart';
 import 'package:restaukitchen_app/page/dimension_list/dimension_list.dart';
+import 'package:restaukitchen_app/page/ingredients_list/ingredients_list.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menus_list/menus_list.dart';
 import 'package:restaukitchen_app/page/settings_page/bloc/restaurant_info_cubit/restaurant_info_cubit.dart';
@@ -104,7 +105,23 @@ class _CatalogueSection extends StatelessWidget {
       title: 'Ingredients',
       subtitle: 'Allergens, stock and supplier info',
       icon: Icons.scatter_plot_rounded,
-      onTap: (context) {},
+      onTap: (context) {
+        Navigator.of(context).push(
+          PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => GetIngredientsCubit()),
+                BlocProvider(
+                  create: (context) =>
+                      GetDimensionsCubit(dimensionsRepo: DimensionsRepo()),
+                ),
+              ],
+              child: IngredientsList(),
+            ),
+          ),
+        );
+      },
     ),
     _CatalogueItem(
       title: 'Dimensions',
@@ -120,7 +137,6 @@ class _CatalogueSection extends StatelessWidget {
                   create: (context) =>
                       GetDimensionsCubit(dimensionsRepo: DimensionsRepo()),
                 ),
-                
               ],
               child: const DimensionList(),
             ),

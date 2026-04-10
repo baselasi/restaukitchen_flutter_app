@@ -20,6 +20,8 @@ class GetIngredientsCubit extends Cubit<GetIngredientsState> {
         ingredients = response.ingredients
             .where((ingredient) => ingredient.hasDimensionIds(dimensionIds))
             .toList();
+      } else {
+        ingredients = response.ingredients;
       }
       emit(GetIngredientsState.loaded(ingredients));
     } catch (e) {
@@ -29,6 +31,30 @@ class GetIngredientsCubit extends Cubit<GetIngredientsState> {
 
   Future<void> setIngredients(List<Ingredient> ingredients) async {
     emit(GetIngredientsState.loaded(ingredients));
+  }
+
+  Future<void> addIngredient(Ingredient ingredient) async {
+    final List<Ingredient> ingredients = [
+      ...state.ingredients ?? [],
+      ingredient,
+    ];
+    emit(GetIngredientsState.loaded(ingredients));
+  }
+
+  Future<void> updateIngredient(Ingredient ingredient) async {
+    final List<Ingredient> ingredients = state.ingredients ?? [];
+    final updatedIngredients = ingredients
+        .map((e) => e.id == ingredient.id ? ingredient : e)
+        .toList();
+    emit(GetIngredientsState.loaded(updatedIngredients));
+  }
+
+  Future<void> removeIngredient(String ingredientId) async {
+    final List<Ingredient> ingredients = state.ingredients ?? [];
+    final updatedIngredients = ingredients
+        .where((e) => e.id != ingredientId)
+        .toList();
+    emit(GetIngredientsState.loaded(updatedIngredients));
   }
 
   @override

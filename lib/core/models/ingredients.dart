@@ -67,3 +67,15 @@ class IngredientResponse extends Equatable {
   @override
   List<Object?> get props => [ingredients];
 }
+
+class UpdateIngredientResponse extends Equatable {
+  final Ingredient ingredient;
+
+  const UpdateIngredientResponse({required this.ingredient});
+
+  factory UpdateIngredientResponse.fromJson(Map<String, dynamic> json) {
+    return UpdateIngredientResponse(ingredient: Ingredient.fromJson(json));
+  }
+  @override
+  List<Object?> get props => [ingredient];
+}

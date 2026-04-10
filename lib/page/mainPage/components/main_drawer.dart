@@ -25,6 +25,8 @@ class MainDrawer extends StatelessWidget {
         return Icons.table_restaurant_outlined;
       case Pages.combinations:
         return Icons.layers_outlined;
+      case Pages.settings:
+        return Icons.settings_outlined;
     }
   }
 
@@ -40,6 +42,8 @@ class MainDrawer extends StatelessWidget {
         return 'Tables';
       case Pages.combinations:
         return 'Combinations';
+      case Pages.settings:
+        return 'Settings';
     }
   }
 
@@ -93,7 +97,9 @@ class MainDrawer extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final page = Pages.values[index];
                       final isSelected = page == currentPage;
-
+                      if(page == Pages.settings){
+                        return Container();
+                      }
                       return Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -141,7 +147,7 @@ class MainDrawer extends StatelessWidget {
                                             color: isSelected
                                                 ? LightTheme.primaryColor
                                                 : _textMuted,
-                                            size: 22,
+                                            size: 26,
                                           ),
                                           const SizedBox(width: 12),
                                           Text(
@@ -150,7 +156,7 @@ class MainDrawer extends StatelessWidget {
                                               color: isSelected
                                                   ? LightTheme.primaryColor
                                                   : _textMuted,
-                                              fontSize: 16,
+                                              fontSize: 18,
                                               fontWeight: isSelected
                                                   ? FontWeight.w600
                                                   : FontWeight.w500,
@@ -169,33 +175,140 @@ class MainDrawer extends StatelessWidget {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                // Padding(
+                //   padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                //   child: InkWell(
+                //     onTap: () {
+                //       authCubit.logout();
+                //       Navigator.pop(context);
+                //     },
+                //     borderRadius: BorderRadius.circular(8),
+                //     child: Padding(
+                //       padding: const EdgeInsets.symmetric(vertical: 10),
+                //       child: Row(
+                //         children: [
+                //           Icon(Icons.logout, color: _textMuted, size: 22),
+                //           const SizedBox(width: 12),
+                //           Text(
+                //             'Esci',
+                //             style: TextStyle(
+                //               color: _textMuted,
+                //               fontSize: 16,
+                //               fontWeight: FontWeight.w500,
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                Material(
+                  color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      authCubit.logout();
+                      mainPageCubit.setPage(Pages.settings);
                       Navigator.pop(context);
                     },
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(24),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        children: [
-                          Icon(Icons.logout, color: _textMuted, size: 22),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Esci',
-                            style: TextStyle(
-                              color: _textMuted,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              width: 4,
+                              decoration: BoxDecoration(
+                                color: currentPage == Pages.settings
+                                    ? LightTheme.primaryColor
+                                    : Colors.transparent,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(2),
+                                  bottomLeft: Radius.circular(2),
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: currentPage == Pages.settings
+                                      ? _pillBg
+                                      : null,
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(24),
+                                    bottomRight: Radius.circular(24),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      _getPageIcon(Pages.settings),
+                                      color: currentPage == Pages.settings
+                                          ? LightTheme.primaryColor
+                                          : _textMuted,
+                                      size: 26,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      _getPageLabel(Pages.settings),
+                                      style: TextStyle(
+                                        color: currentPage == Pages.settings
+                                            ? LightTheme.primaryColor
+                                            : _textMuted,
+                                        fontSize: 18,
+                                        fontWeight:
+                                            currentPage == Pages.settings
+                                            ? FontWeight.w600
+                                            : FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
+                const SizedBox(height: 16),
+                // Padding(
+                //   padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                //   child: InkWell(
+                //     onTap: () {
+                //       mainPageCubit.setPage(Pages.settings);
+                //       Navigator.pop(context);
+                //     },
+                //     borderRadius: BorderRadius.circular(8),
+                //     child: Padding(
+                //       padding: const EdgeInsets.symmetric(vertical: 10),
+                //       child: Row(
+                //         children: [
+                //           Icon(
+                //             Icons.settings_outlined,
+                //             color: _textMuted,
+                //             size: 22,
+                //           ),
+                //           const SizedBox(width: 12),
+                //           Text(
+                //             'Settings',
+                //             style: TextStyle(
+                //               color: _textMuted,
+                //               fontSize: 16,
+                //               fontWeight: FontWeight.w500,
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

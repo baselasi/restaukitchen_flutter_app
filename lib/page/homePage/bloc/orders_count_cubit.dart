@@ -10,14 +10,16 @@ class OrdersCountCubit extends Cubit<OrdersCountState> {
     try {
       emit(OrdersCountState(status: OrdersCountStatus.loading));
       final ordersCount = await HomePageRepo().getOrdersCount();
-      emit(
-        OrdersCountState(
-          status: OrdersCountStatus.loaded,
-          ordersCount: ordersCount,
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          OrdersCountState(
+            status: OrdersCountStatus.loaded,
+            ordersCount: ordersCount,
+          ),
+        );
+      }
     } catch (e) {
-      emit(OrdersCountState(status: OrdersCountStatus.error));
+      if (!isClosed) emit(OrdersCountState(status: OrdersCountStatus.error));
     }
   }
 }

@@ -80,3 +80,23 @@ class MenuResponse extends Equatable {
   @override
   List<Object?> get props => [menus];
 }
+
+class CreateMenuRequest extends Equatable {
+  final String name;
+  final String? id;
+  const CreateMenuRequest({required this.name,  this.id});
+
+  factory CreateMenuRequest.fromJson(Map<String, dynamic> json) {
+    return CreateMenuRequest(
+      name: json['name'] as String,
+      id: json['id'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name, if (id != null) 'id': id};
+  }
+
+  @override
+  List<Object?> get props => [name];
+}

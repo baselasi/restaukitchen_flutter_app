@@ -21,7 +21,7 @@ class LightTheme {
         error: Colors.red,
         onError: Colors.white,
       ),
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: Colors.grey[100],
       appBarTheme: const AppBarTheme(
         elevation: 0,
         centerTitle: true,

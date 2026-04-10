@@ -35,15 +35,21 @@ class DimensionResponse extends Equatable {
 
   const DimensionResponse({required this.dimensions});
 
-  factory DimensionResponse.fromJson(List<dynamic> json) {
-    return DimensionResponse(
-      dimensions: json
-          .map(
-            (dimension) =>
-                Dimension.fromJson(dimension as Map<String, dynamic>),
-          )
-          .toList(),
-    );
+  factory DimensionResponse.fromJson(dynamic json) {
+    if (json is List<dynamic>) {
+      return DimensionResponse(
+        dimensions: json
+            .map(
+              (dimension) =>
+                  Dimension.fromJson(dimension as Map<String, dynamic>),
+            )
+            .toList(),
+      );
+    } else {
+      return DimensionResponse(
+        dimensions: [Dimension.fromJson(json as Map<String, dynamic>)],
+      );
+    }
   }
   @override
   List<Object?> get props => [dimensions];

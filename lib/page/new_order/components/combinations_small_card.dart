@@ -8,6 +8,7 @@ import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_or
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_from_events.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/dimensions_selection_page.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
+import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class CombinationsSmallCard extends StatefulWidget {
   final MenuCombination combination;
@@ -21,6 +22,22 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
+
+  String _priceRangeLabel() {
+    final prices = widget.combination.dimensionAssignments
+        .where((assignment) => !assignment.isDeleted)
+        .map((assignment) => assignment.price)
+        .toList();
+
+    if (prices.isEmpty) return '';
+
+    prices.sort();
+    final min = prices.first;
+    final max = prices.last;
+
+    if (min == max) return '€${min.toStringAsFixed(2)}';
+    return '€${min.toStringAsFixed(2)} - €${max.toStringAsFixed(2)}';
+  }
 
   @override
   void initState() {
@@ -56,6 +73,7 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final priceRangeLabel = _priceRangeLabel();
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
@@ -89,47 +107,73 @@ class _CombinationsSmallCardState extends State<CombinationsSmallCard>
             }
           },
           borderRadius: BorderRadius.circular(12),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      widget.combination.name,
-                      style: textTheme.titleSmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.combination.name,
+                          style: textTheme.titleSmall,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          priceRangeLabel,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: LightTheme.primaryColor.withValues(alpha: 0.14),
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.add,
+                        size: 22,
+                        color: colorScheme.primary,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Positioned(
-                top: -20,
-                right: -20,
-                child: IconButton(
-                  onPressed: () {
-                    PageTransition(
-                      type: PageTransitionType.rightToLeft,
-                      child: BlocProvider(
-                        create: (context) => CombinationGetCubit(
-                          combinationPageRepo: CombinationPageRepo(),
-                        )..getCombination(widget.combination.id),
-                        child: DimensionsSelectionPage(),
-                      ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.add_circle,
-                    color: colorScheme.primary,
-                    size: 36,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
+          // Positioned(
+          //   top: -20,
+          //   right: -20,
+          //   child: IconButton(
+          //     onPressed: () {
+          //       PageTransition(
+          //         type: PageTransitionType.rightToLeft,
+          //         child: BlocProvider(
+          //           create: (context) => CombinationGetCubit(
+          //             combinationPageRepo: CombinationPageRepo(),
+          //           )..getCombination(widget.combination.id),
+          //           child: DimensionsSelectionPage(),
+          //         ),
+          //       );
+          //     },
+          //     icon: Icon(
+          //       Icons.add_circle,
+          //       color: colorScheme.primary,
+          //       size: 36,
+          //     ),
+          //   ),
+          // ),
         ),
       ),
     );

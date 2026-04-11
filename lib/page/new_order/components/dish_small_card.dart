@@ -6,6 +6,7 @@ import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_or
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_from_events.dart';
 import 'package:restaukitchen_app/page/new_order/components/add_dish_dialog.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
+import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class DishSmallCard extends StatefulWidget {
   final Dish dish;
@@ -26,6 +27,35 @@ class _DishSmallCardState extends State<DishSmallCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
+
+  List<double> _collectDishPrices() {
+    final prices = <double>[];
+    final base = widget.dish.price;
+    if (base != null) prices.add(base);
+
+    final assignments = widget.dish.dimensionAssignments;
+    if (assignments != null) {
+      for (final assignment in assignments) {
+        if (assignment.deleted == true) continue;
+        final parsed = num.tryParse(assignment.price ?? '');
+        if (parsed != null) prices.add(parsed.toDouble());
+      }
+    }
+
+    return prices;
+  }
+
+  String _dishPriceRangeLabel() {
+    final prices = _collectDishPrices();
+    if (prices.isEmpty) return '';
+
+    prices.sort();
+    final min = prices.first;
+    final max = prices.last;
+
+    if (min == max) return '€${min.toStringAsFixed(2)}';
+    return '€${min.toStringAsFixed(2)} - €${max.toStringAsFixed(2)}';
+  }
 
   @override
   void initState() {
@@ -98,6 +128,7 @@ class _DishSmallCardState extends State<DishSmallCard>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final priceRangeLabel = _dishPriceRangeLabel();
 
     return AnimatedBuilder(
       animation: _scaleAnimation,
@@ -111,25 +142,26 @@ class _DishSmallCardState extends State<DishSmallCard>
           onTapUp: _onTapUp,
           onTapCancel: _onTapCancel,
           borderRadius: BorderRadius.circular(12),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
+
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       widget.dish.name,
-                      style: textTheme.titleSmall,
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      widget.dish.price != null
-                          ? '€${widget.dish.price!.toStringAsFixed(2)}'
-                          : '',
+                      priceRangeLabel,
                       style: textTheme.bodyMedium?.copyWith(
                         color: colorScheme.primary,
                         fontWeight: FontWeight.w600,
@@ -137,20 +169,18 @@ class _DishSmallCardState extends State<DishSmallCard>
                     ),
                   ],
                 ),
-              ),
-              Positioned(
-                top: -20,
-                right: -20,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.add_circle,
-                    color: colorScheme.primary,
-                    size: 36,
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: LightTheme.primaryColor.withValues(alpha: 0.14),
+                    shape: BoxShape.circle,
                   ),
+                  alignment: Alignment.center,
+                  child: Icon(Icons.add, size: 22, color: colorScheme.primary),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

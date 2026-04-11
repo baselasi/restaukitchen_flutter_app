@@ -16,9 +16,12 @@ class DimensionsDialog extends StatefulWidget {
 }
 
 class _DimensionsDialogState extends State<DimensionsDialog> {
+  Dimension? _selectedDimension;
+
   @override
   void initState() {
     super.initState();
+    _selectedDimension = widget.initialSelection;
   }
 
   @override
@@ -39,22 +42,46 @@ class _DimensionsDialogState extends State<DimensionsDialog> {
                 itemCount: widget.dimensions.length,
                 itemBuilder: (context, index) {
                   final dimension = widget.dimensions[index];
+                  final isSelected = _selectedDimension?.id == dimension.id;
                   return InkWell(
+                    borderRadius: BorderRadius.circular(8),
+
                     onTap: () {
                       setState(() {
-                        Navigator.of(context).pop(dimension);
+                        _selectedDimension = dimension;
                       });
                     },
                     child: Card(
+                      shadowColor: Colors.black.withValues(alpha: 0.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.grey[300]!,
+                          width: 1,
+                        ),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          dimension.name,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 24,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                dimension.name,
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 24,
+                                    ),
                               ),
+                            ),
+                            if (isSelected)
+                              Icon(
+                                Icons.check,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                          ],
                         ),
                       ),
                     ),
@@ -62,6 +89,18 @@ class _DimensionsDialogState extends State<DimensionsDialog> {
                 },
               ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: _selectedDimension == null
+              ? null
+              : () => Navigator.of(context).pop(_selectedDimension),
+          child: const Text('Add'),
+        ),
+      ],
     );
   }
 }

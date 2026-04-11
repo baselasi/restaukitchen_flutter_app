@@ -52,10 +52,10 @@ class _AddDishesPageState extends State<AddDishesPage> {
           );
         }, childCount: dishes.length),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 30,
-          mainAxisSpacing: 30,
-          childAspectRatio: 2,
+          crossAxisCount: 1,
+          crossAxisSpacing: 1,
+          mainAxisSpacing: 1,
+          childAspectRatio: 5,
         ),
       ),
     );

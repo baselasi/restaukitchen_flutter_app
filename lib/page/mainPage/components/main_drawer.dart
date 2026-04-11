@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/routes.dart';
 import 'package:restaukitchen_app/page/mainPage/bloc/main_page_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
@@ -8,7 +7,6 @@ import 'package:restaukitchen_app/theme/light_theme.dart';
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
 
-  static const Color _textDark = Color(0xFF333333);
   static const Color _textMuted = Color(0xFF888888);
   static const Color _borderLight = Color(0xFFE0E0E0);
   static const Color _pillBg = Color(0xFFEEEEEE);
@@ -50,7 +48,6 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mainPageCubit = context.read<MainPageCubit>();
-    final authCubit = context.read<AuthCubit>();
 
     return BlocBuilder<MainPageCubit, MainPageState>(
       builder: (context, state) {
@@ -93,7 +90,7 @@ class MainDrawer extends StatelessWidget {
                   child: ListView.separated(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     itemCount: Pages.values.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 4),
+                    separatorBuilder: (_, _) => const SizedBox(height: 4),
                     itemBuilder: (context, index) {
                       final page = Pages.values[index];
                       final isSelected = page == currentPage;

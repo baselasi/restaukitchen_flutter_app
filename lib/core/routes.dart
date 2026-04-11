@@ -19,7 +19,7 @@ import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
 import 'package:restaukitchen_app/page/tabels_list/tabels_list.dart';
 
-enum Pages { home, menus, orders, tables, combinations, settings }
+enum Pages { home, tables, menus, combinations, orders, settings }
 
 Widget buildPage(Pages page) {
   switch (page) {

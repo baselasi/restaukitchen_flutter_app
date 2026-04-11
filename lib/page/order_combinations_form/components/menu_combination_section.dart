@@ -62,63 +62,104 @@ class _MenuCombinationSectionState extends State<MenuCombinationSection> {
       CombinationMenuSectionState
     >(
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return Material(
+          color: widget.isActive ? Colors.white : Colors.grey[300],
+          elevation: widget.isActive ? 2 : 0,
+          shadowColor: Colors.black.withValues(alpha: 0.1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 1,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  widget.menu.name,
-                  style: Theme.of(context).textTheme.titleMedium,
+                Container(
+                  decoration: BoxDecoration(
+                    color: widget.isActive
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey[300],
+                    // borderRadius: BorderRadius.only(
+                    //   topLeft: Radius.circular(12),
+                    //   topRight: Radius.circular(12),
+                    // ),
+                    borderRadius: BorderRadius.circular(12),
+                    // border: Border.all(
+                    //   color: Theme.of(context).colorScheme.primary,
+                    //   width: 1,
+                    // ),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.menu.name,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: widget.isActive
+                                  ? Colors.white
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
+                      if (state.selectedDish != null)
+                        Icon(
+                          Icons.check_circle,
+                          size: 30,
+                          color: widget.isActive
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                    ],
+                  ),
                 ),
-                if (state.selectedDish != null)
-                  Icon(
-                    Icons.check_circle,
-                    size: 30,
-                    color: Theme.of(context).colorScheme.primary,
+                const SizedBox(height: 8),
+                RadioGroup<int?>(
+                  groupValue: _selectedDishIndex,
+                  onChanged: (value) {
+                    if (value == null) return;
+                    if (!widget.isActive) return;
+                    setState(() {
+                      _selectedDishIndex = value;
+                      widget.onDishSelected(widget.menu.id);
+                      context.read<CombinationMenuSectionCubit>().selectDish(
+                        dishes[value],
+                      );
+                    });
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(dishes.length, (index) {
+                      final dish = dishes[index];
+                      return RadioListTile<int?>(
+                        dense: true,
+                        enabled: widget.isActive,
+                        value: index,
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(dish.name),
+                        subtitle:
+                            dish.description != null &&
+                                dish.description!.isNotEmpty
+                            ? Text(dish.description!)
+                            : null,
+                      );
+                    }),
+                  ),
+                ),
+                if (state.selectedDish != null &&
+                    availableIngredients.isNotEmpty)
+                  MenuIngredientsList(
+                    ingredients: availableIngredients,
+                    ingredientSelections: state.ingredientSelections,
                   ),
               ],
             ),
-            const SizedBox(height: 8),
-            RadioGroup<int?>(
-              groupValue: _selectedDishIndex,
-              onChanged: (value) {
-                if (value == null) return;
-                if (!widget.isActive) return;
-                setState(() {
-                  _selectedDishIndex = value;
-                  widget.onDishSelected(widget.menu.id);
-                  context.read<CombinationMenuSectionCubit>().selectDish(
-                    dishes[value],
-                  );
-                });
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(dishes.length, (index) {
-                  final dish = dishes[index];
-                  return RadioListTile<int?>(
-                    dense: true,
-                    enabled: widget.isActive,
-                    value: index,
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(dish.name),
-                    subtitle:
-                        dish.description != null && dish.description!.isNotEmpty
-                        ? Text(dish.description!)
-                        : null,
-                  );
-                }),
-              ),
-            ),
-            if (state.selectedDish != null && availableIngredients.isNotEmpty)
-              MenuIngredientsList(
-                ingredients: availableIngredients,
-                ingredientSelections: state.ingredientSelections,
-              ),
-          ],
+          ),
         );
       },
       listener: (context, state) {
@@ -154,14 +195,14 @@ class MenuIngredientsList extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < ingredients.length; i++) ...[
-          if (i > 0)
-            Divider(
-              height: 1,
-              thickness: 1,
-              color: Theme.of(
-                context,
-              ).colorScheme.outlineVariant.withValues(alpha: 0.35),
-            ),
+          // if (i > 0)
+          // Divider(
+          //   height: 1,
+          //   thickness: 1,
+          //   color: Theme.of(
+          //     context,
+          //   ).colorScheme.outlineVariant.withValues(alpha: 0.35),
+          // ),
           _MenuIngredientTile(
             ingredient: ingredients[i],
             quantity:
@@ -177,6 +218,7 @@ class MenuIngredientsList extends StatelessWidget {
               ingredientIdKey(ingredients[i], i),
             ),
           ),
+          const SizedBox(height: 8),
         ],
       ],
     );
@@ -217,72 +259,89 @@ class _MenuIngredientTile extends StatelessWidget {
     final titleStyle = quantity > 0
         ? Theme.of(
             context,
-          ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)
-        : Theme.of(context).textTheme.bodyLarge;
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)
+        : Theme.of(context).textTheme.bodyMedium;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: quantity == 0 ? onIncrement : null,
-        child: ListTile(
-          dense: true,
-          contentPadding: const EdgeInsets.symmetric(vertical: 6),
-          horizontalTitleGap: 12,
-          leading: SizedBox(
-            width: quantity == 0 ? 40 : 110,
-            child: quantity == 0
-                ? _PlusOnlyCircle(scheme: scheme)
-                : _QuantityStepper(
-                    quantity: quantity,
-                    scheme: scheme,
-                    onIncrement: onIncrement,
-                    onDecrement: onDecrement,
-                  ),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.primary,
+              width: 1,
+            ),
           ),
-          title: Text(ingredient.name, style: titleStyle),
-          trailing: priceLabel != null
-              ? Text(
-                  priceLabel!,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant.withValues(alpha: 0.5),
-                    fontWeight: FontWeight.w800,
-                  ),
-                )
-              : null,
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+          child: ListTile(
+            dense: true,
+            contentPadding: const EdgeInsets.symmetric(vertical: 6),
+            horizontalTitleGap: 12,
+            leading: SizedBox(
+              width: quantity == 0 ? 40 : 110,
+              child: quantity == 0
+                  ? Icon(
+                      Icons.add,
+                      size: 14,
+                      fontWeight: FontWeight.w900,
+                      color: Theme.of(context).colorScheme.primary,
+                    )
+                  : _QuantityStepper(
+                      quantity: quantity,
+                      scheme: scheme,
+                      onIncrement: onIncrement,
+                      onDecrement: onDecrement,
+                    ),
+            ),
+            title: Text(ingredient.name, style: titleStyle),
+            trailing: priceLabel != null
+                ? Text(
+                    priceLabel!,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurfaceVariant.withValues(alpha: 0.5),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  )
+                : null,
+          ),
         ),
       ),
     );
   }
 }
 
-class _PlusOnlyCircle extends StatelessWidget {
-  const _PlusOnlyCircle({required this.scheme});
+// class _PlusOnlyCircle extends StatelessWidget {
+//   const _PlusOnlyCircle({required this.scheme});
 
-  final ColorScheme scheme;
+//   final ColorScheme scheme;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 20,
-      height: 20,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: scheme.surfaceContainerHighest,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primary,
-          style: BorderStyle.solid,
-          width: 1,
-        ),
-      ),
-      child: Icon(
-        Icons.add,
-        size: 18,
-        color: Theme.of(context).colorScheme.primary,
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: 20,
+//       height: 20,
+//       alignment: Alignment.center,
+//       decoration: BoxDecoration(
+//         shape: BoxShape.circle,
+//         color: scheme.surfaceContainerHighest,
+//         border: Border.all(
+//           color: Theme.of(context).colorScheme.primary,
+//           style: BorderStyle.solid,
+//           width: 1,
+//         ),
+//       ),
+//       child: Icon(
+//         Icons.add,
+//         size: 18,
+//         color: Theme.of(context).colorScheme.primary,
+//       ),
+//     );
+//   }
+// }
 
 class _QuantityStepper extends StatelessWidget {
   const _QuantityStepper({
@@ -302,68 +361,79 @@ class _QuantityStepper extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _RoundGreyIconButton(
-          icon: Icons.remove,
-          scheme: scheme,
-          onTap: onDecrement,
-        ),
-        const SizedBox(width: 6),
-        Container(
-          width: 25,
-          height: 25,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-          child: Text(
-            '$quantity',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w700,
-              fontSize: 14,
-            ),
+        // _RoundGreyIconButton(
+        //   icon: Icons.remove,
+        //   scheme: scheme,
+        //   onTap: onDecrement,
+        // ),
+        IconButton(
+          onPressed: () {
+            onDecrement();
+          },
+          icon: Icon(
+            Icons.remove,
+            size: 14,
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
-        const SizedBox(width: 6),
-        _RoundGreyIconButton(
-          icon: Icons.add,
-          scheme: scheme,
-          onTap: onIncrement,
+        Text(
+          '$quantity',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w900,
+            fontSize: 14,
+          ),
         ),
+        IconButton(
+          onPressed: () {
+            onIncrement();
+          },
+          icon: Icon(
+            Icons.add,
+            size: 14,
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        // _RoundGreyIconButton(
+        //   icon: Icons.add,
+        //   scheme: scheme,
+        //   onTap: onIncrement,
+        // ),
       ],
     );
   }
 }
 
-class _RoundGreyIconButton extends StatelessWidget {
-  const _RoundGreyIconButton({
-    required this.icon,
-    required this.scheme,
-    required this.onTap,
-  });
+// class _RoundGreyIconButton extends StatelessWidget {
+//   const _RoundGreyIconButton({
+//     required this.icon,
+//     required this.scheme,
+//     required this.onTap,
+//   });
 
-  final IconData icon;
-  final ColorScheme scheme;
-  final VoidCallback onTap;
+//   final IconData icon;
+//   final ColorScheme scheme;
+//   final VoidCallback onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: scheme.surfaceContainerHigh,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        splashColor: scheme.primary.withValues(alpha: 0.22),
-        highlightColor: scheme.primary.withValues(alpha: 0.12),
-        child: SizedBox(
-          width: 32,
-          height: 32,
-          child: Center(child: Icon(icon, size: 18, color: scheme.primary)),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Material(
+//       color: scheme.surfaceContainerHigh,
+//       shape: const CircleBorder(),
+//       clipBehavior: Clip.antiAlias,
+//       child: InkWell(
+//         onTap: onTap,
+//         customBorder: const CircleBorder(),
+//         splashColor: scheme.primary.withValues(alpha: 0.22),
+//         highlightColor: scheme.primary.withValues(alpha: 0.12),
+//         child: SizedBox(
+//           width: 28,
+//           height: 28,
+//           child: Center(child: Icon(icon, size: 18, color: scheme.primary)),
+//         ),
+//       ),
+//     );
+//   }
+// }

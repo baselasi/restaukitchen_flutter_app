@@ -31,6 +31,22 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 7),
+            IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: const Icon(
+                Icons.menu,
+                size: 30,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
         title: Column(
           mainAxisSize: MainAxisSize.min,

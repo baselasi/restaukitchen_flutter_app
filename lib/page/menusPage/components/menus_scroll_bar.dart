@@ -18,6 +18,7 @@ class MenusScrollBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
+      color: Colors.grey[100],
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,

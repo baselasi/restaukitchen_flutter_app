@@ -182,30 +182,6 @@ class _DishSmallCardState extends State<DishSmallCard>
               ],
             ),
           ),
-
-          // Container(
-          //           //   width: 40,
-          //           //   height: 40,
-          //           //   decoration: BoxDecoration(
-          //           //     color: bg,
-          //           //     shape: BoxShape.circle,
-          //           //   ),
-          //           //   alignment: Alignment.center,
-          //           //   child: Icon(icon, size: 22, color: fg),
-          //           // );
-
-          // Positioned(
-          //   top: -20,
-          //   right: -20,
-          //   child: IconButton(
-          //     onPressed: () {},
-          //     icon: Icon(
-          //       Icons.add_circle,
-          //       color: colorScheme.primary,
-          //       size: 36,
-          //     ),
-          //   ),
-          // ),
         ),
       ),
     );

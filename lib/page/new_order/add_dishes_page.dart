@@ -80,13 +80,18 @@ class _AddDishesPageState extends State<AddDishesPage> {
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate((context, index) {
           final combination = combinations[index];
-          return CombinationsSmallCard(combination: combination);
+          return  Column(
+            children: [
+              CombinationsSmallCard(combination: combination),
+              const SizedBox(height: 10),
+            ],
+          );
         }, childCount: combinations.length),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 30,
-          mainAxisSpacing: 30,
-          childAspectRatio: 2,
+          crossAxisCount: 1,
+          crossAxisSpacing: 1,
+          mainAxisSpacing: 1,
+          childAspectRatio: 5,
         ),
       ),
     );

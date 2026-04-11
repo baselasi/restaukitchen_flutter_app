@@ -1,23 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/descriptionInput/description_cubit.dart';
+import 'package:restaukitchen_app/core/components/form/descriptionInput/description_entity.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 
 class DescriptionInput extends StatefulWidget {
   final Dish? dish;
-  const DescriptionInput({super.key, this.dish});
+  final ScrollController scrollController;
+  const DescriptionInput({
+    super.key,
+    this.dish,
+    required this.scrollController,
+  });
 
   @override
   State<DescriptionInput> createState() => _DescriptionInputState();
 }
 
 class _DescriptionInputState extends State<DescriptionInput> {
-  final Map<String, TextEditingController> _controllers = {};
+  static const List<Map<String, String>> _supportedLanguages = [
+    {'name': 'English', 'icon': '🇺🇸'},
+    {'name': 'Italian', 'icon': '🇮🇹'},
+    {'name': 'French', 'icon': '🇫🇷'},
+    {'name': 'Spanish', 'icon': '🇪🇸'},
+    {'name': 'Arabic', 'icon': '🇦🇪'},
+  ];
+
+  String _selectedLanguage = 'English';
+  final FocusNode _descriptionFocusNode = FocusNode();
+  final GlobalKey _inputKey = GlobalKey();
+
+  // final Map<String, TextEditingController> _controllers = {};
+  final Map<String, TextEditingController> _descriptionControllers = {
+    'English': TextEditingController(),
+    'Italian': TextEditingController(),
+    'French': TextEditingController(),
+    'Spanish': TextEditingController(),
+    'Arabic': TextEditingController(),
+  };
+
+  // final TextEditingController _previewDescriptionController =
+  //     TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _descriptionFocusNode.addListener(() {
+      if (_descriptionFocusNode.hasFocus) {
+        _scrollToDescriptionField();
+      }
+    });
     context.read<DescriptionCubit>().initDescriptions(
       description: widget.dish?.description,
       descriptionIt: widget.dish?.descriptionIt,
@@ -27,32 +60,52 @@ class _DescriptionInputState extends State<DescriptionInput> {
     );
   }
 
-  /// Creates controllers for new entries and disposes removed ones.
-  void _syncControllers(DescriptionState state) {
-    final currentIds = state.descriptions.map((e) => e.id).toSet();
+  // /// Creates controllers for new entries and disposes removed ones.
+  // void _syncControllers(DescriptionState state) {
+  //   final currentIds = state.descriptions.map((e) => e.id).toSet();
 
-    // Dispose controllers for entries that were removed
-    final removedIds =
-        _controllers.keys.where((id) => !currentIds.contains(id)).toList();
-    for (final id in removedIds) {
-      _controllers[id]!.dispose();
-      _controllers.remove(id);
-    }
+  //   // Dispose controllers for entries that were removed
+  //   final removedIds = _controllers.keys
+  //       .where((id) => !currentIds.contains(id))
+  //       .toList();
+  //   for (final id in removedIds) {
+  //     _controllers[id]!.dispose();
+  //     _controllers.remove(id);
+  //   }
 
-    // Create controllers for newly added entries
-    for (final entry in state.descriptions) {
-      if (!_controllers.containsKey(entry.id)) {
-        _controllers[entry.id] = TextEditingController(text: entry.value);
-      }
-    }
+  //   // Create controllers for newly added entries
+  //   for (final entry in state.descriptions) {
+  //     if (!_controllers.containsKey(entry.id)) {
+  //       _controllers[entry.id] = TextEditingController(text: entry.value);
+  //     }
+  //   }
+  // }
+
+  Future<void> _scrollToDescriptionField() async {
+    Future.delayed(const Duration(milliseconds: 900), () {
+      final ctx = _inputKey.currentContext;
+      if (ctx == null) return;
+      if (!mounted || !context.mounted) return;
+      widget.scrollController.animateTo(
+        widget.scrollController.offset + 80,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   @override
   void dispose() {
-    for (final controller in _controllers.values) {
+    // for (final controller in _controllers.values) {
+    //   controller.dispose();
+    // }
+    // _controllers.clear();
+    for (final controller in _descriptionControllers.values) {
       controller.dispose();
     }
-    _controllers.clear();
+    _descriptionControllers.clear();
+    _descriptionFocusNode.dispose();
+    // _previewDescriptionController.dispose();
     super.dispose();
   }
 
@@ -69,102 +122,66 @@ class _DescriptionInputState extends State<DescriptionInput> {
             prev.availableLanguages != curr.availableLanguages;
       },
       builder: (context, state) {
-        _syncControllers(state);
+        // _syncControllers(state);
 
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. The Dropdown
-            if (state.availableLanguages.isNotEmpty)
-              InputDecorator(
-                decoration: InputDecoration(
-                  hintText: "Select Language",
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _supportedLanguages.map((language) {
+                final isSelected = _selectedLanguage == language['name']!;
+                return ChoiceChip(
+                  selected: false,
+                  color: WidgetStatePropertyAll<Color?>(
+                    isSelected ? const Color(0xFFE8F0FE) : Colors.grey[100],
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+                  onSelected: (selected) {
+                    setState(() {
+                      // _descriptionFocusNode.unfocus();
+                      _selectedLanguage = language['name']!;
+                    });
+                  },
+                  label: Text(language['name']!),
+                  avatar: Text(language['icon']!),
+                  side: BorderSide(
+                    color: isSelected
+                        ? const Color(0xFF0047AB)
+                        : Colors.grey[300]!,
                   ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF0047AB),
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: Text(
-                      "Select Language",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.black),
-                    ),
-                    isExpanded: true,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    icon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
-                    items: state.availableLanguages.map((String lang) {
-                      return DropdownMenuItem(value: lang, child: Text(lang));
-                    }).toList(),
-                    onChanged: state.availableLanguages.isEmpty
-                        ? null
-                        : (val) {
-                            if (val != null) {
-                              context.read<DescriptionCubit>().addLanguage(val);
-                            }
-                          },
-                  ),
-                ),
-              ),
-
-            const SizedBox(height: 20),
-
-            // 2. The Dynamic List of Inputs
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: state.descriptions.length,
-              itemBuilder: (context, index) {
-                final entry = state.descriptions[index];
-
-                return Padding(
-                  key: ValueKey(entry.id),
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(entry.language),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              context.read<DescriptionCubit>().removeLanguage(
-                                entry.id,
-                                entry.language,
-                              );
-                            },
-                            tooltip: 'Remove ${entry.language}',
-                          ),
-                        ],
-                      ),
-                      InputField(
-                        maxLines: 5,
-                        controller: _controllers[entry.id]!,
-                        onChanged: (text) => context
-                            .read<DescriptionCubit>()
-                            .updateText(entry.id, text),
-                      ),
-                    ],
+                  labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: isSelected
+                        ? const Color(0xFF0047AB)
+                        : Colors.black87,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   ),
                 );
-              },
+              }).toList(),
             ),
+            const SizedBox(height: 16),
+            InputField(
+              key: _inputKey,
+              focusNode: _descriptionFocusNode,
+              controller: _descriptionControllers[_selectedLanguage]!,
+              label: 'Description',
+              hint: 'Add description',
+              maxLines: 4,
+              onChanged: (text) {
+                context.read<DescriptionCubit>().updateText(
+                  _selectedLanguage,
+                  text,
+                );
+              },
+              initialValue: state.descriptions
+                  .firstWhere(
+                    (entry) => entry.language == _selectedLanguage,
+                    orElse: () =>
+                        DescriptionEntity(id: "", language: "", value: ""),
+                  )
+                  .value,
+            ),
+            const SizedBox(height: 16),
           ],
         );
       },

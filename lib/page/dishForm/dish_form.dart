@@ -24,7 +24,7 @@ class DishForm extends StatefulWidget {
 class _DishFormState extends State<DishForm> {
   final TextEditingController _nameControllere = TextEditingController();
   bool _isAvailable = true;
-
+  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -51,47 +51,135 @@ class _DishFormState extends State<DishForm> {
           children: [
             Expanded(
               child: SingleChildScrollView(
+                controller: _scrollController,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
                       SizedBox(height: 16),
-                      Text('Dish Form'),
-                      SizedBox(height: 16),
-                      InputField(
-                        controller: _nameControllere,
-                        label: "Name",
-                        isRequired: true,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Fondamentale',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            InputField(
+                              controller: _nameControllere,
+                              label: "Name",
+                              isRequired: true,
+                            ),
+                            SizedBox(height: 16),
+                            CategorySelectorField(
+                              selectedCategory: widget.dish?.category,
+                            ),
+                            SizedBox(height: 16),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Availibility',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          _isAvailable
+                                              ? 'Available'
+                                              : 'Unavailable',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                        Switch(
+                                          value: _isAvailable,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _isAvailable = value;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+
                       SizedBox(height: 16),
-                      CategorySelectorField(
-                        selectedCategory: widget.dish?.category,
+
+                      // Expanded(
+                      //   child:
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Description',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize: 16,
+
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            DescriptionInput(
+                              dish: widget.dish,
+                              scrollController: _scrollController,
+                            ),
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 16),
-                      DescriptionInput(dish: widget.dish),
                       SizedBox(height: 16),
                       DimensionInput(),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Text(
-                            'Available',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Spacer(),
-                          Switch(
-                            value: _isAvailable,
-                            onChanged: (value) {
-                              setState(() {
-                                _isAvailable = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
                       SizedBox(
                         height: 16,
                       ), // Extra padding at bottom for button spacing

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
+import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_assignments.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
-import 'package:restaukitchen_app/core/components/form/input_field.dart';
+import 'package:restaukitchen_app/core/components/form/dimensionInput/dimensions_dialog.dart';
+import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
+import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class DimensionInput extends StatefulWidget {
-  const DimensionInput({super.key});
-
+  const DimensionInput({super.key, this.dimensionAssignments});
+  final List<DimensionAssignments>? dimensionAssignments;
   @override
   State<DimensionInput> createState() => _DimensionInputState();
 }
@@ -18,7 +20,8 @@ class _DimensionInputState extends State<DimensionInput> {
   @override
   void initState() {
     super.initState();
-    context.read<DimensionCubit>().getDimensions();
+    // context.read<DimensionCubit>().getDimensions();
+    context.read<GetDimensionsCubit>().getDimensions();
   }
 
   @override
@@ -44,7 +47,7 @@ class _DimensionInputState extends State<DimensionInput> {
 
     final assignments = state.dimensionAssignments!;
     final currentLength = assignments.length;
-    
+
     // If the list length changed, rebuild all controllers to handle index shifts
     if (currentLength != _previousAssignmentsLength) {
       // Dispose all existing controllers
@@ -52,14 +55,14 @@ class _DimensionInputState extends State<DimensionInput> {
         controller.dispose();
       }
       _priceControllers.clear();
-      
+
       // Create new controllers for all assignments
       for (int i = 0; i < assignments.length; i++) {
         final assignment = assignments[i];
         final priceText = assignment.price?.toString() ?? '';
         _priceControllers[i] = TextEditingController(text: priceText);
       }
-      
+
       _previousAssignmentsLength = currentLength;
       return;
     }
@@ -81,124 +84,206 @@ class _DimensionInputState extends State<DimensionInput> {
     }
   }
 
+  Widget _buildDimensionPreviewRow({
+    required BuildContext context,
+    required int index,
+    required DimensionAssignments assignment,
+    required TextEditingController controller,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 5,
+            offset: Offset(0, 3 ),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              assignment.dimension.name.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ),
+          Text(
+            '\$',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.grey[700],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(width: 12),
+          SizedBox(
+            width: 100,
+            height: 50,
+            child: TextField(
+              controller: controller,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              textAlign: TextAlign.end,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 0,
+                  vertical: 10,
+                ),
+                // hintText: '0.00',
+                // hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //   fontWeight: FontWeight.w600,
+                //   color: Colors.grey[600],
+                // ),
+                border: InputBorder.none,
+              ),
+              onChanged: (value) {
+                context.read<DimensionCubit>().updatePrice(index, value);
+              },
+            ),
+          ),
+          const SizedBox(width: 16),
+          IconButton(
+            onPressed: () {
+              context.read<DimensionCubit>().removeDimensionAssignment(index);
+            },
+            icon: Icon(
+              Icons.delete_outline_rounded,
+              color: Colors.red,
+              size: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DimensionCubit, DimensionState>(
-      builder: (context, state) {
-        // Update controllers when state changes
-        _updateControllers(state);
-
-        return Column(
-          children: [
-            if (state.status == DimensionStateStatus.loaded)
-              InputDecorator(
-                decoration: InputDecoration(
-                  hintText: "Select Language",
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF0047AB),
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: Text(
-                      "Select Language",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.black),
-                    ),
-                    isExpanded: true,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    icon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
-                    items: state.availableDimensions!.map((dimension) {
-                      return DropdownMenuItem(
-                        value: dimension.name,
-                        child: Text(dimension.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      Dimension dimension = state.allDimensions!.firstWhere(
-                        (element) => element.name == value,
-                      );
-                      context.read<DimensionCubit>().addNewDimensionAssigment(
-                        dimension,
-                      );
-                    },
-                  ),
-                ),
-              ),
-
-            if (state.status == DimensionStateStatus.loaded &&
-                state.dimensionAssignments != null)
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: state.dimensionAssignments!.length,
-                itemBuilder: (context, index) {
-                  final assignment = state.dimensionAssignments![index];
-                  final priceController = _priceControllers[index]!;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+    return BlocConsumer<GetDimensionsCubit, GetDimensionsState>(
+      builder: (context, dimesionGetstate) {
+        if (dimesionGetstate.status == GetDimensionsStatus.loading) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (dimesionGetstate.status == GetDimensionsStatus.error) {
+          return Center(
+            child: Text(
+              dimesionGetstate.errorMessage ?? 'Error loading dimensions',
+            ),
+          );
+        }
+        return BlocBuilder<DimensionCubit, DimensionState>(
+          builder: (context, dimesnionsFromState) {
+            // Update controllers when state changes
+            _updateControllers(dimesnionsFromState);
+            if (dimesnionsFromState.status == DimensionStateStatus.loading) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (dimesnionsFromState.status == DimensionStateStatus.loaded) {
+              bool emtyDimensions =
+                  dimesnionsFromState.availableDimensions!.isEmpty;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (dimesnionsFromState.availableDimensions!.isNotEmpty)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        // Dimension name
-                        Text(
-                          assignment.dimension.name,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        // Row with price input and delete button
-                        Row(
-                          children: [
-                            // Price input
-                            Expanded(
-                              child: InputField(
-                                controller: priceController,
-                                label: "Price",
-                                keyboardType: TextInputType.numberWithOptions(),
-                                onChanged: (value) {
-                                  context.read<DimensionCubit>().updatePrice(
-                                    index,
-                                    value,
-                                  );
-                                },
+                        TextButton(
+                          onPressed: () async {
+                            if (emtyDimensions) return;
+                            final result = await showDialog(
+                              context: context,
+                              builder: (context) => DimensionsDialog(
+                                dimensions:
+                                    dimesnionsFromState.availableDimensions!,
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            // Delete button
-                            IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                context
-                                    .read<DimensionCubit>()
-                                    .removeDimensionAssignment(index);
-                              },
-                              tooltip: 'Remove ${assignment.dimension.name}',
-                            ),
-                          ],
+                            );
+                            if (result != null && context.mounted) {
+                              context
+                                  .read<DimensionCubit>()
+                                  .addNewDimensionAssigment(result);
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add_circle,
+                                size: 20,
+                                color: emtyDimensions
+                                    ? Colors.grey[400]
+                                    : LightTheme.primaryColor,
+                              ),
+                              Text(
+                                "ADD DIMENSION",
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: emtyDimensions
+                                          ? Colors.grey[400]
+                                          : LightTheme.primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
-          ],
+                  const SizedBox(height: 6),
+                  if (dimesnionsFromState.status ==
+                          DimensionStateStatus.loaded &&
+                      dimesnionsFromState.dimensionAssignments != null) ...[
+                    ...dimesnionsFromState.dimensionAssignments!
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                          final index = entry.key;
+                          final assignment = entry.value;
+                          final priceController = _priceControllers[index]!;
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _buildDimensionPreviewRow(
+                              context: context,
+                              index: index,
+                              assignment: assignment,
+                              controller: priceController,
+                            ),
+                          );
+                        }),
+                  ],
+                ],
+              );
+            }
+            return SizedBox.shrink();
+          },
         );
+      },
+      listener: (context, state) {
+        if (state.status == GetDimensionsStatus.loaded) {
+          context.read<DimensionCubit>().init(
+            widget.dimensionAssignments,
+            state.dimensions ?? [],
+          );
+        }
+        if (state.status == GetDimensionsStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? 'Error loading dimensions'),
+            ),
+          );
+        }
       },
     );
   }

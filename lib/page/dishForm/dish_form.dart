@@ -10,6 +10,8 @@ import 'package:restaukitchen_app/core/components/form/dimensionInput/dimesion_i
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
+import 'package:restaukitchen_app/page/dimension_list/repository/dimensions_repo.dart';
 import 'package:restaukitchen_app/page/dishForm/bloc/dish_form_cubit.dart';
 
 class DishForm extends StatefulWidget {
@@ -55,131 +57,172 @@ class _DishFormState extends State<DishForm> {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                      SizedBox(height: 18),
+                      Text(
+                        'Fondamentale',
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: const Color(0xFF9CA3AF),
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                      Material(
+                        color: Colors.white,
+                        elevation: 8,
+                        shadowColor: Colors.black.withValues(alpha: 0.18),
+                        surfaceTintColor: Colors.transparent,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                        clipBehavior: Clip.antiAlias,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
+                            child: Column(
                               children: [
-                                Text(
-                                  'Fondamentale',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                InputField(
+                                  controller: _nameControllere,
+                                  label: "Name",
+                                  isRequired: true,
+                                ),
+                                SizedBox(height: 16),
+                                CategorySelectorField(
+                                  selectedCategory: widget.dish?.category,
+                                ),
+                                SizedBox(height: 16),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16),
-                            InputField(
-                              controller: _nameControllere,
-                              label: "Name",
-                              isRequired: true,
-                            ),
-                            SizedBox(height: 16),
-                            CategorySelectorField(
-                              selectedCategory: widget.dish?.category,
-                            ),
-                            SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Availibility',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
                                     ),
-                                    Spacer(),
-                                    Row(
+                                    child: Row(
                                       children: [
                                         Text(
-                                          _isAvailable
-                                              ? 'Available'
-                                              : 'Unavailable',
+                                          'Availibility',
                                           style: TextStyle(
-                                            fontSize: 14,
-                                            fontStyle: FontStyle.italic,
-                                            fontWeight: FontWeight.w300,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                        Switch(
-                                          value: _isAvailable,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _isAvailable = value;
-                                            });
-                                          },
+                                        Spacer(),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              _isAvailable
+                                                  ? 'Available'
+                                                  : 'Unavailable',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                            ),
+                                            Switch(
+                                              value: _isAvailable,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _isAvailable = value;
+                                                });
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(height: 16),
-
-                      // Expanded(
-                      //   child:
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Description',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 16,
-
-                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 16),
-                            DescriptionInput(
-                              dish: widget.dish,
-                              scrollController: _scrollController,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 16),
+                      Text(
+                        'Description',
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: const Color(0xFF9CA3AF),
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w700,
                             ),
-                          ],
+                      ),
+                      // Expanded(
+                      //   child:
+                      Material(
+                        color: Colors.white,
+                        elevation: 8,
+                        shadowColor: Colors.black.withValues(alpha: 0.18),
+                        surfaceTintColor: Colors.transparent,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
+                            child: Column(
+                              children: [
+                                DescriptionInput(
+                                  dish: widget.dish,
+                                  scrollController: _scrollController,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(height: 16),
-                      DimensionInput(),
+                      Text(
+                        'Dimension & pricing',
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: const Color(0xFF9CA3AF),
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                      Material(
+                        color: Colors.white,
+                        elevation: 8,
+                        shadowColor: Colors.black.withValues(alpha: 0.18),
+                        surfaceTintColor: Colors.transparent,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
+                            child: Column(
+                              children: [
+                                BlocProvider(
+                                  create: (context) => GetDimensionsCubit(
+                                    dimensionsRepo: DimensionsRepo(),
+                                  ),
+                                  child: DimensionInput(
+                                    dimensionAssignments:
+                                        widget.dish?.dimensionAssignments,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 16,
                       ), // Extra padding at bottom for button spacing

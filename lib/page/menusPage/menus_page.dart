@@ -100,8 +100,7 @@ class _MenusPageState extends State<MenusPage> {
                 child: MultiBlocProvider(
                   providers: [
                     BlocProvider<DimensionCubit>(
-                      create: (context) =>
-                          DimensionCubit(dimensionAssignments: []),
+                      create: (context) => DimensionCubit(),
                     ),
                     BlocProvider(create: (context) => CategorySelectorCubit()),
                     BlocProvider(create: (context) => DescriptionCubit()),

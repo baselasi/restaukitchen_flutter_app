@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -88,7 +89,9 @@ class _DishCardState extends State<DishCard> {
         );
       }
     } catch (e) {
-      print("Error picking image: $e");
+      if (kDebugMode) {
+        print("Error picking image: $e");
+      }
     }
   }
 
@@ -98,11 +101,7 @@ class _DishCardState extends State<DishCard> {
         type: PageTransitionType.rightToLeft,
         child: MultiBlocProvider(
           providers: [
-            BlocProvider<DimensionCubit>(
-              create: (context) => DimensionCubit(
-                dimensionAssignments: widget.dish.dimensionAssignments,
-              ),
-            ),
+            BlocProvider<DimensionCubit>(create: (context) => DimensionCubit()),
             BlocProvider(create: (context) => CategorySelectorCubit()),
             BlocProvider(create: (context) => DescriptionCubit()),
             BlocProvider(create: (context) => DishFormCubit()),
@@ -313,11 +312,7 @@ class _DishCardState extends State<DishCard> {
   Widget _buildThumbnailPlaceholder() {
     return ColoredBox(
       color: Colors.grey[200]!,
-      child: Icon(
-        Icons.restaurant_menu,
-        size: 36,
-        color: Colors.grey[400],
-      ),
+      child: Icon(Icons.restaurant_menu, size: 36, color: Colors.grey[400]),
     );
   }
 }

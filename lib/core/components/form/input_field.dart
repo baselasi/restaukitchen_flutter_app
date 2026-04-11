@@ -92,6 +92,7 @@ class InputField extends StatelessWidget {
       obscureText: obscureText,
       maxLines: maxLines,
       maxLength: maxLength,
+      
       keyboardType: isNumeric
           ? const TextInputType.numberWithOptions(decimal: true)
           : keyboardType,
@@ -102,6 +103,7 @@ class InputField extends StatelessWidget {
       onFieldSubmitted: onSubmitted,
       style: theme.textTheme.bodyMedium,
       decoration: InputDecoration(
+        
         labelText: label != null ? (isRequired ? '$label *' : label) : null,
         labelStyle: theme.textTheme.bodyMedium,
         hintText: hint,

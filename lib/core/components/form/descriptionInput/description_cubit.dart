@@ -39,13 +39,33 @@ class DescriptionCubit extends Cubit<DescriptionState> {
   }
 
   // Update the text value for a specific entry
-  void updateText(String id, String newValue) {
-    final updatedList = state.descriptions.map((entry) {
-      return entry.id == id ? entry.copyWith(value: newValue) : entry;
-    }).toList();
+  void updateText(String language, String newValue) {
+    final entry = [...state.descriptions];
+    List<DescriptionEntity> updatedEntry = [];
+    if (entry.any((entry) => entry.language == language)) {
+      // updatedEntry
+      //     .firstWhere((entry) => entry.language == language)
+      //     .copyWith(value: newValue);
+      updatedEntry = entry
+          .map(
+            (entry) => entry.language == language
+                ? entry.copyWith(value: newValue)
+                : entry,
+          )
+          .toList();
+    } else {
+      updatedEntry = [...entry];
+      updatedEntry.add(
+        DescriptionEntity(
+          id: DateTime.now().toString(),
+          language: language,
+          value: newValue,
+        ),
+      );
+    }
     emit(
       DescriptionState(
-        descriptions: updatedList,
+        descriptions: updatedEntry,
         availableLanguages: state.availableLanguages,
       ),
     );

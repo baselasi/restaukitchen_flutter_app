@@ -2,56 +2,52 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_assignments.dart';
-import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_repo.dart';
 
 class DimensionCubit extends Cubit<DimensionState> {
-  DimensionCubit({List<DimensionAssignments>? dimensionAssignments})
+  DimensionCubit()
     : super(
         DimensionState(
           status: DimensionStateStatus.initial,
-          isEmpty: dimensionAssignments == null || dimensionAssignments.isEmpty,
-          dimensionAssignments: dimensionAssignments,
+          isEmpty: true,
+          dimensionAssignments: [],
         ),
       );
 
-  Future<void> getDimensions() async {
+  Future<void> init(
+    List<DimensionAssignments>? dimensionAssignments,
+    List<Dimension> allDimensions,
+  ) async {
+    final Dimension standardDimension = allDimensions.firstWhere(
+      (element) => element.standard,
+    );
+    List<Dimension> availableDimensions = [];
+    if (dimensionAssignments == null || dimensionAssignments.isEmpty) {
+      dimensionAssignments = [
+        DimensionAssignments(dimension: standardDimension),
+      ];
+      availableDimensions.addAll(
+        allDimensions
+            .where((element) => element.id != standardDimension.id)
+            .toList(),
+      );
+    } else {
+      availableDimensions = allDimensions
+          .where(
+            (element) => !dimensionAssignments!.any(
+              (assignment) => assignment.dimension.id != element.id,
+            ),
+          )
+          .toList();
+    }
     emit(
       DimensionState(
-        status: DimensionStateStatus.loading,
-        isEmpty:
-            state.dimensionAssignments == null ||
-            state.dimensionAssignments!.isEmpty,
-        dimensionAssignments: state.dimensionAssignments,
+        allDimensions: allDimensions,
+        availableDimensions: availableDimensions,
+        status: DimensionStateStatus.loaded,
+        isEmpty: dimensionAssignments.isEmpty,
+        dimensionAssignments: dimensionAssignments,
       ),
     );
-    try {
-      final dimensions = await DimensionRepo().getDimensions();
-      if (!isClosed) {
-        emit(
-          DimensionState(
-            allDimensions: dimensions.dimensions,
-            status: DimensionStateStatus.loaded,
-            dimensionAssignments: state.dimensionAssignments,
-            availableDimensions: dimensions.dimensions,
-            isEmpty:
-                state.dimensionAssignments == null ||
-                state.dimensionAssignments!.isEmpty,
-          ),
-        );
-      }
-    } catch (e) {
-      if (!isClosed) {
-        emit(
-          DimensionState(
-            status: DimensionStateStatus.error,
-            isEmpty:
-                state.dimensionAssignments == null ||
-                state.dimensionAssignments!.isEmpty,
-            dimensionAssignments: state.dimensionAssignments,
-          ),
-        );
-      }
-    }
   }
 
   void addNewDimensionAssigment(Dimension dimension) {

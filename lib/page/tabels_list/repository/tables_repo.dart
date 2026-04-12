@@ -31,4 +31,15 @@ class TablesRepo {
       throw Exception(e);
     }
   }
+
+  Future<Tabel> getTableByTableNumber(int tableNumber) async {
+    try {
+      final response = await _apiService.getPrivate(
+        '/api/dinner-table/$tableNumber',
+      );
+      return Tabel.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/orders_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/table_count_cubit.dart';
+import 'package:restaukitchen_app/page/homePage/components/table_qr_code_dialog.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,10 +23,11 @@ class HomePage extends StatelessWidget {
               context,
               title: 'Genera codice QR',
               icon: Icons.qr_code,
-              color: LightTheme.secondaryColor,
-              textColor: Colors.grey[800]!,
+              color: LightTheme.primaryColor,
+              textColor: Colors.white,
               onTap: () {
                 // Handle QR code generation
+                TableQrCodeDialog.show(context);
               },
             ),
             const SizedBox(height: 24),
@@ -33,6 +35,10 @@ class HomePage extends StatelessWidget {
             _buildTavoliCard(context),
             const SizedBox(height: 16),
             // Ordine Card
+            Row(children: [
+              
+              ],
+            ),
             _buildOrdineCard(context),
             const SizedBox(height: 16),
           ],
@@ -79,23 +85,41 @@ class HomePage extends StatelessWidget {
 
   Widget _buildTavoliCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: const TablesCountWidget(),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: const TablesCountWidget(),
+      ),
     );
   }
 
   Widget _buildOrdineCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: const OrderCountWidget(),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: const OrderCountWidget(),
+      ),
     );
   }
 }

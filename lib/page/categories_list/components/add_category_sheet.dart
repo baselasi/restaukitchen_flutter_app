@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/repository/category_repo.dart';
 import 'package:restaukitchen_app/page/categories_list/bloc/create_category_cubit/create_category_cubit.dart';
 
@@ -142,8 +143,9 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
           Navigator.of(context).pop(true);
         }
         if (state.status == CreateCategoryStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error ?? 'Failed to create category')),
+          AppSnackBar.showError(
+            context,
+            state.error ?? 'Failed to create category',
           );
         }
       },

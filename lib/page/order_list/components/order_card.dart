@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_actions_cubit/order_actions_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/status_cubit/status_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
@@ -165,11 +166,9 @@ class _OrderCardState extends State<OrderCard>
               setState(() => _isSwiped = false);
               widget.onActionSucess?.call();
             } else if (state.status == OrderActionsStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage ?? "An error occurred"),
-                  backgroundColor: Colors.red,
-                ),
+              AppSnackBar.showError(
+                context,
+                state.errorMessage ?? "An error occurred",
               );
             }
           },
@@ -324,11 +323,9 @@ class _OrderCardState extends State<OrderCard>
               _order = state.updatedOrder!;
             });
           } else if (state.status == StatusCubitStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage ?? "An error occurred"),
-                backgroundColor: Colors.red,
-              ),
+            AppSnackBar.showError(
+              context,
+              state.errorMessage ?? "An error occurred",
             );
           }
         },

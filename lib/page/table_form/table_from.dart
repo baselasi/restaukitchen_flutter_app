@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/tabels_list/models/tabel.dart';
 import 'package:restaukitchen_app/page/table_form/bloc/table_form_cubit.dart';
 
@@ -148,9 +149,7 @@ class _TableFormState extends State<TableForm> {
               Navigator.of(context).pop(true);
             }
             if (state.status == TableFormStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorMessage ?? 'Error')),
-              );
+              AppSnackBar.showError(context, state.errorMessage ?? 'Error');
             }
           },
         ),

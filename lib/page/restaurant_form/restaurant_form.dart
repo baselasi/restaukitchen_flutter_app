@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/restaurant_form/bloc/retaurant_form_cubit/retaurant_form_cubit.dart';
 import 'package:restaukitchen_app/page/restaurant_form/component/city_autocomplite.dart';
 import 'package:restaukitchen_app/page/restaurant_form/component/countries_select.dart';
@@ -212,9 +213,7 @@ class _RestaurantFormState extends State<RestaurantForm> {
               Navigator.of(context).pop(true);
             }
             if (state.status == RestaurantFormStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error updating restaurant')),
-              );
+              AppSnackBar.showError(context, 'Error updating restaurant');
             }
           },
         ),

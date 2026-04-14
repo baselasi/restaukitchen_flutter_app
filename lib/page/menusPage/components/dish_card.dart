@@ -10,6 +10,7 @@ import 'package:restaukitchen_app/core/components/form/descriptionInput/descript
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
 import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/core/dialogs/loading_overlay.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
 import 'package:restaukitchen_app/core/widgets/square_action_button.dart';
@@ -138,22 +139,12 @@ class _DishCardState extends State<DishCard> {
         }
         if (state.status == DeleteDishStatus.isSucess) {
           LoadingOverlay.hide(overlayEntry);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Dish deleted successfully'),
-              backgroundColor: Colors.green[700],
-            ),
-          );
+          AppSnackBar.showSuccess(context, 'Dish deleted successfully');
           if (widget.onDelete != null) widget.onDelete!();
         }
         if (state.status == DeleteDishStatus.isError) {
           LoadingOverlay.hide(overlayEntry);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to delete dish'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          AppSnackBar.showError(context, 'Failed to delete dish');
         }
       },
       child: Card(

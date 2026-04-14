@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
 import 'package:restaukitchen_app/page/combination_form/components/dimension_with_price_card.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
@@ -180,9 +181,7 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                   Navigator.of(context).pop(state.ingredient);
                 }
                 if (state.status == PostIngredientStatus.error) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.errorMessage ?? 'Error')),
-                  );
+                  AppSnackBar.showError(context, state.errorMessage ?? 'Error');
                 }
               },
             );

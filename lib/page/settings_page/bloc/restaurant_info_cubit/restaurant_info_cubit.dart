@@ -13,9 +13,13 @@ class RestaurantInfoCubit extends Cubit<RestaurantInfoState> {
     emit(RestaurantInfoState.loading());
     try {
       final restaurant = await _restaurantRepo.getRestaurant(restaurantId);
-      emit(RestaurantInfoState.loaded(restaurant.restaurant));
+      if (!isClosed) {
+        emit(RestaurantInfoState.loaded(restaurant.restaurant));
+      }
     } catch (e) {
-      emit(RestaurantInfoState.error(e.toString()));
+      if (!isClosed) {
+        emit(RestaurantInfoState.error(e.toString()));
+      }
     }
   }
 }

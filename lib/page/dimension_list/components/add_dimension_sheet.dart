@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/post_dimesions_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/repository/dimensions_repo.dart';
 
@@ -172,9 +173,7 @@ class _AddDimensionSheetState extends State<AddDimensionSheet> {
             Navigator.of(context).pop(state.dimension);
           }
           if (state.status == PostDimensionsStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage ?? 'Error')),
-            );
+            AppSnackBar.showError(context, state.errorMessage ?? 'Error');
           }
         },
       ),

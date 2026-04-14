@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/archive_list_bloc/archive_list_cubit.dart';
@@ -133,10 +134,9 @@ class _DeletedListState extends State<DeletedList> {
             },
             listener: (context, state) {
               if (state.status == ArchiveListStatus.error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.errorMessage ?? 'An error occurred'),
-                  ),
+                AppSnackBar.showError(
+                  context,
+                  state.errorMessage ?? 'An error occurred',
                 );
               }
             },

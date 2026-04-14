@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/delete_dimensions_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
@@ -176,12 +177,9 @@ class _DimensionCard extends StatelessWidget {
                       );
                     }
                     if (state.status == DeleteDimensionsStatus.error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            state.errorMessage ?? 'Error deleting dimension',
-                          ),
-                        ),
+                      AppSnackBar.showError(
+                        context,
+                        state.errorMessage ?? 'Error deleting dimension',
                       );
                     }
                   },

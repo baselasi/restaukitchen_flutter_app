@@ -5,6 +5,7 @@ import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
@@ -132,12 +133,9 @@ class _AddIngredientsPageState extends State<AddIngredientsPage> {
                   Navigator.of(context).pop(_selectedIngredients.toList());
                 }
                 if (state.status == AddIngredientsToMenuStatus.error) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        state.errorMessage ?? 'Failed to add ingredients',
-                      ),
-                    ),
+                  AppSnackBar.showError(
+                    context,
+                    state.errorMessage ?? 'Failed to add ingredients',
                   );
                 }
               },

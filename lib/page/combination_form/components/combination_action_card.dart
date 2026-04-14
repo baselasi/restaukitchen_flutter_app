@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/menu_combination_post_cubit/menu_combination_post_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/models/create_menu_combination_request.dart';
@@ -99,20 +100,19 @@ class CombinationActionCard extends StatelessWidget {
           final response = state.combinationMenuResponse;
           if (response != null) {
             context.read<CombinationMenuCreationFormCubit>().addMenu(
-                  CombinationMenuModel(
-                    id: response.id,
-                    name: response.name,
-                    ingredients: const [],
-                    dishes: const [],
-                  ),
-                );
+              CombinationMenuModel(
+                id: response.id,
+                name: response.name,
+                ingredients: const [],
+                dishes: const [],
+              ),
+            );
           }
         }
         if (state.status == CreateCombinationMenuStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage ?? 'Error creating group'),
-            ),
+          AppSnackBar.showError(
+            context,
+            state.errorMessage ?? 'Error creating group',
           );
         }
       },

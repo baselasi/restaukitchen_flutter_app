@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/create_menu_cubit.dart/create_menu_cubit.dart.dart';
 import 'package:restaukitchen_app/page/menusPage/repository/menus_page_repo.dart';
 
@@ -91,7 +92,9 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    widget.id != null ? 'Edit the name of your menu.' : 'Add a name for your new menu.',
+                    widget.id != null
+                        ? 'Edit the name of your menu.'
+                        : 'Add a name for your new menu.',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: const Color(0xFF6B7280),
                     ),
@@ -149,8 +152,9 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
           Navigator.of(context).pop(true);
         }
         if (state.status == CreateMenuStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error ?? 'Failed to create menu')),
+          AppSnackBar.showError(
+            context,
+            state.error ?? 'Failed to create menu',
           );
         }
       },

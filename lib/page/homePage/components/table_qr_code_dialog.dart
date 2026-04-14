@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/get_table_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/qr_dialog_cubit/qr_code_dialog_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
@@ -129,8 +130,9 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
                     );
                   }
                   if (state.status == GetTableStatus.error) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.errorMessage ?? 'Error')),
+                    AppSnackBar.showError(
+                      context,
+                      state.errorMessage ?? 'Error loading table',
                     );
                   }
                 },

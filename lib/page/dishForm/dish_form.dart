@@ -9,6 +9,7 @@ import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimesion_input.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/repository/dimensions_repo.dart';
@@ -41,9 +42,7 @@ class _DishFormState extends State<DishForm> {
     return BlocListener<DishFormCubit, DishFormState>(
       listener: (context, state) {
         if (state.status == DishFormStatus.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Dish created successfully')),
-          );
+          AppSnackBar.showSuccess(context, 'Dish created successfully');
           Navigator.of(context).pop();
         }
       },

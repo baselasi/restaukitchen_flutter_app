@@ -5,6 +5,7 @@ import 'package:restaukitchen_app/core/bloc/get_dish_cubit.dart';
 import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_assignments.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
 
@@ -133,9 +134,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
     if (_dimensionAssignments != null &&
         _dimensionAssignments!.isNotEmpty &&
         _selectedDimension == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please choose a dimension')),
-      );
+      AppSnackBar.showError(context, 'Please choose a dimension');
       return;
     }
     FocusScope.of(context).unfocus();
@@ -226,13 +225,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
                 setState(() {});
               }
               if (state.status == GetIngredientsStatus.error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      state.errorMessage ?? 'Failed to load ingredients',
-                    ),
-                  ),
-                );
+                AppSnackBar.showError(context, state.errorMessage ?? 'Failed to load ingredients');
               }
             },
             child: AnimatedPadding(

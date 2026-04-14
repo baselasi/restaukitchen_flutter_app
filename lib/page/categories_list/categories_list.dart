@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/bloc/get_category_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/category.dart';
 import 'package:restaukitchen_app/core/repository/category_repo.dart';
 import 'package:restaukitchen_app/page/categories_list/bloc/delete_category_cubit/delete_category_cubit..dart';
@@ -159,8 +160,9 @@ class _CategoryCard extends StatelessWidget {
           context.read<GetCategoryCubit>().getCategories();
         }
         if (state.status == DeleteCategoryStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error ?? 'Failed to delete category')),
+          AppSnackBar.showError(
+            context,
+            state.error ?? 'Failed to delete category',
           );
         }
       },

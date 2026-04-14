@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_assignments.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimensions_dialog.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
@@ -98,7 +99,7 @@ class _DimensionInputState extends State<DimensionInput> {
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 5,
-            offset: Offset(0, 3 ),
+            offset: Offset(0, 3),
           ),
         ],
       ),
@@ -278,10 +279,9 @@ class _DimensionInputState extends State<DimensionInput> {
           );
         }
         if (state.status == GetDimensionsStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage ?? 'Error loading dimensions'),
-            ),
+          AppSnackBar.showError(
+            context,
+            state.errorMessage ?? 'Error loading dimensions',
           );
         }
       },

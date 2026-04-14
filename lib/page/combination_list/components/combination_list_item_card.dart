@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/combination_list/bloc/delete_combination_cubit/delete_combination_cubit.dart';
 import 'package:restaukitchen_app/page/combination_list/models/combination_list_item.dart';
 import 'package:restaukitchen_app/core/widgets/square_action_button.dart';
@@ -152,16 +153,16 @@ class CombinationListItemCard extends StatelessWidget {
             },
             listener: (context, state) {
               if (state.status == DeleteCombinationStatus.success) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Combination deleted successfully'),
-                  ),
+                AppSnackBar.showSuccess(
+                  context,
+                  'Combination deleted successfully',
                 );
                 onDelete?.call();
               }
               if (state.status == DeleteCombinationStatus.error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errorMessage ?? 'Error')),
+                AppSnackBar.showError(
+                  context,
+                  state.errorMessage ?? 'Error deleting combination',
                 );
               }
             },

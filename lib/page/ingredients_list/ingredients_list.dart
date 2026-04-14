@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
 import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
@@ -259,10 +260,9 @@ class _IngredientCard extends StatelessWidget {
           onDelete(ingredient.id ?? '');
         }
         if (state.status == DeleteIngredientStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage ?? 'Error deleting ingredient'),
-            ),
+          AppSnackBar.showError(
+            context,
+            state.errorMessage ?? 'Error deleting ingredient',
           );
         }
       },

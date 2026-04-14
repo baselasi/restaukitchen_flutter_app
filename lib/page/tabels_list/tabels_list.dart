@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/tabel_card.dart';
@@ -113,9 +114,7 @@ class _TabelsListState extends State<TabelsList>
       body: BlocConsumer<TabelsListCubit, TabelsListState>(
         listener: (context, state) {
           if (state.status == TabelsListStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage ?? 'Error')),
-            );
+            AppSnackBar.showError(context, state.errorMessage ?? 'Error');
           }
         },
         builder: (context, state) {

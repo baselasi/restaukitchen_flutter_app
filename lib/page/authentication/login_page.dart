@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/authentication/bloc/login_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
@@ -65,22 +65,9 @@ class _LoginPageState extends State<LoginPage> {
               child: BlocConsumer<LoginCubit, LoginState>(
                 listener: (context, state) {
                   if (state.status == LoginStatus.loaded) {
-                    // Login successful
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Login successful!'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    context.read<AuthCubit>().login(state.accessToken ?? "");
+                    AppSnackBar.showSuccess(context, 'Login successful!');
                   } else if (state.status == LoginStatus.error) {
-                    // Login failed
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.errorMessage ?? 'Login failed'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    AppSnackBar.showError(context, 'Bad credentials');
                   }
                 },
                 builder: (context, state) {

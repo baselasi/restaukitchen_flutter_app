@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_menu_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/repository/menus_page_repo.dart';
 import 'package:restaukitchen_app/page/menus_list/components/add_menu_sheet.dart';
@@ -176,9 +177,7 @@ class _MenuCard extends StatelessWidget {
                     );
                   }
                   if (state.status == DeleteMenuStatus.isError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to delete menu')),
-                    );
+                    AppSnackBar.showError(context, 'Failed to delete menu');
                   }
                 },
               ),

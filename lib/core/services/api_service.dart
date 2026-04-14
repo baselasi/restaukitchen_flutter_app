@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
+import 'package:restaukitchen_app/core/models/errors.dart';
 import 'package:restaukitchen_app/core/services/secure_storage_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 
@@ -36,7 +38,7 @@ class ApiService {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
       final response = await http.get(url, headers: _getHeadersWithoutToken());
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -48,7 +50,7 @@ class ApiService {
       final url = Uri.parse('$_baseUrl$endpoint');
       final headers = await _getHeadersWithToken();
       final response = await http.get(url, headers: headers);
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -66,17 +68,14 @@ class ApiService {
         headers: _getHeadersWithoutToken(),
         body: jsonEncode(body),
       );
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
   }
 
   // Private POST - Token required
-  Future<http.Response> postPrivate(
-    String endpoint,
-    dynamic body,
-  ) async {
+  Future<http.Response> postPrivate(String endpoint, dynamic body) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
       final headers = await _getHeadersWithToken();
@@ -85,7 +84,7 @@ class ApiService {
         headers: headers,
         body: jsonEncode(body),
       );
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -97,17 +96,14 @@ class ApiService {
       final url = Uri.parse('$_baseUrl$endpoint');
       final headers = await _getHeadersWithToken();
       final response = await http.post(url, headers: headers, body: body);
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
   }
 
   // Private PUT - Token required
-  Future<http.Response> putPrivate(
-    String endpoint,
-    dynamic body,
-  ) async {
+  Future<http.Response> putPrivate(String endpoint, dynamic body) async {
     try {
       final url = Uri.parse('$_baseUrl$endpoint');
       final headers = await _getHeadersWithToken();
@@ -116,7 +112,7 @@ class ApiService {
         headers: headers,
         body: jsonEncode(body),
       );
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -128,7 +124,7 @@ class ApiService {
       final url = Uri.parse('$_baseUrl$endpoint');
       final headers = await _getHeadersWithToken();
       final response = await http.delete(url, headers: headers);
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -169,7 +165,7 @@ class ApiService {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -195,10 +191,10 @@ class ApiService {
 
       // Add file
       if (image != null) {
-        request.files.add(await http.MultipartFile.fromPath('image', image.path));
+        request.files.add(
+          await http.MultipartFile.fromPath('image', image.path),
+        );
       }
-
-      
 
       // Add additional fields if provided
       if (fields != null) {
@@ -209,7 +205,7 @@ class ApiService {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -241,7 +237,7 @@ class ApiService {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      return response;
+      return handleResponse(response);
     } catch (e) {
       rethrow;
     }
@@ -277,5 +273,17 @@ class ApiService {
     }
 
     return (stream: response.stream.transform(utf8.decoder), client: client);
+  }
+
+  http.Response handleResponse(http.Response response) {
+    if (isSuccess(response)) {
+      return response;
+    }
+
+    throw ApiError.fromResponse(response);
+  }
+
+  ApiError handleException(Object error) {
+    return ApiError.fromException(error);
   }
 }

@@ -148,41 +148,45 @@ class _CombinationEditPreviewSheet extends StatelessWidget {
                           ? const Center(child: CircularProgressIndicator())
                           : const SizedBox.shrink(),
                     ),
-                    SafeArea(
-                      top: false,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          20,
-                          12,
-                          20,
-                          16 + bottomInset,
-                        ),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: FilledButton.icon(
-                            onPressed: () {
-                              navigator.pop(state.combination!);
-                            },
-                            style: FilledButton.styleFrom(
-                              backgroundColor: LightTheme.primaryColor,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                    if (state.status == CombinationGetStatus.loaded &&
+                        state.combination != null)
+                      SafeArea(
+                        top: false,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            20,
+                            12,
+                            20,
+                            16 + bottomInset,
+                          ),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: FilledButton.icon(
+                              onPressed: () {
+                                navigator.pop(state.combination!);
+                              },
+                              style: FilledButton.styleFrom(
+                                backgroundColor: LightTheme.primaryColor,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
-                            ),
-                            icon: const Icon(Icons.edit_outlined, size: 22),
-                            label: const Text(
-                              'Edit Combo',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                              icon: const Icon(Icons.edit_outlined, size: 22),
+                              label: const Text(
+                                'Edit Combo',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 );
               },

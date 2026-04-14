@@ -34,8 +34,10 @@ class _CombinationListState extends State<CombinationList> {
     );
   }
 
-  void navigateToCombinationDimensionCreationForm(Combination? combination) {
-    Navigator.of(context).push(
+  void navigateToCombinationDimensionCreationForm(
+    Combination? combination,
+  ) async {
+    final result = await Navigator.of(context).push(
       PageTransition(
         type: PageTransitionType.rightToLeft,
         child: MultiBlocProvider(
@@ -65,6 +67,11 @@ class _CombinationListState extends State<CombinationList> {
         ),
       ),
     );
+    if (result != null && mounted) {
+      context.read<CombinationGetListCubit>().getCombinations(
+        context.read<AuthCubit>().state.user?.restaurant ?? '',
+      );
+    }
   }
 
   @override

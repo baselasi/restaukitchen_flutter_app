@@ -26,7 +26,6 @@ class CombinationMenuCreationForm extends StatelessWidget {
     >(
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: const Color(0xFFF5F3FF),
           appBar: DetailsAppBar(pageTitle: 'Add Menu'),
           body: SafeArea(
             child: ListView(

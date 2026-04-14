@@ -58,7 +58,7 @@ class _CombinationDimensionCreationFormState
     String combinationId,
     List<String> combinationDimensionIds,
   ) async {
-    final result = await Navigator.of(context).push(
+    await Navigator.of(context).push(
       PageTransition(
         type: PageTransitionType.rightToLeft,
         child: MultiBlocProvider(
@@ -79,7 +79,7 @@ class _CombinationDimensionCreationFormState
         ),
       ),
     );
-    if (result != null && mounted) {
+    if (mounted) {
       Navigator.of(context).pop(true);
     }
   }
@@ -88,7 +88,6 @@ class _CombinationDimensionCreationFormState
   Widget build(BuildContext context) {
     final formState = context.watch<CombinationDimensionCreationCubit>().state;
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F3FF),
       appBar: DetailsAppBar(pageTitle: 'Add Dimension'),
       bottomNavigationBar: SafeArea(
         top: false,

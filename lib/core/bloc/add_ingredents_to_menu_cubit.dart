@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaukitchen_app/core/models/ingredients.dart';
 import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 
 class AddIngredientsToMenuCubit extends Cubit<AddIngredientsToMenuState> {
@@ -19,10 +18,6 @@ class AddIngredientsToMenuCubit extends Cubit<AddIngredientsToMenuState> {
         menuId,
         ingredientsIds,
       );
-
-      // final List<Ingredient> ingredients = response.ingredients
-      //     .where((ingredient) => ingredient.hasDimensionIds(dimensionIds))
-      //     .toList();
       if (!isClosed) {
         emit(
           AddIngredientsToMenuState.success(

@@ -16,7 +16,7 @@ class GetIngredientsCubit extends Cubit<GetIngredientsState> {
       final response = await IngredientsRepo().getIngredientsByRestaurantId(
         restaurantId,
       );
-      if (dimensionIds != null) {
+      if ( dimensionIds != null && dimensionIds.isNotEmpty ) {
         ingredients = response.ingredients
             .where((ingredient) => ingredient.hasDimensionIds(dimensionIds))
             .toList();

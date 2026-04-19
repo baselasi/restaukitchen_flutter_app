@@ -11,7 +11,7 @@ import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class AddIngredientsPage extends StatefulWidget {
   final String menuId;
-  final List<String> combinationDimensionIds;
+  final List<String>? combinationDimensionIds;
   const AddIngredientsPage({
     required this.combinationDimensionIds,
     super.key,

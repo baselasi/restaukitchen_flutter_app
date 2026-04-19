@@ -17,6 +17,10 @@ class DishFormCubit extends Cubit<DishFormState> {
     required List<DimensionAssignments> dimensionAssignments,
     required String? dishId,
   }) async {
+    if (menuId.isEmpty) {
+      emit(DishFormState(status: DishFormStatus.error));
+      return;
+    }
     Map<String, Object> payload = _buildDishPayload(
       menuId: menuId,
       name: name,
@@ -54,7 +58,7 @@ class DishFormCubit extends Cubit<DishFormState> {
     required String? dishId,
   }) {
     return {
-      if (dishId != null) 'id' : dishId,
+      if (dishId != null) 'id': dishId,
       'menuId': menuId,
       'name': name,
       'category': categoryId,

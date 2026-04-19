@@ -4,6 +4,7 @@ import 'package:restaukitchen_app/core/components/form/descriptionInput/descript
 import 'package:restaukitchen_app/core/components/form/descriptionInput/description_entity.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 
 class DescriptionInput extends StatefulWidget {
   final Dish? dish;
@@ -122,6 +123,7 @@ class _DescriptionInputState extends State<DescriptionInput> {
             prev.availableLanguages != curr.availableLanguages;
       },
       builder: (context, state) {
+        final l10n = context.l10n;
         // _syncControllers(state);
 
         return Column(
@@ -131,6 +133,14 @@ class _DescriptionInputState extends State<DescriptionInput> {
               spacing: 8,
               runSpacing: 8,
               children: _supportedLanguages.map((language) {
+                final languageName = switch (language['name']!) {
+                  'English' => l10n.commonEnglish,
+                  'Italian' => l10n.commonItalian,
+                  'French' => l10n.commonFrench,
+                  'Spanish' => l10n.commonSpanish,
+                  'Arabic' => l10n.commonArabic,
+                  _ => language['name']!,
+                };
                 final isSelected = _selectedLanguage == language['name']!;
                 return ChoiceChip(
                   selected: false,
@@ -143,7 +153,7 @@ class _DescriptionInputState extends State<DescriptionInput> {
                       _selectedLanguage = language['name']!;
                     });
                   },
-                  label: Text(language['name']!),
+                  label: Text(languageName),
                   avatar: Text(language['icon']!),
                   side: BorderSide(
                     color: isSelected
@@ -164,8 +174,8 @@ class _DescriptionInputState extends State<DescriptionInput> {
               key: _inputKey,
               focusNode: _descriptionFocusNode,
               controller: _descriptionControllers[_selectedLanguage]!,
-              label: 'Description',
-              hint: 'Add description',
+              label: l10n.commonDescription,
+              hint: l10n.commonAddDescription,
               maxLines: 4,
               onChanged: (text) {
                 context.read<DescriptionCubit>().updateText(

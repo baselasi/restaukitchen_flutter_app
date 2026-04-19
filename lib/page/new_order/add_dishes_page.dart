@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_form_bloc/new_order_form_state.dart';
 import 'package:restaukitchen_app/page/menusPage/components/menus_scroll_bar.dart';
@@ -26,15 +27,15 @@ class _AddDishesPageState extends State<AddDishesPage> {
     super.initState();
   }
 
-  Widget _buildDishesList(MenuScrollBarState state) {
+  Widget _buildDishesList(BuildContext context, MenuScrollBarState state) {
     final selectedMenu = state.selectedMenu!;
     final dishes = selectedMenu.dishes;
     if (dishes.isEmpty) {
       return SliverFillRemaining(
         hasScrollBody: false,
-        child: const Center(
+        child: Center(
           child: Text(
-            'No dishes available',
+            context.l10n.commonNoDishesAvailable,
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
@@ -61,14 +62,14 @@ class _AddDishesPageState extends State<AddDishesPage> {
     );
   }
 
-  Widget _buildCombinationsList(MenuScrollBarState state) {
+  Widget _buildCombinationsList(BuildContext context, MenuScrollBarState state) {
     final combinations = state.combinations!;
     if (combinations.isEmpty) {
       return SliverFillRemaining(
         hasScrollBody: false,
-        child: const Center(
+        child: Center(
           child: Text(
-            'No dishes available',
+            context.l10n.commonNoDishesAvailable,
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
@@ -99,11 +100,12 @@ class _AddDishesPageState extends State<AddDishesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return BlocBuilder<NewOrderFormBloc, NewOrderFormState>(
       builder: (context, formState) {
         final hasItems = formState.hasAnyIndicesInCourses();
         return Scaffold(
-          appBar: DetailsAppBar(pageTitle: "New Order"),
+          appBar: DetailsAppBar(pageTitle: l10n.commonNewOrder),
           body: BlocConsumer<MenuScrollBarCubit, MenuScrollBarState>(
             builder: (context, state) {
               return CustomScrollView(
@@ -132,9 +134,9 @@ class _AddDishesPageState extends State<AddDishesPage> {
                       ),
                     ),
                     SliverToBoxAdapter(child: SizedBox(height: 10)),
-                    if (state.selectedMenu != null) _buildDishesList(state),
+                    if (state.selectedMenu != null) _buildDishesList(context, state),
                     if (state.selectedMenu == null)
-                      _buildCombinationsList(state),
+                      _buildCombinationsList(context, state),
                     if (hasItems)
                       const SliverToBoxAdapter(child: SizedBox(height: 80)),
                   ],

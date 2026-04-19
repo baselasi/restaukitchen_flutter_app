@@ -1,0 +1,364 @@
+{
+  "@@locale": "it",
+
+  "@@common": {},
+  "commonAppTitle": "Flutter Demo",
+  "commonHome": "Home",
+  "commonMenus": "Menu",
+  "commonOrders": "Ordini",
+  "commonTables": "Tavoli",
+  "commonCombinations": "Combinazioni",
+  "commonSettings": "Impostazioni",
+  "commonCategories": "Categorie",
+  "commonIngredients": "Ingredienti",
+  "commonDimensions": "Dimensioni",
+  "commonSave": "Salva",
+  "commonCancel": "Annulla",
+  "commonClose": "Chiudi",
+  "commonContinue": "Continua",
+  "commonRetry": "Riprova",
+  "commonAdd": "Aggiungi",
+  "commonAddDish": "Aggiungi piatto",
+  "commonAddDishes": "Aggiungi piatti",
+  "commonAddIngredients": "Aggiungi ingredienti",
+  "commonEdit": "Modifica",
+  "commonDelete": "Elimina",
+  "commonRemove": "Rimuovi",
+  "commonCreate": "Crea",
+  "commonUpdate": "Aggiorna",
+  "commonConfirm": "Conferma",
+  "commonDone": "Fatto",
+  "commonArchive": "Archivia",
+  "commonPrint": "Stampa",
+  "commonLoading": "Caricamento...",
+  "commonLoadingEllipsis": "...",
+  "commonRequiredField": "Questo campo è obbligatorio",
+  "commonValidNumber": "Inserisci un numero valido",
+  "commonError": "Errore",
+  "commonErrorOccurred": "Si è verificato un errore",
+  "commonAreYouSure": "Sei sicuro?",
+  "commonDescription": "Descrizione",
+  "commonAddDescription": "Aggiungi una descrizione",
+  "commonNote": "Nota",
+  "commonNotAvailable": "N/D",
+  "commonNoPriceSet": "Nessun prezzo impostato",
+  "commonSelectDimension": "Seleziona dimensione",
+  "commonNoDimensionsAvailable": "Nessuna dimensione disponibile",
+  "commonSelectCategory": "Seleziona categoria",
+  "commonGenerateQrCode": "Genera codice QR",
+  "commonFailedLoadQrCode": "Impossibile caricare il codice QR",
+  "commonFailedLoadCombination": "Impossibile caricare la combinazione",
+  "commonNoCombinationDataFound": "Nessun dato della combinazione trovato",
+  "commonFailedLoadDish": "Impossibile caricare il piatto",
+  "commonFailedLoadIngredients": "Impossibile caricare gli ingredienti",
+  "commonFailedLoadDimensions": "Impossibile caricare le dimensioni",
+  "commonChangeImage": "Cambia immagine",
+  "commonChange": "Cambia",
+  "commonNewOrder": "Nuovo ordine",
+  "commonCreateOrder": "Crea ordine",
+  "commonSaveOrder": "Salva ordine",
+  "commonNoDishesAvailable": "Nessun piatto disponibile",
+  "commonNoMenus": "Nessun menu",
+  "commonAvailable": "Disponibile",
+  "commonUnavailable": "Non disponibile",
+  "commonFree": "Libero",
+  "commonReserved": "Riservato",
+  "commonOccupied": "Occupato",
+  "commonReceived": "Ricevuto",
+  "commonOnFire": "In preparazione",
+  "commonDoneStatus": "Pronto",
+  "commonEnglish": "Inglese",
+  "commonItalian": "Italiano",
+  "commonFrench": "Francese",
+  "commonSpanish": "Spagnolo",
+  "commonArabic": "Arabo",
+  "commonMonthJan": "Gen",
+  "commonMonthFeb": "Feb",
+  "commonMonthMar": "Mar",
+  "commonMonthApr": "Apr",
+  "commonMonthMay": "Mag",
+  "commonMonthJun": "Giu",
+  "commonMonthJul": "Lug",
+  "commonMonthAug": "Ago",
+  "commonMonthSep": "Set",
+  "commonMonthOct": "Ott",
+  "commonMonthNov": "Nov",
+  "commonMonthDec": "Dic",
+  "commonCurrencyDollar": "$",
+  "commonCurrencyEuro": "€",
+  "commonEmDash": "—",
+  "commonHyphen": "-",
+  "commonCurrencyLebanesePound": "L.L.",
+  "commonPriceLabel": "Prezzo: {price}",
+  "@commonPriceLabel": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "commonTableLabel": "Tavolo {number}",
+  "@commonTableLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "commonCourseLabel": "Portata {number}",
+  "@commonCourseLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "commonQuantityLeading": "x{quantity}",
+  "@commonQuantityLeading": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "commonQuantityTrailing": "{quantity}x",
+  "@commonQuantityTrailing": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "commonNoteWithValue": "Nota: {note}",
+  "@commonNoteWithValue": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@@auth": {},
+  "authValidEmailAddress": "Inserisci un indirizzo email valido",
+  "authLoginSuccessful": "Accesso effettuato con successo!",
+  "authBadCredentials": "Credenziali non valide",
+  "authWelcomeBack": "Bentornato",
+  "authSignInContinue": "Accedi per continuare",
+  "authEmailLabel": "Email",
+  "authEmailHint": "Inserisci la tua email",
+  "authPasswordLabel": "Password",
+  "authPasswordHint": "Inserisci la tua password",
+  "authLogin": "Accedi",
+  "authForgotPassword": "Password dimenticata?",
+  "authDemoEmail": "ziadkhaled_822@hotmail.com",
+  "authDemoPassword": "ziad",
+
+  "@@home": {},
+  "homeTableAvailability": "Disponibilità tavoli",
+  "homeOpen": "Aperti",
+  "homeTotalTables": "{count, plural, =0{0 tavoli totali} one{1 tavolo totale} other{{count} tavoli totali}}",
+  "@homeTotalTables": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeOpenOrders": "{count, plural, =0{0 ordini aperti} one{1 ordine aperto} other{{count} ordini aperti}}",
+  "@homeOpenOrders": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "@@settings": {},
+  "settingsLogout": "Esci",
+  "settingsCatalogue": "CATALOGO",
+  "settingsMenusSubtitle": "Configura i diversi menu stagionali",
+  "settingsCategoriesSubtitle": "Organizza i piatti nelle sezioni del menu",
+  "settingsIngredientsSubtitle": "Allergeni, disponibilità e dati fornitore",
+  "settingsDimensionsSubtitle": "Porzioni e unità di misura",
+  "settingsErrorLoadingRestaurantInfo": "Errore nel caricamento delle informazioni del ristorante",
+  "settingsPersonalSettings": "Impostazioni personali",
+  "settingsSystemLanguage": "LINGUA DEL SISTEMA",
+  "@@restaurant": {},
+  "restaurantEditTitle": "Modifica ristorante",
+  "restaurantNameLabel": "Nome ristorante",
+  "restaurantNameHint": "Inserisci il nome del ristorante",
+  "restaurantCountryLabel": "Paese",
+  "restaurantLoadingCountries": "Caricamento paesi...",
+  "restaurantSelectCountry": "Seleziona un paese",
+  "restaurantSelectCountryRequired": "Seleziona un paese",
+  "restaurantCityLabel": "Citta",
+  "restaurantSearchCity": "Cerca citta",
+  "restaurantSelectCountryFirstHint": "Seleziona prima un paese",
+  "restaurantSelectCountryFirstError": "Seleziona prima un paese",
+  "restaurantSelectCityRequired": "Seleziona una citta",
+  "restaurantChooseCityFromList": "Scegli una citta dall'elenco",
+  "restaurantFailedLoadCountries": "Impossibile caricare i paesi",
+  "restaurantFailedLoadCities": "Impossibile caricare le citta",
+  "restaurantNoCitiesFound": "Nessuna citta trovata",
+  "restaurantCurrencyLabel": "Valuta",
+  "restaurantSelectCurrency": "Seleziona una valuta",
+  "restaurantAddressLabel": "Indirizzo",
+  "restaurantAddressHint": "Inserisci l'indirizzo",
+  "restaurantDescriptionHint": "Inserisci la descrizione",
+  "restaurantErrorUpdating": "Errore durante l'aggiornamento del ristorante",
+
+  "@@tables": {},
+  "tablesNewTable": "Nuovo tavolo",
+  "tablesSortTables": "Ordina tavoli",
+  "tablesNoTables": "Nessun tavolo",
+  "tablesTotalCoversTitle": "Coperti totali",
+  "tablesTotalCoversHint": "Inserisci il numero totale di coperti",
+  "tablesTableNumberLabel": "Numero tavolo",
+  "tablesTableSeatsLabel": "Numero di posti del tavolo",
+  "tablesTableNumberInputLabel": "Numero tavolo",
+  "tablesStatusLabel": "Stato",
+  "tablesErrorLoadingTable": "Errore nel caricamento del tavolo",
+  "tablesQrPreviewPlaceholder": "Anteprima QR",
+  "tablesSeatsCount": "{count, plural, one{{count} posto} other{{count} posti}}",
+  "@tablesSeatsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "@@menus": {},
+  "menusListTitle": "Lista menu",
+  "menusUpdatedRecently": "Aggiornato di recente",
+  "menusEditTooltip": "Modifica menu",
+  "menusDeleteTooltip": "Elimina menu",
+  "menusFailedDelete": "Impossibile eliminare il menu",
+  "menusEditTitle": "Modifica menu",
+  "menusCreateTitle": "Crea menu",
+  "menusEditDescription": "Modifica il nome del tuo menu.",
+  "menusCreateDescription": "Aggiungi un nome per il tuo nuovo menu.",
+  "menusNameLabel": "Nome menu",
+  "menusFailedCreate": "Impossibile creare il menu",
+  "menusItemsCount": "{count, plural, =0{0 elementi} one{1 elemento} other{{count} elementi}}",
+  "@menusItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "menusCombinationMenuBadge": "Menu combinazione",
+
+  "@@dishes": {},
+  "dishesDeleteTitle": "Elimina piatto",
+  "dishesDeleteConfirmation": "Sei sicuro di voler eliminare \"{dishName}\"? Questa azione non puo essere annullata.",
+  "@dishesDeleteConfirmation": {
+    "placeholders": {
+      "dishName": {
+        "type": "String"
+      }
+    }
+  },
+  "dishesDeletedSuccessfully": "Piatto eliminato con successo",
+  "dishesFailedDelete": "Impossibile eliminare il piatto",
+  "dishesCreatedSuccessfully": "Piatto creato con successo",
+  "dishesNewDish": "Nuovo piatto",
+  "dishesEssentials": "Essenziali",
+  "dishesNameLabel": "Nome",
+  "dishesAvailability": "Disponibilita",
+  "dishesDimensionPricing": "Dimensioni e prezzi",
+
+  "@@categories": {},
+  "categoriesListTitle": "Lista categorie",
+  "categoriesFailedLoad": "Impossibile caricare le categorie",
+  "categoriesEditTooltip": "Modifica categoria",
+  "categoriesDeleteTooltip": "Elimina categoria",
+  "categoriesFailedDelete": "Impossibile eliminare la categoria",
+  "categoriesEditTitle": "Modifica categoria",
+  "categoriesCreateTitle": "Crea categoria",
+  "categoriesEditDescription": "Modifica il nome della tua categoria.",
+  "categoriesCreateDescription": "Aggiungi un nome per la tua nuova categoria.",
+  "categoriesNameLabel": "Nome categoria",
+  "categoriesUpdateTitle": "Aggiorna categoria",
+  "categoriesFailedCreate": "Impossibile creare la categoria",
+
+  "@@ingredients": {},
+  "ingredientsListTitle": "Lista ingredienti",
+  "ingredientsErrorLoading": "Errore nel caricamento degli ingredienti",
+  "ingredientsEditTooltip": "Modifica ingrediente",
+  "ingredientsDeleteTooltip": "Elimina ingrediente",
+  "ingredientsErrorDeleting": "Errore durante l'eliminazione dell'ingrediente",
+  "ingredientsCreateTitle": "Crea ingrediente",
+  "ingredientsNameLabel": "Nome",
+  "ingredientsErrorLoadingDimensions": "Errore nel caricamento delle dimensioni",
+  "ingredientsNoIngredientsAvailable": "Nessun ingrediente disponibile",
+  "ingredientsFailedAdd": "Impossibile aggiungere gli ingredienti",
+  "ingredientsSelectedTitle": "Ingredienti selezionati",
+
+  "@@dimensions": {},
+  "dimensionsListTitle": "Lista dimensioni",
+  "dimensionsStandard": "Dimensione standard",
+  "dimensionsCustom": "Dimensione personalizzata",
+  "dimensionsEditTooltip": "Modifica dimensione",
+  "dimensionsDeleteTooltip": "Elimina dimensione",
+  "dimensionsErrorDeleting": "Errore durante l'eliminazione della dimensione",
+  "dimensionsEditTitle": "Modifica dimensione",
+  "dimensionsCreateTitle": "Crea dimensione",
+  "dimensionsEditDescription": "Modifica il nome e le impostazioni della tua dimensione.",
+  "dimensionsCreateDescription": "Aggiungi un nome per la tua nuova dimensione.",
+  "dimensionsNameLabel": "Nome dimensione",
+  "dimensionsSaveTitle": "Salva dimensione",
+  "dimensionsAddTitle": "Aggiungi dimensione",
+  "dimensionsCombinationNameLabel": "Nome combinazione",
+  "dimensionsCombinationNameHint": "Inserisci un nome per questa combinazione",
+  "dimensionsNext": "Avanti",
+  "dimensionsPriceHint": "0.00",
+
+  "@@combinations": {},
+  "combinationsNoCombinations": "Nessuna combinazione",
+  "combinationsEditPreviewTitle": "Modifica combo",
+  "combinationsAddMenuTitle": "Aggiungi menu",
+  "combinationsGroupNameLabel": "Nome gruppo",
+  "combinationsErrorCreatingGroup": "Errore durante la creazione del gruppo",
+  "combinationsNoDishesInMenu": "Nessun piatto in questo menu",
+  "combinationsNoPlatesForSelectedDimension": "Nessun piatto disponibile per la dimensione selezionata",
+  "combinationsDeletedSuccessfully": "Combinazione eliminata con successo",
+  "combinationsErrorDeleting": "Errore durante l'eliminazione della combinazione",
+
+  "@@orderForm": {},
+  "orderFormSelectDimension": "Seleziona la dimensione",
+  "orderFormAddNoteForDish": "Aggiungi una nota per questo piatto",
+  "orderFormAddNoteForOrder": "Aggiungi una nota per questo ordine",
+  "orderFormPleaseChooseDimension": "Seleziona una dimensione",
+  "orderFormNoDishesInCourse": "Nessun piatto in questa portata",
+  "orderFormCreateNewCourse": "CREA NUOVA PORTATA",
+
+  "@@orders": {},
+  "ordersKitchen": "Cucina",
+  "ordersArchive": "Archivio",
+  "ordersDeleted": "Eliminati",
+  "ordersNoOrdersYet": "Nessun ordine",
+  "ordersNoArchivedOrders": "Nessun ordine archiviato",
+  "ordersNoDeletedOrders": "Nessun ordine eliminato",
+  "ordersNoDishesInOrder": "Nessun piatto in questo ordine.",
+  "ordersTotalLabel": "Totale: {currency}{amount}",
+  "@ordersTotalLabel": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "ordersCombinationDishBullet": "• {name}",
+  "@ordersCombinationDishBullet": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
+}

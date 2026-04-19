@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/new_order/components/add_dish_dialog.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 
@@ -55,7 +56,7 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
         ? d.dishName!.trim()
         : (d.dishDimensionName?.trim().isNotEmpty == true
               ? d.dishDimensionName!.trim()
-              : 'Dish');
+              : context.l10n.commonAddDish);
   }
 
   bool get _showDimensionSubtitle {
@@ -156,7 +157,10 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
         (note != null && note.isNotEmpty);
 
     final price = widget.dishIndice.dishPrice;
-    final priceText = price != null ? '\$${price.toStringAsFixed(2)}' : '—';
+    final l10n = context.l10n;
+    final priceText = price != null
+        ? '${l10n.commonCurrencyDollar}${price.toStringAsFixed(2)}'
+        : l10n.commonEmDash;
 
     final hasBlocks =
         (widget.dishIndice.dishesWithIngredients ?? []).isNotEmpty;
@@ -201,7 +205,7 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      'x$_quantity',
+                                      l10n.commonQuantityLeading(_quantity),
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontStyle: FontStyle.italic,
@@ -268,7 +272,7 @@ class _DishIndiceCardState extends State<DishIndiceCard> {
                               ),
                             if (note != null && note.isNotEmpty)
                               Text(
-                                'Note: $note',
+                                l10n.commonNoteWithValue(note),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 13,

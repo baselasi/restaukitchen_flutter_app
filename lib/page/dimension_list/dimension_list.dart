@@ -5,6 +5,7 @@ import 'package:restaukitchen_app/page/dimension_list/bloc/delete_dimensions_cub
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/dimension_list/components/add_dimension_sheet.dart';
 import 'package:restaukitchen_app/page/dimension_list/repository/dimensions_repo.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
@@ -25,6 +26,7 @@ class _DimensionListState extends State<DimensionList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -35,7 +37,7 @@ class _DimensionListState extends State<DimensionList> {
         },
         child: const Icon(Icons.add),
       ),
-      appBar: DetailsAppBar(pageTitle: 'Dimension List'),
+      appBar: DetailsAppBar(pageTitle: l10n.dimensionsListTitle),
       body: BlocConsumer<GetDimensionsCubit, GetDimensionsState>(
         builder: (context, state) {
           if (state.status == GetDimensionsStatus.loading) {
@@ -43,7 +45,7 @@ class _DimensionListState extends State<DimensionList> {
           }
           if (state.status == GetDimensionsStatus.error) {
             return Center(
-              child: Text(state.errorMessage ?? 'Error loading dimensions'),
+              child: Text(state.errorMessage ?? l10n.commonFailedLoadDimensions),
             );
           }
           if (state.status == GetDimensionsStatus.loaded) {
@@ -82,6 +84,7 @@ class _DimensionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
@@ -123,8 +126,8 @@ class _DimensionCard extends StatelessWidget {
                     ),
                     Text(
                       dimension.standard
-                          ? 'Standard dimension'
-                          : 'Custom dimension',
+                          ? l10n.dimensionsStandard
+                          : l10n.dimensionsCustom,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFF6B7280),
@@ -151,7 +154,7 @@ class _DimensionCard extends StatelessWidget {
                   },
                   icon: const Icon(Icons.edit_outlined),
                   color: const Color(0xFF1D4ED8),
-                  tooltip: 'Edit dimension',
+                  tooltip: l10n.dimensionsEditTooltip,
                 ),
               if (dimension.standard == false)
                 BlocConsumer<DeleteDimensionsCubit, DeleteDimensionsState>(
@@ -167,7 +170,7 @@ class _DimensionCard extends StatelessWidget {
                       },
                       icon: const Icon(Icons.delete_outline),
                       color: const Color(0xFFDC2626),
-                      tooltip: 'Delete dimension',
+                      tooltip: l10n.dimensionsDeleteTooltip,
                     );
                   },
                   listener: (context, state) {
@@ -179,7 +182,7 @@ class _DimensionCard extends StatelessWidget {
                     if (state.status == DeleteDimensionsStatus.error) {
                       AppSnackBar.showError(
                         context,
-                        state.errorMessage ?? 'Error deleting dimension',
+                        state.errorMessage ?? l10n.dimensionsErrorDeleting,
                       );
                     }
                   },

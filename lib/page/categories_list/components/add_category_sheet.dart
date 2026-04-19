@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/core/repository/category_repo.dart';
 import 'package:restaukitchen_app/page/categories_list/bloc/create_category_cubit/create_category_cubit.dart';
 
@@ -50,6 +51,7 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final trimmedName = _nameController.text.trim();
+    final l10n = context.l10n;
 
     return BlocConsumer<CreateCategoryCubit, CreateCategoryState>(
       builder: (context, state) {
@@ -84,7 +86,9 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    widget.id != null ? 'Edit Category' : 'Create Category',
+                    widget.id != null
+                        ? l10n.categoriesEditTitle
+                        : l10n.categoriesCreateTitle,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -92,8 +96,8 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
                   const SizedBox(height: 6),
                   Text(
                     widget.id != null
-                        ? 'Edit the name of your category.'
-                        : 'Add a name for your new category.',
+                        ? l10n.categoriesEditDescription
+                        : l10n.categoriesCreateDescription,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: const Color(0xFF6B7280),
                     ),
@@ -103,8 +107,8 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
                     controller: _nameController,
                     autofocus: true,
                     textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(
-                      labelText: 'Category name',
+                    decoration: InputDecoration(
+                      labelText: l10n.categoriesNameLabel,
                     ),
                     onChanged: (_) => setState(() {}),
                   ),
@@ -114,7 +118,7 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cancel'),
+                          child: Text(l10n.commonCancel),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -126,8 +130,8 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
                                     .read<CreateCategoryCubit>()
                                     .createCategory(trimmedName, widget.id),
                           child: widget.id != null
-                              ? const Text('Update Category')
-                              : const Text('Create Category'),
+                              ? Text(l10n.categoriesUpdateTitle)
+                              : Text(l10n.categoriesCreateTitle),
                         ),
                       ),
                     ],
@@ -145,7 +149,7 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
         if (state.status == CreateCategoryStatus.error) {
           AppSnackBar.showError(
             context,
-            state.error ?? 'Failed to create category',
+            state.error ?? l10n.categoriesFailedCreate,
           );
         }
       },

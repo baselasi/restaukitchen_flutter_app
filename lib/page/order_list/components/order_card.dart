@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_actions_cubit/order_actions_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/status_cubit/status_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 import 'package:restaukitchen_app/page/order_list/models/order.dart';
+import 'package:restaukitchen_app/page/restaurant_form/bloc/retaurant_form_cubit/retaurant_form_cubit.dart';
 
 class OrderCard extends StatefulWidget {
   final Order order;
@@ -64,6 +66,7 @@ class _OrderCardState extends State<OrderCard>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = context.l10n;
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
@@ -91,6 +94,7 @@ class _OrderCardState extends State<OrderCard>
   }
 
   Widget _buildActionCard(ThemeData theme, ColorScheme colorScheme) {
+    final l10n = context.l10n;
     return GestureDetector(
       onHorizontalDragEnd: (details) {
         if ((details.primaryVelocity ?? 0) > 200) {
@@ -124,7 +128,7 @@ class _OrderCardState extends State<OrderCard>
                     if (!widget.isDeleted) ...[
                       _ActionButton(
                         icon: Icons.delete,
-                        label: 'Delete',
+                        label: l10n.commonDelete,
                         isActive: false,
                         activeColor: colorScheme.secondary,
                         onPressed: () {
@@ -136,7 +140,7 @@ class _OrderCardState extends State<OrderCard>
                     ],
                     _ActionButton(
                       icon: Icons.print,
-                      label: 'Print',
+                      label: l10n.commonPrint,
                       isActive: false,
                       activeColor: colorScheme.secondary,
                       onPressed: () {
@@ -146,7 +150,7 @@ class _OrderCardState extends State<OrderCard>
                     if (!widget.isArchived && !widget.isDeleted) ...[
                       _ActionButton(
                         icon: Icons.archive,
-                        label: 'Archive',
+                        label: l10n.commonArchive,
                         isActive: false,
                         activeColor: colorScheme.secondary,
                         onPressed: () {
@@ -168,7 +172,7 @@ class _OrderCardState extends State<OrderCard>
             } else if (state.status == OrderActionsStatus.error) {
               AppSnackBar.showError(
                 context,
-                state.errorMessage ?? "An error occurred",
+                state.errorMessage ?? l10n.commonErrorOccurred,
               );
             }
           },
@@ -187,6 +191,7 @@ class _OrderCardState extends State<OrderCard>
       },
       child: BlocConsumer<StatusCubit, StatusState>(
         builder: (context, state) {
+          final l10n = context.l10n;
           CourseStatus currentStatus = state.newStatus ?? _order.courseStatus;
           return Card(
             key: ValueKey(_order.id),
@@ -207,12 +212,20 @@ class _OrderCardState extends State<OrderCard>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Table ${_order.tableNumber ?? 'N/A'}',
+                                l10n.commonTableLabel(
+                                  (_order.tableNumber?.toString() ??
+                                          l10n.commonNotAvailable)
+                                      .toString(),
+                                ),
                                 style: theme.textTheme.titleMedium,
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Total: €${_order.total?.toStringAsFixed(2) ?? '-'}',
+                                l10n.ordersTotalLabel(
+                                  _order.total?.toStringAsFixed(2) ??
+                                      l10n.commonHyphen,
+                                  l10n.commonCurrencyEuro,
+                                ),
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: colorScheme.onSurface.withValues(
                                     alpha: 0.7,
@@ -244,7 +257,7 @@ class _OrderCardState extends State<OrderCard>
                               state.status == StatusCubitStatus.error) ...[
                             _StatusButton(
                               icon: Icons.inbox_outlined,
-                              tooltip: 'Received',
+                              tooltip: l10n.commonReceived,
                               color: currentStatus == CourseStatus.received
                                   ? colorScheme.primary
                                   : colorScheme.onSurface.withValues(
@@ -259,7 +272,7 @@ class _OrderCardState extends State<OrderCard>
                             ),
                             _StatusButton(
                               icon: Icons.local_fire_department,
-                              tooltip: 'On Fire',
+                              tooltip: l10n.commonOnFire,
                               color: currentStatus == CourseStatus.onFire
                                   ? colorScheme.primary
                                   : colorScheme.onSurface.withValues(
@@ -274,7 +287,7 @@ class _OrderCardState extends State<OrderCard>
                             ),
                             _StatusButton(
                               icon: Icons.check_circle_outline,
-                              tooltip: 'Done',
+                              tooltip: l10n.commonDoneStatus,
                               color: currentStatus == CourseStatus.finished
                                   ? colorScheme.primary
                                   : colorScheme.onSurface.withValues(
@@ -318,6 +331,7 @@ class _OrderCardState extends State<OrderCard>
           );
         },
         listener: (context, state) {
+          final l10n = context.l10n;
           if (state.status == StatusCubitStatus.success) {
             setState(() {
               _order = state.updatedOrder!;
@@ -325,7 +339,7 @@ class _OrderCardState extends State<OrderCard>
           } else if (state.status == StatusCubitStatus.error) {
             AppSnackBar.showError(
               context,
-              state.errorMessage ?? "An error occurred",
+              state.errorMessage ?? l10n.commonErrorOccurred,
             );
           }
         },
@@ -340,7 +354,7 @@ class _OrderCardState extends State<OrderCard>
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Text(
-          'No dishes in this order.',
+          context.l10n.ordersNoDishesInOrder,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: colorScheme.onSurface.withValues(alpha: 0.5),
           ),
@@ -371,7 +385,7 @@ class _OrderCardState extends State<OrderCard>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    'Course $courseNumber',
+                    context.l10n.commonCourseLabel(courseNumber),
                     style: theme.textTheme.labelLarge?.copyWith(
                       color: colorScheme.primary,
                       fontWeight: FontWeight.w600,
@@ -503,7 +517,7 @@ class _DishRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              '${dish.dishQuantity}x',
+              context.l10n.commonQuantityTrailing(dish.dishQuantity),
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.onSecondary,
@@ -552,7 +566,7 @@ class _DishRow extends StatelessWidget {
 
           // Price
           Text(
-            '€${dish.dishPrice?.toStringAsFixed(2)}',
+            '${context.l10n.commonCurrencyEuro}${dish.dishPrice?.toStringAsFixed(2)}',
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -595,7 +609,9 @@ class _CombinationRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  '${combination.combinationQuantity}x',
+                  context.l10n.commonQuantityTrailing(
+                    combination.combinationQuantity,
+                  ),
                   style: theme.textTheme.labelSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onSecondary,
@@ -622,7 +638,7 @@ class _CombinationRow extends StatelessWidget {
 
               // Price
               Text(
-                '€${combination.combinationPrice.toStringAsFixed(2)}',
+                '${context.l10n.commonCurrencyEuro}${combination.combinationPrice.toStringAsFixed(2)}',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -643,7 +659,7 @@ class _CombinationRow extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '• ${d.dishName}',
+                          context.l10n.ordersCombinationDishBullet(d.dishName),
                           style: theme.textTheme.bodySmall,
                         ),
                         if (d.ingredientsName.isNotEmpty)

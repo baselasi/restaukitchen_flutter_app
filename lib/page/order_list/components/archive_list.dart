@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/archive_list_bloc/archive_list_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_actions_cubit/order_actions_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/status_cubit/status_cubit.dart';
@@ -51,6 +52,7 @@ class _ArchiveListState extends State<ArchiveList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       children: [
         _buildDatePicker(),
@@ -67,7 +69,7 @@ class _ArchiveListState extends State<ArchiveList> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        state.errorMessage ?? 'An error occurred',
+                        state.errorMessage ?? l10n.commonErrorOccurred,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
@@ -75,7 +77,7 @@ class _ArchiveListState extends State<ArchiveList> {
                         onPressed: () => context
                             .read<ArchiveListCubit>()
                             .getArchiveList(_selectedDate),
-                        child: const Text('Retry'),
+                        child: Text(l10n.commonRetry),
                       ),
                     ],
                   ),
@@ -89,9 +91,15 @@ class _ArchiveListState extends State<ArchiveList> {
                 child: orders.isEmpty
                     ? ListView(
                         physics: const AlwaysScrollableScrollPhysics(),
-                        children: const [
-                          SizedBox(height: 200),
-                          Center(child: Text('No archived orders')),
+                        children: [
+                          const SizedBox(height: 200),
+                          Center(
+                            child: Text(
+                              widget.isDeletedList == true
+                                  ? l10n.ordersNoDeletedOrders
+                                  : l10n.ordersNoArchivedOrders,
+                            ),
+                          ),
                         ],
                       )
                     : ListView.builder(
@@ -137,7 +145,7 @@ class _ArchiveListState extends State<ArchiveList> {
               if (state.status == ArchiveListStatus.error) {
                 AppSnackBar.showError(
                   context,
-                  state.errorMessage ?? 'An error occurred',
+                  state.errorMessage ?? l10n.commonErrorOccurred,
                 );
               }
             },
@@ -149,19 +157,20 @@ class _ArchiveListState extends State<ArchiveList> {
 
   Widget _buildDatePicker() {
     final d = _selectedDate;
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+    final l10n = context.l10n;
+    final months = [
+      l10n.commonMonthJan,
+      l10n.commonMonthFeb,
+      l10n.commonMonthMar,
+      l10n.commonMonthApr,
+      l10n.commonMonthMay,
+      l10n.commonMonthJun,
+      l10n.commonMonthJul,
+      l10n.commonMonthAug,
+      l10n.commonMonthSep,
+      l10n.commonMonthOct,
+      l10n.commonMonthNov,
+      l10n.commonMonthDec,
     ];
     final formatted =
         '${d.day.toString().padLeft(2, '0')} ${months[d.month - 1]} ${d.year}';

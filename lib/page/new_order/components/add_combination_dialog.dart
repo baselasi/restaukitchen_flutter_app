@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/models/dimesnion_assignment.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
 import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
@@ -141,6 +142,7 @@ class _AddCombinationDialogBodyState extends State<_AddCombinationDialogBody> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -152,7 +154,7 @@ class _AddCombinationDialogBodyState extends State<_AddCombinationDialogBody> {
             return Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                state.errorMessage ?? 'Failed to load combination',
+                state.errorMessage ?? l10n.commonFailedLoadCombination,
                 textAlign: TextAlign.center,
               ),
             );
@@ -171,7 +173,7 @@ class _AddCombinationDialogBodyState extends State<_AddCombinationDialogBody> {
 
           final combination = state.combination;
           if (combination == null) {
-            return const Center(child: Text('No combination data found'));
+            return Center(child: Text(l10n.commonNoCombinationDataFound));
           }
 
           final assignments = combination.dimensionAssignments
@@ -209,7 +211,7 @@ class _AddCombinationDialogBodyState extends State<_AddCombinationDialogBody> {
                 ),
                 const SizedBox(height: 8),
                 if (assignments.isEmpty)
-                  const Text('No dimensions available')
+                  Text(l10n.commonNoDimensionsAvailable)
                 else
                   RadioGroup<String>(
                     groupValue: _selectedDimensionAssignmentId,
@@ -235,7 +237,9 @@ class _AddCombinationDialogBodyState extends State<_AddCombinationDialogBody> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'Price: ${assignment.price.toStringAsFixed(2)}',
+                                    l10n.commonPriceLabel(
+                                      assignment.price.toStringAsFixed(2),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -267,8 +271,8 @@ class _AddCombinationDialogBodyState extends State<_AddCombinationDialogBody> {
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               const SizedBox(height: 6),
-                              const Text(
-                                'No plates available for selected dimension',
+                              Text(
+                                l10n.combinationsNoPlatesForSelectedDimension,
                               ),
                             ],
                           ),

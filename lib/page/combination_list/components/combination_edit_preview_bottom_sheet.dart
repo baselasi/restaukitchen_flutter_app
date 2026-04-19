@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/combination_page/models/combination.dart';
 import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 /// Read-only preview of a combination: menus as sections and dishes as rows.
@@ -40,19 +41,19 @@ class _CombinationEditPreviewSheet extends StatelessWidget {
     LightTheme.primaryColor,
   ];
 
-  static String _priceRangeLabel(Combination c) {
+  static String _priceRangeLabel(BuildContext context, Combination c) {
     final prices = c.dimensionAssignments
         .where((a) => !a.isDeleted)
         .map((a) => a.price)
         .toList();
-    if (prices.isEmpty) return '—';
+    if (prices.isEmpty) return context.l10n.commonEmDash;
     prices.sort();
     final min = prices.first;
     final max = prices.last;
     final a = min.toStringAsFixed(2);
     final b = max.toStringAsFixed(2);
-    if (min == max) return '€$a';
-    return '€$a – €$b';
+    if (min == max) return '${context.l10n.commonCurrencyEuro}$a';
+    return '${context.l10n.commonCurrencyEuro}$a ${context.l10n.commonEmDash} ${context.l10n.commonCurrencyEuro}$b';
   }
 
   @override
@@ -112,7 +113,10 @@ class _CombinationEditPreviewSheet extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        _priceRangeLabel(state.combination!),
+                                        _priceRangeLabel(
+                                          context,
+                                          state.combination!,
+                                        ),
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium
@@ -132,7 +136,8 @@ class _CombinationEditPreviewSheet extends StatelessWidget {
                           vertical: 8,
                         ),
                         child: Text(
-                          state.errorMessage ?? 'Failed to load combination',
+                          state.errorMessage ??
+                              context.l10n.commonFailedLoadCombination,
                           style: TextStyle(color: Colors.red[700]),
                         ),
                       ),
@@ -176,8 +181,8 @@ class _CombinationEditPreviewSheet extends StatelessWidget {
                                 ),
                               ),
                               icon: const Icon(Icons.edit_outlined, size: 22),
-                              label: const Text(
-                                'Edit Combo',
+                              label: Text(
+                                context.l10n.combinationsEditPreviewTitle,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -213,7 +218,10 @@ class _SheetBody extends StatelessWidget {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text('No menus', style: TextStyle(color: Colors.grey[600])),
+          child: Text(
+            context.l10n.commonNoMenus,
+            style: TextStyle(color: Colors.grey[600]),
+          ),
         ),
       );
     }

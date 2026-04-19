@@ -18,6 +18,7 @@ import 'package:restaukitchen_app/page/settings_page/settings_page.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
 import 'package:restaukitchen_app/page/tabels_list/tabels_list.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 
 enum Pages { home, tables, menus, combinations, orders, settings }
 
@@ -69,19 +70,19 @@ Widget buildPage(Pages page) {
   }
 }
 
-Widget getPageTitle(Pages page) {
+Widget getPageTitle(BuildContext context, Pages page) {
   switch (page) {
     case Pages.home:
-      return const Text('Home');
+      return Text(context.l10n.commonHome);
     case Pages.menus:
-      return const Text('Menus');
+      return Text(context.l10n.commonMenus);
     case Pages.orders:
-      return const Text('Orders');
+      return Text(context.l10n.commonOrders);
     case Pages.tables:
-      return const Text('Tables');
+      return Text(context.l10n.commonTables);
     case Pages.combinations:
-      return const Text('Combinations');
+      return Text(context.l10n.commonCombinations);
     case Pages.settings:
-      return const Text('Settings');
+      return Text(context.l10n.commonSettings);
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/combination_page/models/combination.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/bloc/add_dishes_cubit.dart';
@@ -114,12 +115,13 @@ class _SelectCombinationsDishesPageState extends State<SelectCombinationsDishesP
   Widget build(BuildContext context) {
     return BlocConsumer<AddDishesCubit, AddDishesState>(
       builder: (context, addDishesState) {
+        final l10n = context.l10n;
         // _canSaveOrder =
         //     _sectionCubits != null &&
         //     _sectionCubits!.isNotEmpty &&
         //     _sectionCubits!.every((c) => c.state.selectedDish != null);
         return Scaffold(
-          appBar: DetailsAppBar(pageTitle: 'Add Dishes'),
+          appBar: DetailsAppBar(pageTitle: l10n.commonAddDishes),
           bottomNavigationBar: SafeArea(
             top: false,
             child: Padding(
@@ -147,7 +149,7 @@ class _SelectCombinationsDishesPageState extends State<SelectCombinationsDishesP
                   const SizedBox(width: 12),
                   Expanded(
                     child: PrimaryButton(
-                      text: 'Save Order',
+                      text: l10n.commonSaveOrder,
                       isDisabled: !_canSaveOrder,
                       onPressed: () {
                         final combinationState = context
@@ -168,7 +170,7 @@ class _SelectCombinationsDishesPageState extends State<SelectCombinationsDishesP
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     combinationState.errorMessage ??
-                        'Failed to load combination',
+                        l10n.commonFailedLoadCombination,
                   ),
                 );
               }
@@ -220,10 +222,10 @@ class _SelectCombinationsDishesPageState extends State<SelectCombinationsDishesP
                         textInputAction: TextInputAction.done,
                         scrollPadding: const EdgeInsets.only(bottom: 120),
                         onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                        decoration: const InputDecoration(
-                          labelText: 'Note',
-                          hintText: 'Add note for this order',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.commonNote,
+                          hintText: l10n.orderFormAddNoteForOrder,
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 20),

@@ -12,7 +12,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final pageTitle = getPageTitle(page);
+    final pageTitle = getPageTitle(context, page);
 
     return Container(
       decoration: BoxDecoration(

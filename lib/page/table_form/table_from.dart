@@ -4,6 +4,7 @@ import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/tabels_list/models/tabel.dart';
 import 'package:restaukitchen_app/page/table_form/bloc/table_form_cubit.dart';
 
@@ -39,22 +40,24 @@ class _TableFormState extends State<TableForm> {
   }
 
   String _statusLabel(TabelStatus status) {
+    final l10n = context.l10n;
     switch (status) {
       case TabelStatus.available:
-        return 'Free';
+        return l10n.commonFree;
       case TabelStatus.reserved:
-        return 'Reserved';
+        return l10n.commonReserved;
       case TabelStatus.occupied:
-        return 'Occupied';
+        return l10n.commonOccupied;
       default:
-        return 'Free';
+        return l10n.commonFree;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: "New Table"),
+      appBar: DetailsAppBar(pageTitle: l10n.tablesNewTable),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: BlocConsumer<TableFormCubit, TableFormState>(
@@ -71,21 +74,21 @@ class _TableFormState extends State<TableForm> {
                           InputField(
                             isNumeric: true,
                             controller: _tableNumberController,
-                            label: "Table Number",
+                            label: l10n.tablesTableNumberLabel,
                             isRequired: true,
                           ),
                           SizedBox(height: 16),
                           InputField(
                             isNumeric: true,
                             controller: _tableNumberOfSeatsController,
-                            label: "Table Number of Seats",
+                            label: l10n.tablesTableSeatsLabel,
                             isRequired: true,
                           ),
                           SizedBox(height: 16),
                           DropdownButtonFormField<TabelStatus>(
                             initialValue: _selectedStatus,
                             decoration: InputDecoration(
-                              labelText: 'Status *',
+                              labelText: '${l10n.tablesStatusLabel} *',
                               labelStyle: Theme.of(
                                 context,
                               ).textTheme.bodyMedium,
@@ -116,7 +119,7 @@ class _TableFormState extends State<TableForm> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: PrimaryButton(
-                        text: "Save",
+                        text: l10n.commonSave,
                         onPressed: () {
                           if (widget.table != null) {
                             context.read<TableFormCubit>().updateTable(
@@ -149,7 +152,10 @@ class _TableFormState extends State<TableForm> {
               Navigator.of(context).pop(true);
             }
             if (state.status == TableFormStatus.error) {
-              AppSnackBar.showError(context, state.errorMessage ?? 'Error');
+              AppSnackBar.showError(
+                context,
+                state.errorMessage ?? l10n.commonError,
+              );
             }
           },
         ),

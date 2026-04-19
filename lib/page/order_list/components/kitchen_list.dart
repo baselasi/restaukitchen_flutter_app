@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/models/category.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_actions_cubit/order_actions_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_list_bloc/orders_list_bloc.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_list_bloc/orders_list_events.dart';
@@ -37,6 +38,7 @@ class _KitchenListState extends State<KitchenList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return BlocBuilder<OrdersListBloc, OrdersListState>(
       builder: (context, state) {
         if (state is OrdersListLoading) {
@@ -53,7 +55,7 @@ class _KitchenListState extends State<KitchenList> {
                 ElevatedButton(
                   onPressed: () =>
                       context.read<OrdersListBloc>().add(OrdersListGetOrders()),
-                  child: const Text('Retry'),
+                  child: Text(l10n.commonRetry),
                 ),
               ],
             ),
@@ -67,9 +69,9 @@ class _KitchenListState extends State<KitchenList> {
           child: orders.isEmpty
               ? ListView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  children: const [
-                    SizedBox(height: 200),
-                    Center(child: Text('No orders yet')),
+                  children: [
+                    const SizedBox(height: 200),
+                    Center(child: Text(l10n.ordersNoOrdersYet)),
                   ],
                 )
               : ListView.builder(

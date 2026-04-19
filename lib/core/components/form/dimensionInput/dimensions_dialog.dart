@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 
 class DimensionsDialog extends StatefulWidget {
   final List<Dimension> dimensions;
@@ -26,15 +27,16 @@ class _DimensionsDialogState extends State<DimensionsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AlertDialog(
-      title: const Text('Select dimension'),
+      title: Text(l10n.commonSelectDimension),
       contentPadding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
       content: SizedBox(
         width: double.maxFinite,
         child: widget.dimensions.isEmpty
-            ? const Padding(
-                padding: EdgeInsets.fromLTRB(24, 12, 24, 24),
-                child: Text('No dimensions available'),
+            ? Padding(
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                child: Text(l10n.commonNoDimensionsAvailable),
               )
             : ListView.builder(
                 padding: const EdgeInsets.all(12),
@@ -92,13 +94,13 @@ class _DimensionsDialogState extends State<DimensionsDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.commonCancel),
         ),
         FilledButton(
           onPressed: _selectedDimension == null
               ? null
               : () => Navigator.of(context).pop(_selectedDimension),
-          child: const Text('Add'),
+          child: Text(l10n.commonAdd),
         ),
       ],
     );

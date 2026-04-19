@@ -4,6 +4,7 @@ import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
 import 'package:restaukitchen_app/page/combination_form/components/dimension_with_price_card.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
@@ -46,17 +47,18 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final formState = context.watch<NewIngredientFormCubit>().state;
     final postState = context.watch<PostIngredientCubit>().state;
     _syncNameController(formState.name);
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: 'Create Ingredient'),
+      appBar: DetailsAppBar(pageTitle: l10n.ingredientsCreateTitle),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: PrimaryButton(
-            text: 'Save',
+            text: l10n.commonSave,
             onPressed: () {
               if (widget.ingredient != null) {
                 context.read<PostIngredientCubit>().updateIngredient(
@@ -82,7 +84,8 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
           if (getDimenionsstate.status == GetDimensionsStatus.error) {
             return Center(
               child: Text(
-                getDimenionsstate.errorMessage ?? 'Error loading dimensions',
+                getDimenionsstate.errorMessage ??
+                    l10n.ingredientsErrorLoadingDimensions,
               ),
             );
           }
@@ -105,7 +108,7 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                           children: [
                             InputField(
                               controller: _nameController,
-                              label: 'Name',
+                              label: l10n.ingredientsNameLabel,
                               isRequired: true,
                               onChanged: (value) {
                                 context.read<NewIngredientFormCubit>().setName(
@@ -181,7 +184,10 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                   Navigator.of(context).pop(state.ingredient);
                 }
                 if (state.status == PostIngredientStatus.error) {
-                  AppSnackBar.showError(context, state.errorMessage ?? 'Error');
+                  AppSnackBar.showError(
+                    context,
+                    state.errorMessage ?? l10n.commonError,
+                  );
                 }
               },
             );

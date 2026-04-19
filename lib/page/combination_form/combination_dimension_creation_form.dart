@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/add_dishes_to_menu_cubit/add_dishes_to_menu_combination_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
@@ -87,15 +88,16 @@ class _CombinationDimensionCreationFormState
   @override
   Widget build(BuildContext context) {
     final formState = context.watch<CombinationDimensionCreationCubit>().state;
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: 'Add Dimension'),
+      appBar: DetailsAppBar(pageTitle: l10n.dimensionsAddTitle),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: PrimaryButton(
             isDisabled: !formState.isValid,
-            text: 'Next',
+            text: l10n.dimensionsNext,
             onPressed: () {
               final postState = context.read<CombinationPostCubit>().state;
 
@@ -160,7 +162,7 @@ class _CombinationDimensionCreationFormState
           if (dimensionsState.status == GetDimensionsStatus.error) {
             return Center(
               child: Text(
-                dimensionsState.errorMessage ?? 'Error loading dimensions',
+                dimensionsState.errorMessage ?? l10n.commonFailedLoadDimensions,
               ),
             );
           }
@@ -186,9 +188,9 @@ class _CombinationDimensionCreationFormState
                           onChanged: (value) => context
                               .read<CombinationDimensionCreationCubit>()
                               .setCombinationName(value),
-                          decoration: const InputDecoration(
-                            labelText: 'Combination name',
-                            hintText: 'Enter a name for this combination',
+                          decoration: InputDecoration(
+                            labelText: l10n.dimensionsCombinationNameLabel,
+                            hintText: l10n.dimensionsCombinationNameHint,
                           ),
                         ),
                         const SizedBox(height: 20),

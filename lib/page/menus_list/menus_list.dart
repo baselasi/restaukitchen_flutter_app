@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/delete_menu_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/repository/menus_page_repo.dart';
 import 'package:restaukitchen_app/page/menus_list/components/add_menu_sheet.dart';
@@ -29,8 +30,9 @@ class _MenusListState extends State<MenusList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: 'Menus List'),
+      appBar: DetailsAppBar(pageTitle: l10n.menusListTitle),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await showAddMenuSheet(context);
@@ -83,6 +85,7 @@ class _MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
@@ -125,15 +128,17 @@ class _MenuCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${menu.dishes.length} items${menu.combination ? ' • Combination menu' : ''}',
+                      menu.combination
+                          ? '${l10n.menusItemsCount(menu.dishes.length)} • ${l10n.menusCombinationMenuBadge}'
+                          : l10n.menusItemsCount(menu.dishes.length),
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFF6B7280),
                       ),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
-                      'Updated recently',
+                    Text(
+                      l10n.menusUpdatedRecently,
                       style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
                     ),
                   ],
@@ -154,7 +159,7 @@ class _MenuCard extends StatelessWidget {
                 },
                 icon: const Icon(Icons.edit_outlined),
                 color: const Color(0xFF1D4ED8),
-                tooltip: 'Edit menu',
+                tooltip: l10n.menusEditTooltip,
               ),
               BlocConsumer<DeleteMenuCubit, DeleteMenuState>(
                 builder: (context, state) {
@@ -167,7 +172,7 @@ class _MenuCard extends StatelessWidget {
                     },
                     icon: const Icon(Icons.delete_outline),
                     color: const Color(0xFFDC2626),
-                    tooltip: 'Delete menu',
+                    tooltip: l10n.menusDeleteTooltip,
                   );
                 },
                 listener: (context, state) {
@@ -177,7 +182,7 @@ class _MenuCard extends StatelessWidget {
                     );
                   }
                   if (state.status == DeleteMenuStatus.isError) {
-                    AppSnackBar.showError(context, 'Failed to delete menu');
+                    AppSnackBar.showError(context, l10n.menusFailedDelete);
                   }
                 },
               ),

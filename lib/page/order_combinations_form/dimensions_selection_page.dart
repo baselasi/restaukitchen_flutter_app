@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/models/dimesnion_assignment.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/select_combinations_dishes_page.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/bloc/add_dishes_cubit.dart';
@@ -50,6 +51,7 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
   @override
   Widget build(BuildContext context) {
     final combination = context.watch<CombinationGetCubit>().state.combination;
+    final l10n = context.l10n;
     return Scaffold(
       appBar: DetailsAppBar(pageTitle: combination?.name ?? ''),
       body: BlocBuilder<CombinationGetCubit, CombinationGetState>(
@@ -59,7 +61,7 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  state.errorMessage ?? 'Failed to load combination',
+                  state.errorMessage ?? l10n.commonFailedLoadCombination,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -81,7 +83,7 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
 
           final combination = state.combination;
           if (combination == null) {
-            return const Center(child: Text('No combination data found'));
+            return Center(child: Text(l10n.commonNoCombinationDataFound));
           }
 
           final assignments = combination.dimensionAssignments
@@ -89,7 +91,7 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
               .toList();
 
           if (assignments.isEmpty) {
-            return const Center(child: Text('No dimensions available'));
+            return Center(child: Text(l10n.commonNoDimensionsAvailable));
           }
 
           return Center(
@@ -101,7 +103,7 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Select the dimension",
+                      l10n.orderFormSelectDimension,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
@@ -137,7 +139,9 @@ class _DimensionsSelectionPageState extends State<DimensionsSelectionPage> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      'Price: ${dimensionAssgnment.price.toStringAsFixed(2)}',
+                                      l10n.commonPriceLabel(
+                                        dimensionAssgnment.price.toStringAsFixed(2),
+                                      ),
                                     ),
                                   ),
                                 ],

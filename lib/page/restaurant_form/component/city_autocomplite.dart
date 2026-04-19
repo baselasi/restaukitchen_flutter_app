@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/restaurant_form/bloc/city_autocomplite_cubit/city_autocomplite_cubit.dart';
 import 'package:restaukitchen_app/page/restaurant_form/model/city_model.dart';
 import 'package:restaukitchen_app/page/settings_page/respository/restaurant_repo.dart';
@@ -98,6 +99,7 @@ class _CityAutocompliteState extends State<CityAutocomplite> {
       value: _cityAutocompliteCubit,
       child: BlocBuilder<CityAutocompliteCubit, CityAutocompliteState>(
         builder: (context, state) {
+          final l10n = context.l10n;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -131,13 +133,13 @@ class _CityAutocompliteState extends State<CityAutocomplite> {
                         enabled: _isCountrySelected,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
-                          labelText: 'City *',
+                          labelText: '${l10n.restaurantCityLabel} *',
                           labelStyle: Theme.of(context).textTheme.bodyMedium,
                           hintText: _isCountrySelected
-                              ? 'Search city'
-                              : 'Select a country first',
-                          suffixIcon: state.status ==
-                                  CityAutocompliteStatus.loading
+                              ? l10n.restaurantSearchCity
+                              : l10n.restaurantSelectCountryFirstHint,
+                          suffixIcon:
+                              state.status == CityAutocompliteStatus.loading
                               ? const Padding(
                                   padding: EdgeInsets.all(12),
                                   child: SizedBox(
@@ -153,16 +155,16 @@ class _CityAutocompliteState extends State<CityAutocomplite> {
                         onChanged: _onSearchChanged,
                         validator: (value) {
                           if (!_isCountrySelected) {
-                            return 'Please select a country first';
+                            return l10n.restaurantSelectCountryFirstError;
                           }
 
                           if (value == null || value.trim().isEmpty) {
-                            return 'Please select a city';
+                            return l10n.restaurantSelectCityRequired;
                           }
 
                           if (_selectedCity == null ||
                               _selectedCity!.name != value.trim()) {
-                            return 'Please choose a city from the list';
+                            return l10n.restaurantChooseCityFromList;
                           }
 
                           return null;
@@ -203,7 +205,7 @@ class _CityAutocompliteState extends State<CityAutocomplite> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8, left: 12),
                   child: Text(
-                    state.error ?? 'Failed to load cities',
+                    state.error ?? l10n.restaurantFailedLoadCities,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
                       fontSize: 12,
@@ -214,10 +216,10 @@ class _CityAutocompliteState extends State<CityAutocomplite> {
                   _fieldText.trim().isNotEmpty &&
                   state.status == CityAutocompliteStatus.loaded &&
                   state.cities.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 8, left: 12),
                   child: Text(
-                    'No cities found',
+                    l10n.restaurantNoCitiesFound,
                     style: TextStyle(fontSize: 12),
                   ),
                 ),

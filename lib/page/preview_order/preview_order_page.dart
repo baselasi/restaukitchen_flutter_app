@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/menu_scroll_bar_cubit/menu_scroll_bar_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
@@ -83,6 +84,7 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
     int courseIndex,
   ) {
     final indices = course.disheIndices;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -91,14 +93,14 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
           children: [
             Expanded(
               child: Text(
-                'Course ${courseIndex + 1}',
+                l10n.commonCourseLabel(courseIndex + 1),
                 style: theme.textTheme.titleMedium,
               ),
             ),
             PrimaryButton(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               isFullWidth: false,
-              text: 'Add dish',
+              text: l10n.commonAddDish,
               onPressed: () {
                 context.read<NewOrderFormBloc>().add(
                   SetCurrentCourseIndex(courseIndex: courseIndex),
@@ -132,7 +134,7 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
         const SizedBox(height: 8),
         if (indices.isEmpty)
           Text(
-            'No dishes in this course',
+            l10n.orderFormNoDishesInCourse,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.outline,
             ),
@@ -157,14 +159,15 @@ class _PreviewOrderPageState extends State<PreviewOrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: "New Order"),
+      appBar: DetailsAppBar(pageTitle: l10n.commonNewOrder),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: PrimaryButton(
-            text: 'Create Order',
+            text: l10n.commonCreateOrder,
             onPressed: () {
               if(widget.orderId != null) {
                 context.read<NewOrderCubit>().updateOrder(
@@ -277,7 +280,7 @@ class _CreateNewCourseCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  'CREATE NEW COURSE',
+                  context.l10n.orderFormCreateNewCourse,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w600,

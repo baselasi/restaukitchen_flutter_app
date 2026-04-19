@@ -6,6 +6,7 @@ import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/descriptionInput/description_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 import 'package:restaukitchen_app/page/combination_form/components/add_ingredients_page.dart';
 import 'package:restaukitchen_app/page/dishForm/bloc/dish_form_cubit.dart';
@@ -57,16 +58,16 @@ class _MenusPageState extends State<MenusPage>
     }
   }
 
-  Widget _buildDishesList(MenusPageLoaded state) {
+  Widget _buildDishesList(BuildContext context, MenusPageLoaded state) {
     final selectedMenu = state.menus[state.selectedMenu];
     final dishes = selectedMenu.dishes;
 
     if (dishes.isEmpty) {
       return SliverFillRemaining(
         hasScrollBody: false,
-        child: const Center(
+        child: Center(
           child: Text(
-            'No dishes available',
+            context.l10n.commonNoDishesAvailable,
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
@@ -109,6 +110,7 @@ class _MenusPageState extends State<MenusPage>
   @override
   Widget build(BuildContext context) {
     final menuState = context.read<MenusPageBloc>().state;
+    final l10n = context.l10n;
 
     final selectedMenuIndex = menuState is MenusPageLoaded
         ? menuState.selectedMenu
@@ -153,8 +155,8 @@ class _MenusPageState extends State<MenusPage>
                     );
                   }
                 },
-                label: Text('Add Dish'),
-                icon: Icon(Icons.add),
+                label: Text(l10n.commonAddDish),
+                icon: const Icon(Icons.add),
               ),
             ),
           ),
@@ -203,8 +205,8 @@ class _MenusPageState extends State<MenusPage>
                     }
                   }
                 },
-                label: Text('Add ingredients'),
-                icon: Icon(Icons.add),
+                label: Text(l10n.commonAddIngredients),
+                icon: const Icon(Icons.add),
               ),
             ),
           ),
@@ -245,7 +247,7 @@ class _MenusPageState extends State<MenusPage>
                     ),
                   ),
                   // SliverList (dishes content)
-                  _buildDishesList(state),
+                  _buildDishesList(context, state),
                 ],
                 if (state is MenusPageLoading)
                   SliverFillRemaining(

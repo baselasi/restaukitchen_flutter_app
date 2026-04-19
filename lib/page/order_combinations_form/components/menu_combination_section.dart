@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/menusPage/models/menu.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/bloc/combination_menu_section_cubit/combination_menu_section_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
@@ -54,7 +55,7 @@ class _MenuCombinationSectionState extends State<MenuCombinationSection> {
         .toList();
 
     if (dishes.isEmpty) {
-      return const Text('No dishes available for this menu.');
+      return Text(context.l10n.combinationsNoDishesInMenu);
     }
 
     return BlocConsumer<
@@ -209,7 +210,7 @@ class MenuIngredientsList extends StatelessWidget {
                 ingredientSelections[ingredientIdKey(ingredients[i], i)]
                     ?.quantity ??
                 0,
-            priceLabel: _ingredientExtraPriceLabel(ingredients[i]),
+            priceLabel: _ingredientExtraPriceLabel(context, ingredients[i]),
             onIncrement: () => cubit.incrementIngredientQuantity(
               ingredientIdKey(ingredients[i], i),
               ingredients[i],
@@ -225,14 +226,14 @@ class MenuIngredientsList extends StatelessWidget {
   }
 }
 
-String? _ingredientExtraPriceLabel(Ingredient ingredient) {
+String? _ingredientExtraPriceLabel(BuildContext context, Ingredient ingredient) {
   for (final a in ingredient.dimensionAssignments) {
     if (a.deleted == true) continue;
     final p = a.price;
     if (p != null && p.isNotEmpty) {
       final trimmed = p.trim();
       if (trimmed.contains('€')) return '+$trimmed';
-      return '+$trimmed €';
+      return '+$trimmed ${context.l10n.commonCurrencyEuro}';
     }
   }
   return null;

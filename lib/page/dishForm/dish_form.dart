@@ -11,6 +11,7 @@ import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/repository/dimensions_repo.dart';
 import 'package:restaukitchen_app/page/dishForm/bloc/dish_form_cubit.dart';
@@ -39,15 +40,16 @@ class _DishFormState extends State<DishForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return BlocListener<DishFormCubit, DishFormState>(
       listener: (context, state) {
         if (state.status == DishFormStatus.success) {
-          AppSnackBar.showSuccess(context, 'Dish created successfully');
+          AppSnackBar.showSuccess(context, l10n.dishesCreatedSuccessfully);
           Navigator.of(context).pop();
         }
       },
       child: Scaffold(
-        appBar: DetailsAppBar(pageTitle: "New Dish"),
+        appBar: DetailsAppBar(pageTitle: l10n.dishesNewDish),
         body: Column(
           children: [
             Expanded(
@@ -60,7 +62,7 @@ class _DishFormState extends State<DishForm> {
                     children: [
                       SizedBox(height: 18),
                       Text(
-                        'Fondamentale',
+                        l10n.dishesEssentials,
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(
                               color: const Color(0xFF9CA3AF),
@@ -85,7 +87,7 @@ class _DishFormState extends State<DishForm> {
                               children: [
                                 InputField(
                                   controller: _nameControllere,
-                                  label: "Name",
+                                  label: l10n.dishesNameLabel,
                                   isRequired: true,
                                 ),
                                 SizedBox(height: 16),
@@ -106,7 +108,7 @@ class _DishFormState extends State<DishForm> {
                                     child: Row(
                                       children: [
                                         Text(
-                                          'Availibility',
+                                          l10n.dishesAvailability,
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
@@ -117,8 +119,8 @@ class _DishFormState extends State<DishForm> {
                                           children: [
                                             Text(
                                               _isAvailable
-                                                  ? 'Available'
-                                                  : 'Unavailable',
+                                                  ? l10n.commonAvailable
+                                                  : l10n.commonUnavailable,
                                               style: TextStyle(
                                                 fontSize: 14,
                                                 fontStyle: FontStyle.italic,
@@ -147,7 +149,7 @@ class _DishFormState extends State<DishForm> {
 
                       SizedBox(height: 16),
                       Text(
-                        'Description',
+                        l10n.commonDescription,
                         textAlign: TextAlign.left,
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(
@@ -184,7 +186,7 @@ class _DishFormState extends State<DishForm> {
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'Dimension & pricing',
+                        l10n.dishesDimensionPricing,
                         textAlign: TextAlign.left,
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(
@@ -327,7 +329,7 @@ class _SaveButtonState extends State<SaveButton> {
           return const Center(child: CircularProgressIndicator());
         }
         return PrimaryButton(
-          text: 'Salva',
+          text: context.l10n.commonSave,
 
           onPressed: widget.onSavePressed,
           isDisabled:

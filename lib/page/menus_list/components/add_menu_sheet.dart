@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/create_menu_cubit.dart/create_menu_cubit.dart.dart';
 import 'package:restaukitchen_app/page/menusPage/repository/menus_page_repo.dart';
 
@@ -50,6 +51,7 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final trimmedName = _nameController.text.trim();
+    final l10n = context.l10n;
 
     return BlocConsumer<CreateMenuCubit, CreateMenuState>(
       builder: (context, state) {
@@ -85,7 +87,9 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    widget.id != null ? 'Edit Menu' : 'Create Menu',
+                    widget.id != null
+                        ? l10n.menusEditTitle
+                        : l10n.menusCreateTitle,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -93,8 +97,8 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
                   const SizedBox(height: 6),
                   Text(
                     widget.id != null
-                        ? 'Edit the name of your menu.'
-                        : 'Add a name for your new menu.',
+                        ? l10n.menusEditDescription
+                        : l10n.menusCreateDescription,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: const Color(0xFF6B7280),
                     ),
@@ -104,7 +108,7 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
                     controller: _nameController,
                     autofocus: true,
                     textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(labelText: 'Menu name'),
+                    decoration: InputDecoration(labelText: l10n.menusNameLabel),
                     onChanged: (_) => setState(() {}),
                     onSubmitted: (value) {
                       final name = value.trim();
@@ -122,7 +126,7 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cancel'),
+                          child: Text(l10n.commonCancel),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -136,7 +140,11 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
                                       widget.id,
                                       isInEdi: widget.id != null,
                                     ),
-                          child: const Text('Create Menu'),
+                          child: Text(
+                            widget.id != null
+                                ? l10n.menusEditTitle
+                                : l10n.menusCreateTitle,
+                          ),
                         ),
                       ),
                     ],
@@ -154,7 +162,7 @@ class _AddMenuSheetState extends State<AddMenuSheet> {
         if (state.status == CreateMenuStatus.error) {
           AppSnackBar.showError(
             context,
-            state.error ?? 'Failed to create menu',
+            state.error ?? l10n.menusFailedCreate,
           );
         }
       },

@@ -1,6 +1,5 @@
 {
   "@@locale": "en",
-
   "@@common": {},
   "commonAppTitle": "Flutter Demo",
   "commonHome": "Home",
@@ -53,6 +52,7 @@
   "commonFailedLoadIngredients": "Failed to load ingredients",
   "commonFailedLoadDimensions": "Failed to load dimensions",
   "commonChangeImage": "Change image",
+  "commonChange": "Change",
   "commonNewOrder": "New Order",
   "commonCreateOrder": "Create Order",
   "commonSaveOrder": "Save Order",
@@ -136,7 +136,6 @@
       }
     }
   },
-
   "@@auth": {},
   "authValidEmailAddress": "Please enter a valid email address",
   "authLoginSuccessful": "Login successful!",
@@ -151,7 +150,6 @@
   "authForgotPassword": "Forgot Password?",
   "authDemoEmail": "ziadkhaled_822@hotmail.com",
   "authDemoPassword": "ziad",
-
   "@@home": {},
   "homeTableAvailability": "Table availability",
   "homeOpen": "Open",
@@ -171,7 +169,6 @@
       }
     }
   },
-
   "@@settings": {},
   "settingsLogout": "Logout",
   "settingsCatalogue": "CATALOGUE",
@@ -180,7 +177,8 @@
   "settingsIngredientsSubtitle": "Allergens, stock and supplier info",
   "settingsDimensionsSubtitle": "Portion sizes and measurement units",
   "settingsErrorLoadingRestaurantInfo": "Error loading restaurant info",
-
+  "settingsPersonalSettings": "Personal Settings",
+  "settingsSystemLanguage": "SYSTEM LANGUAGE",
   "@@restaurant": {},
   "restaurantEditTitle": "Edit Restaurant",
   "restaurantNameLabel": "Restaurant Name",
@@ -204,7 +202,6 @@
   "restaurantAddressHint": "Enter address",
   "restaurantDescriptionHint": "Enter description",
   "restaurantErrorUpdating": "Error updating restaurant",
-
   "@@tables": {},
   "tablesNewTable": "New Table",
   "tablesSortTables": "Sort tables",
@@ -225,7 +222,6 @@
       }
     }
   },
-
   "@@menus": {},
   "menusListTitle": "Menus List",
   "menusUpdatedRecently": "Updated recently",
@@ -247,7 +243,6 @@
     }
   },
   "menusCombinationMenuBadge": "Combination menu",
-
   "@@dishes": {},
   "dishesDeleteTitle": "Delete Dish",
   "dishesDeleteConfirmation": "Are you sure you want to delete \"{dishName}\"? This action cannot be undone.",
@@ -266,7 +261,6 @@
   "dishesNameLabel": "Name",
   "dishesAvailability": "Availability",
   "dishesDimensionPricing": "Dimension & pricing",
-
   "@@categories": {},
   "categoriesListTitle": "Categories List",
   "categoriesFailedLoad": "Failed to load categories",
@@ -280,7 +274,6 @@
   "categoriesNameLabel": "Category name",
   "categoriesUpdateTitle": "Update Category",
   "categoriesFailedCreate": "Failed to create category",
-
   "@@ingredients": {},
   "ingredientsListTitle": "Ingredients List",
   "ingredientsErrorLoading": "Error loading ingredients",
@@ -293,7 +286,6 @@
   "ingredientsNoIngredientsAvailable": "No ingredients available",
   "ingredientsFailedAdd": "Failed to add ingredients",
   "ingredientsSelectedTitle": "Selected Ingredients",
-
   "@@dimensions": {},
   "dimensionsListTitle": "Dimension List",
   "dimensionsStandard": "Standard dimension",
@@ -312,7 +304,6 @@
   "dimensionsCombinationNameHint": "Enter a name for this combination",
   "dimensionsNext": "Next",
   "dimensionsPriceHint": "0.00",
-
   "@@combinations": {},
   "combinationsNoCombinations": "No combinations",
   "combinationsEditPreviewTitle": "Edit Combo",
@@ -323,7 +314,6 @@
   "combinationsNoPlatesForSelectedDimension": "No plates available for selected dimension",
   "combinationsDeletedSuccessfully": "Combination deleted successfully",
   "combinationsErrorDeleting": "Error deleting combination",
-
   "@@orderForm": {},
   "orderFormSelectDimension": "Select the dimension",
   "orderFormAddNoteForDish": "Add note for this dish",
@@ -331,7 +321,6 @@
   "orderFormPleaseChooseDimension": "Please choose a dimension",
   "orderFormNoDishesInCourse": "No dishes in this course",
   "orderFormCreateNewCourse": "CREATE NEW COURSE",
-
   "@@orders": {},
   "ordersKitchen": "Kitchen",
   "ordersArchive": "Archive",

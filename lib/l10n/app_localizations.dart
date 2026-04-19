@@ -406,6 +406,12 @@ abstract class AppLocalizations {
   /// **'Change image'**
   String get commonChangeImage;
 
+  /// No description provided for @commonChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get commonChange;
+
   /// No description provided for @commonNewOrder.
   ///
   /// In en, this message translates to:
@@ -795,6 +801,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error loading restaurant info'**
   String get settingsErrorLoadingRestaurantInfo;
+
+  /// No description provided for @settingsPersonalSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Settings'**
+  String get settingsPersonalSettings;
+
+  /// No description provided for @settingsSystemLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'SYSTEM LANGUAGE'**
+  String get settingsSystemLanguage;
 
   /// No description provided for @restaurantEditTitle.
   ///
@@ -1513,8 +1531,8 @@ abstract class AppLocalizations {
   /// No description provided for @ordersTotalLabel.
   ///
   /// In en, this message translates to:
-  /// **'Total: €{amount}'**
-  String ordersTotalLabel(String amount);
+  /// **'Total: {currency}{amount}'**
+  String ordersTotalLabel(String amount, String currency);
 
   /// No description provided for @ordersCombinationDishBullet.
   ///

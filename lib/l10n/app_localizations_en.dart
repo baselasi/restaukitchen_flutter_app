@@ -162,6 +162,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonChangeImage => 'Change image';
 
   @override
+  String get commonChange => 'Change';
+
+  @override
   String get commonNewOrder => 'New Order';
 
   @override
@@ -388,6 +391,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsErrorLoadingRestaurantInfo =>
       'Error loading restaurant info';
+
+  @override
+  String get settingsPersonalSettings => 'Personal Settings';
+
+  @override
+  String get settingsSystemLanguage => 'SYSTEM LANGUAGE';
 
   @override
   String get restaurantEditTitle => 'Edit Restaurant';
@@ -773,8 +782,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersNoDishesInOrder => 'No dishes in this order.';
 
   @override
-  String ordersTotalLabel(String amount) {
-    return 'Total: €$amount';
+  String ordersTotalLabel(String amount, String currency) {
+    return 'Total: $currency$amount';
   }
 
   @override

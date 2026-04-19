@@ -163,6 +163,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonChangeImage => 'تغيير الصورة';
 
   @override
+  String get commonChange => 'تغيير';
+
+  @override
   String get commonNewOrder => 'طلب جديد';
 
   @override
@@ -394,6 +397,12 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get settingsErrorLoadingRestaurantInfo =>
       'خطأ في تحميل معلومات المطعم';
+
+  @override
+  String get settingsPersonalSettings => 'الإعدادات الشخصية';
+
+  @override
+  String get settingsSystemLanguage => 'لغة النظام';
 
   @override
   String get restaurantEditTitle => 'تعديل المطعم';
@@ -780,7 +789,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ordersNoDishesInOrder => 'لا توجد أطباق في هذا الطلب.';
 
   @override
-  String ordersTotalLabel(String amount, {String currency = '€'}) {
+  String ordersTotalLabel(String amount, String currency) {
     return 'الإجمالي: $currency$amount';
   }
 

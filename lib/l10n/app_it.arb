@@ -53,6 +53,7 @@
   "commonFailedLoadIngredients": "Impossibile caricare gli ingredienti",
   "commonFailedLoadDimensions": "Impossibile caricare le dimensioni",
   "commonChangeImage": "Cambia immagine",
+  "commonChange": "Cambia",
   "commonNewOrder": "Nuovo ordine",
   "commonCreateOrder": "Crea ordine",
   "commonSaveOrder": "Salva ordine",
@@ -180,7 +181,8 @@
   "settingsIngredientsSubtitle": "Allergeni, disponibilità e dati fornitore",
   "settingsDimensionsSubtitle": "Porzioni e unità di misura",
   "settingsErrorLoadingRestaurantInfo": "Errore nel caricamento delle informazioni del ristorante",
-
+  "settingsPersonalSettings": "Impostazioni personali",
+  "settingsSystemLanguage": "LINGUA DEL SISTEMA",
   "@@restaurant": {},
   "restaurantEditTitle": "Modifica ristorante",
   "restaurantNameLabel": "Nome ristorante",

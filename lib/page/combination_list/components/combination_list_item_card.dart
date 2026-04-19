@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_list/bloc/delete_combination_cubit/delete_combination_cubit.dart';
 import 'package:restaukitchen_app/page/combination_list/models/combination_list_item.dart';
 import 'package:restaukitchen_app/core/widgets/square_action_button.dart';
@@ -19,24 +20,25 @@ class CombinationListItemCard extends StatelessWidget {
     this.onDelete,
   });
 
-  String _priceRangeLabel() {
+  String _priceRangeLabel(BuildContext context) {
     final prices = item.dimensionAssignments
         .where((a) => !a.isDeleted)
         .map((a) => a.price)
         .toList();
-    if (prices.isEmpty) return '—';
+    if (prices.isEmpty) return context.l10n.commonEmDash;
     prices.sort();
     final min = prices.first;
     final max = prices.last;
     final a = min.toStringAsFixed(2);
     final b = max.toStringAsFixed(2);
-    if (min == max) return '€$a';
-    return '€$a – €$b';
+    if (min == max) return '${context.l10n.commonCurrencyEuro}$a';
+    return '${context.l10n.commonCurrencyEuro}$a ${context.l10n.commonEmDash} ${context.l10n.commonCurrencyEuro}$b';
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 10,
@@ -83,7 +85,7 @@ class CombinationListItemCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Change image',
+                            l10n.commonChangeImage,
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: LightTheme.primaryColor,
                               fontWeight: FontWeight.w500,
@@ -109,7 +111,7 @@ class CombinationListItemCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          _priceRangeLabel(),
+                          _priceRangeLabel(context),
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: Colors.black54,
                             fontSize: 13,
@@ -155,14 +157,14 @@ class CombinationListItemCard extends StatelessWidget {
               if (state.status == DeleteCombinationStatus.success) {
                 AppSnackBar.showSuccess(
                   context,
-                  'Combination deleted successfully',
+                  l10n.combinationsDeletedSuccessfully,
                 );
                 onDelete?.call();
               }
               if (state.status == DeleteCombinationStatus.error) {
                 AppSnackBar.showError(
                   context,
-                  state.errorMessage ?? 'Error deleting combination',
+                  state.errorMessage ?? l10n.combinationsErrorDeleting,
                 );
               }
             },

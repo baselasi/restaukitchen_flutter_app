@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/add_dishes_to_menu_cubit/add_dishes_to_menu_combination_cubit.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_events.dart';
@@ -49,13 +50,14 @@ class _AddDishesPageToCombinationsPageState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: PrimaryButton(
-            text: 'Save Order',
+            text: l10n.commonSaveOrder,
             onPressed: () {
               context.read<AddDishesToMenuCombinationCubit>().addDishesToMenu(
                 widget.combinationId,
@@ -65,7 +67,7 @@ class _AddDishesPageToCombinationsPageState
           ),
         ),
       ),
-      appBar: DetailsAppBar(pageTitle: 'Add Dishes'),
+      appBar: DetailsAppBar(pageTitle: l10n.commonAddDishes),
       body: BlocBuilder<MenusPageBloc, MenusPageState>(
         builder: (context, getMenuState) {
           return RefreshIndicator(
@@ -146,6 +148,7 @@ class _AddDishesPageToCombinationsPageState
     MenusPageLoaded state,
     Set<Dish> selectedDishes,
   ) {
+    final l10n = context.l10n;
     final dishes = state.menus[state.selectedMenu].dishes;
     if (dishes.isEmpty) {
       return [
@@ -153,7 +156,7 @@ class _AddDishesPageToCombinationsPageState
           hasScrollBody: false,
           child: Center(
             child: Text(
-              'No dishes in this menu',
+              l10n.combinationsNoDishesInMenu,
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
           ),

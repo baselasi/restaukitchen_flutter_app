@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/repository/dimensions_repo.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_dimension_creation_cubit/combination_dimension_creation_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_post_cubit/combination_post_cubit.dart';
@@ -76,6 +77,7 @@ class _CombinationListState extends State<CombinationList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -89,7 +91,7 @@ class _CombinationListState extends State<CombinationList> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state.status == CombinationGetListStatus.error) {
-            return Center(child: Text(state.errorMessage ?? 'Error'));
+            return Center(child: Text(state.errorMessage ?? l10n.commonError));
           }
           if (state.status == CombinationGetListStatus.loaded) {
             final list = state.combinations!;
@@ -105,7 +107,7 @@ class _CombinationListState extends State<CombinationList> {
                   ? ListView(
                       children: [
                         const SizedBox(height: 200),
-                        const Center(child: Text('No combinations')),
+                        Center(child: Text(l10n.combinationsNoCombinations)),
                       ],
                     )
                   : ListView.builder(

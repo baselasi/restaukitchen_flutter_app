@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/orders_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/table_count_cubit.dart';
 import 'package:restaukitchen_app/page/homePage/components/table_qr_code_dialog.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,7 +22,7 @@ class HomePage extends StatelessWidget {
             // Action Buttons
             _buildActionButton(
               context,
-              title: 'Genera codice QR',
+              title: context.l10n.commonGenerateQrCode,
               icon: Icons.qr_code,
               color: LightTheme.primaryColor,
               textColor: Colors.white,
@@ -141,6 +142,7 @@ class _TablesCountWidgetState extends State<TablesCountWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     const titleColor = Color(0xFF212121);
     const subtitleColor = Color(0xFF757575);
     const freeGreen = Color(0xFF4CAF50);
@@ -161,7 +163,7 @@ class _TablesCountWidgetState extends State<TablesCountWidget> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  'Disponibilità tavoli',
+                  l10n.homeTableAvailability,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -169,7 +171,9 @@ class _TablesCountWidgetState extends State<TablesCountWidget> {
                   ),
                 ),
                 Text(
-                  isLoading ? '…' : '$totalTables tavoli totali',
+                  isLoading
+                      ? l10n.commonLoadingEllipsis
+                      : l10n.homeTotalTables(totalTables),
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -187,7 +191,7 @@ class _TablesCountWidgetState extends State<TablesCountWidget> {
                   Expanded(
                     child: _TableAvailabilityStatCard(
                       indicatorColor: freeGreen,
-                      label: 'LIBERI',
+                      label: l10n.commonFree.toUpperCase(),
                       count: freeCount,
                       numberColor: titleColor,
                       isLoading: isLoading,
@@ -197,7 +201,7 @@ class _TablesCountWidgetState extends State<TablesCountWidget> {
                   Expanded(
                     child: _TableAvailabilityStatCard(
                       indicatorColor: Colors.red,
-                      label: 'OCCUPATI',
+                      label: l10n.commonOccupied.toUpperCase(),
                       count: occupiedCount,
                       numberColor: Colors.red,
                       isLoading: isLoading,
@@ -313,6 +317,7 @@ class _OrderCountWidgetState extends State<OrderCountWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     const titleColor = Color(0xFF212121);
     const subtitleColor = Color(0xFF757575);
 
@@ -329,7 +334,7 @@ class _OrderCountWidgetState extends State<OrderCountWidget> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  'Ordini',
+                  l10n.commonOrders,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -337,7 +342,9 @@ class _OrderCountWidgetState extends State<OrderCountWidget> {
                   ),
                 ),
                 Text(
-                  isLoading ? '…' : '$ordersCount ordini aperti',
+                  isLoading
+                      ? l10n.commonLoadingEllipsis
+                      : l10n.homeOpenOrders(ordersCount),
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -351,7 +358,7 @@ class _OrderCountWidgetState extends State<OrderCountWidget> {
               height: 128,
               child: _TableAvailabilityStatCard(
                 indicatorColor: Colors.red,
-                label: 'APERTI',
+                label: l10n.homeOpen.toUpperCase(),
                 count: ordersCount,
                 numberColor: Colors.red,
                 isLoading: isLoading,

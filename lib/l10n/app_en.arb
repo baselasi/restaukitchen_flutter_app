@@ -340,10 +340,13 @@
   "ordersNoArchivedOrders": "No archived orders",
   "ordersNoDeletedOrders": "No deleted orders",
   "ordersNoDishesInOrder": "No dishes in this order.",
-  "ordersTotalLabel": "Total: €{amount}",
+  "ordersTotalLabel": "Total: {currency}{amount}",
   "@ordersTotalLabel": {
     "placeholders": {
       "amount": {
+        "type": "String"
+      },
+      "currency": {
         "type": "String"
       }
     }

@@ -7,6 +7,7 @@ import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class AddIngredientsPage extends StatefulWidget {
@@ -55,15 +56,16 @@ class _AddIngredientsPageState extends State<AddIngredientsPage> {
   @override
   Widget build(BuildContext context) {
     final primary = LightTheme.primaryColor;
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: 'Add Ingredients'),
+      appBar: DetailsAppBar(pageTitle: l10n.commonAddIngredients),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: PrimaryButton(
-            text: 'save',
+            text: l10n.commonSave,
             onPressed: () {
               context.read<AddIngredientsToMenuCubit>().addIngredientsToMenu(
                 widget.menuId,
@@ -82,7 +84,7 @@ class _AddIngredientsPageState extends State<AddIngredientsPage> {
           if (getState.status == GetIngredientsStatus.error) {
             return Center(
               child: Text(
-                getState.errorMessage ?? 'Failed to load ingredients',
+                getState.errorMessage ?? l10n.commonFailedLoadIngredients,
               ),
             );
           }
@@ -91,7 +93,7 @@ class _AddIngredientsPageState extends State<AddIngredientsPage> {
             if (ingredients.isEmpty) {
               return Center(
                 child: Text(
-                  'No ingredients available',
+                  l10n.ingredientsNoIngredientsAvailable,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: const Color(0xFF6B7280),
                   ),
@@ -135,7 +137,7 @@ class _AddIngredientsPageState extends State<AddIngredientsPage> {
                 if (state.status == AddIngredientsToMenuStatus.error) {
                   AppSnackBar.showError(
                     context,
-                    state.errorMessage ?? 'Failed to add ingredients',
+                    state.errorMessage ?? l10n.ingredientsFailedAdd,
                   );
                 }
               },

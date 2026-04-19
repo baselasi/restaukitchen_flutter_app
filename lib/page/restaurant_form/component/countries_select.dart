@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/restaurant_form/bloc/countries_cubit/countries_cubit.dart';
 import 'package:restaukitchen_app/page/settings_page/respository/restaurant_repo.dart';
 
@@ -40,6 +41,7 @@ class _CountriesSelectState extends State<CountriesSelect> {
       value: _countriesCubit,
       child: BlocBuilder<CountriesCubit, CountriesState>(
         builder: (context, state) {
+          final l10n = context.l10n;
           final countries = [...state.countries];
           final selectedValue = widget.value;
 
@@ -52,10 +54,10 @@ class _CountriesSelectState extends State<CountriesSelect> {
           return DropdownButtonFormField<String>(
             initialValue: selectedValue,
             decoration: InputDecoration(
-              labelText: 'Country *',
+              labelText: '${l10n.restaurantCountryLabel} *',
               labelStyle: Theme.of(context).textTheme.bodyMedium,
               errorText: state.status == CountriesStatus.error
-                  ? state.error ?? 'Failed to load countries'
+                  ? state.error ?? l10n.restaurantFailedLoadCountries
                   : null,
             ),
             items: countries.map((country) {
@@ -69,12 +71,12 @@ class _CountriesSelectState extends State<CountriesSelect> {
                 : widget.onChanged,
             hint: Text(
               state.status == CountriesStatus.loading
-                  ? 'Loading countries...'
-                  : 'Select a country',
+                  ? l10n.restaurantLoadingCountries
+                  : l10n.restaurantSelectCountry,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please select a country';
+                return l10n.restaurantSelectCountryRequired;
               }
               return null;
             },

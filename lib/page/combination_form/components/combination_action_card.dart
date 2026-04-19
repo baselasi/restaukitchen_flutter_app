@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/menu_combination_post_cubit/menu_combination_post_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/models/create_menu_combination_request.dart';
@@ -23,6 +24,7 @@ class CombinationActionCard extends StatelessWidget {
     final primary = theme.colorScheme.primary;
     final nameController = TextEditingController();
     final FocusNode nameFocusNode = FocusNode();
+    final l10n = context.l10n;
 
     return BlocConsumer<CreateCombinationMenuCubit, CreateCombinationMenuState>(
       builder: (context, state) {
@@ -48,7 +50,7 @@ class CombinationActionCard extends StatelessWidget {
                         isRequired:
                             state.status == CreateCombinationMenuStatus.loading,
                         onChanged: (value) {},
-                        label: "Group Name",
+                        label: l10n.combinationsGroupNameLabel,
                       ),
                     ],
                   ),
@@ -81,7 +83,7 @@ class CombinationActionCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      "Create",
+                      l10n.commonCreate,
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
@@ -112,7 +114,7 @@ class CombinationActionCard extends StatelessWidget {
         if (state.status == CreateCombinationMenuStatus.error) {
           AppSnackBar.showError(
             context,
-            state.errorMessage ?? 'Error creating group',
+            state.errorMessage ?? l10n.combinationsErrorCreatingGroup,
           );
         }
       },

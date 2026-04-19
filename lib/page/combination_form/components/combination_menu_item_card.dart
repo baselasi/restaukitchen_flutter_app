@@ -6,6 +6,7 @@ import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/add_dishes_to_menu_cubit/add_dishes_to_menu_combination_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/components/add_dishes_page.dart';
@@ -102,6 +103,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
     final menu = widget.menu;
     final dishCount = menu.dishes.length;
     final primary = LightTheme.primaryColor;
+    final l10n = context.l10n;
     final deleteMenuCubit = context.watch<DeleteMenuCubit>();
     return Container(
       decoration: BoxDecoration(
@@ -153,7 +155,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                           color: primary,
                           size: 22,
                         ),
-                        tooltip: 'Edit',
+                        tooltip: l10n.commonEdit,
                       ),
                       IconButton(
                         visualDensity: VisualDensity.compact,
@@ -162,7 +164,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                         },
                         icon: const Icon(Icons.delete_outline, size: 22),
                         color: Colors.red,
-                        tooltip: 'Delete',
+                        tooltip: l10n.commonDelete,
                       ),
                     ],
                   ),
@@ -170,7 +172,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                   Row(
                     children: [
                       Text(
-                        'SELECTED DISHES',
+                        l10n.commonAddDishes.toUpperCase(),
                         style: theme.textTheme.labelSmall?.copyWith(
                           letterSpacing: 0.6,
                           fontWeight: FontWeight.w600,
@@ -188,7 +190,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          '$dishCount ${dishCount == 1 ? 'ITEM' : 'ITEMS'}',
+                          l10n.menusItemsCount(dishCount).toUpperCase(),
                           style: theme.textTheme.labelSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: const Color(0xFF4B5563),
@@ -202,7 +204,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                     Padding(
                       padding: const EdgeInsets.only(left: 16, bottom: 8),
                       child: Text(
-                        'No dishes yet',
+                        l10n.commonNoDishesAvailable,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: _labelColor,
                         ),
@@ -254,7 +256,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'INGREDIENTS',
+                                    l10n.commonIngredients.toUpperCase(),
                                     style: theme.textTheme.labelSmall?.copyWith(
                                       letterSpacing: 0.6,
                                       fontWeight: FontWeight.w600,
@@ -301,7 +303,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                               color: primary,
                             ),
                             label: Text(
-                              'Add Dishes',
+                              l10n.commonAddDishes,
                               style: TextStyle(
                                 color: primary,
                                 fontWeight: FontWeight.w600,
@@ -324,7 +326,7 @@ class _CombinationMenuItemCardState extends State<CombinationMenuItemCard> {
                               _addIngredients();
                             },
                             icon: const Icon(Icons.tune, size: 20),
-                            label: const Text('Add Ingredients'),
+                            label: Text(l10n.commonAddIngredients),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: primary,
                               side: BorderSide(color: primary),
@@ -431,7 +433,7 @@ class _DishRow extends StatelessWidget {
                   },
                   icon: const Icon(Icons.close, size: 20),
                   color: _subtitleColor,
-                  tooltip: 'Remove',
+                  tooltip: context.l10n.commonRemove,
                 ),
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 
 class InputField extends StatelessWidget {
   final TextEditingController controller;
@@ -51,30 +52,10 @@ class InputField extends StatelessWidget {
     this.initialValue,
   });
 
-  String? _validateInput(String? value) {
-    // Required field validation
-    if (isRequired && (value == null || value.trim().isEmpty)) {
-      return 'This field is required';
-    }
-
-    // Numeric field validation
-    if (isNumeric && value != null && value.isNotEmpty) {
-      if (double.tryParse(value) == null) {
-        return 'Please enter a valid number';
-      }
-    }
-
-    // Custom validator
-    if (validator != null) {
-      return validator!(value);
-    }
-
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     // Set initial value if provided and controller is empty
     if (initialValue != null && controller.text.isEmpty) {
@@ -87,7 +68,26 @@ class InputField extends StatelessWidget {
 
     return TextFormField(
       controller: controller,
-      validator: _validateInput,
+      validator: (value) {
+        // Required field validation
+        if (isRequired && (value == null || value.trim().isEmpty)) {
+          return l10n.commonRequiredField;
+        }
+
+        // Numeric field validation
+        if (isNumeric && value != null && value.isNotEmpty) {
+          if (double.tryParse(value) == null) {
+            return l10n.commonValidNumber;
+          }
+        }
+
+        // Custom validator
+        if (validator != null) {
+          return validator!(value);
+        }
+
+        return null;
+      },
       enabled: !isDisabled,
       obscureText: obscureText,
       maxLines: maxLines,

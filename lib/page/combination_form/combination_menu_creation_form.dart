@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/combination_menu_creation_form_cubit/combination_menu_creation_form_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/bloc/menu_combination_post_cubit/menu_combination_post_cubit.dart';
 import 'package:restaukitchen_app/page/combination_form/components/combination_action_card.dart';
@@ -25,8 +26,9 @@ class CombinationMenuCreationForm extends StatelessWidget {
       CombinationMenuCreationFormState
     >(
       builder: (context, state) {
+        final l10n = context.l10n;
         return Scaffold(
-          appBar: DetailsAppBar(pageTitle: 'Add Menu'),
+          appBar: DetailsAppBar(pageTitle: l10n.combinationsAddMenuTitle),
           body: SafeArea(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
@@ -57,7 +59,7 @@ class CombinationMenuCreationForm extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               child: PrimaryButton(
-                text: 'Done',
+                text: l10n.commonDone,
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },

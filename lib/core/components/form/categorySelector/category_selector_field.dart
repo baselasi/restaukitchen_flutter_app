@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/categorySelector/category_selector_cubit.dart';
 import 'package:restaukitchen_app/core/models/category.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 
 class CategorySelectorField extends StatefulWidget {
   final Category? selectedCategory;
@@ -22,7 +23,7 @@ class _CategorySelectorFieldState extends State<CategorySelectorField> {
 
   @override
   Widget build(BuildContext context) {
-    // We assume the Cubit is provided either here or higher up
+    final l10n = context.l10n;
     return BlocBuilder<CategorySelectorCubit, CategorySelectorState>(
       builder: (context, state) {
         return DropdownButtonFormField<String>(
@@ -30,7 +31,7 @@ class _CategorySelectorFieldState extends State<CategorySelectorField> {
           initialValue:
               state.selectedCategory?.name, // The current value from Cubit
           decoration: InputDecoration(
-            labelText: 'Select Category',
+            labelText: l10n.commonSelectCategory,
             labelStyle: Theme.of(context).textTheme.bodyMedium,
             border: OutlineInputBorder(), // Gives it that "Input Field" look
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -39,7 +40,7 @@ class _CategorySelectorFieldState extends State<CategorySelectorField> {
               ? [
                   DropdownMenuItem<String>(
                     value: null,
-                    child: const Text('Loading...'),
+                    child: Text(l10n.commonLoading),
                   ),
                 ]
               : state.categories.map((Category category) {

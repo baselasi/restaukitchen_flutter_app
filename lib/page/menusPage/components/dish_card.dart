@@ -11,6 +11,7 @@ import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_
 import 'package:restaukitchen_app/core/dialogs/conferm_dialogs.dart';
 import 'package:restaukitchen_app/core/dialogs/loading_overlay.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/widgets/public_image.dart';
 import 'package:restaukitchen_app/core/widgets/square_action_button.dart';
@@ -62,15 +63,16 @@ class _DishCardState extends State<DishCard> {
   }
 
   String _dishPriceRangeLabel() {
+    final l10n = context.l10n;
     final prices = _collectDishPrices();
-    if (prices.isEmpty) return '—';
+    if (prices.isEmpty) return l10n.commonEmDash;
     prices.sort();
     final min = prices.first;
     final max = prices.last;
     final a = min.toStringAsFixed(2);
     final b = max.toStringAsFixed(2);
-    if (min == max) return '€$a';
-    return '€$a – €$b';
+    if (min == max) return '${l10n.commonCurrencyEuro}$a';
+    return '${l10n.commonCurrencyEuro}$a ${l10n.commonEmDash} ${l10n.commonCurrencyEuro}$b';
   }
 
   Future<void> _pickImage(ImageSource source, {bool isUpdate = false}) async {
@@ -114,13 +116,13 @@ class _DishCardState extends State<DishCard> {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
+    final l10n = context.l10n;
     final confirmed = await ConfirmDialog.show(
       context: context,
-      title: 'Delete Dish',
-      message:
-          'Are you sure you want to delete "${widget.dish.name}"? This action cannot be undone.',
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
+      title: l10n.dishesDeleteTitle,
+      message: l10n.dishesDeleteConfirmation(widget.dish.name),
+      confirmText: l10n.commonDelete,
+      cancelText: l10n.commonCancel,
     );
 
     if (confirmed == true && context.mounted) {
@@ -132,6 +134,7 @@ class _DishCardState extends State<DishCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final priceRangeLabel = _dishPriceRangeLabel();
+    final l10n = context.l10n;
     return BlocListener<DeleteDishCubit, DeleteDishState>(
       listener: (context, state) {
         if (state.status == DeleteDishStatus.isLoading) {
@@ -139,12 +142,12 @@ class _DishCardState extends State<DishCard> {
         }
         if (state.status == DeleteDishStatus.isSucess) {
           LoadingOverlay.hide(overlayEntry);
-          AppSnackBar.showSuccess(context, 'Dish deleted successfully');
+          AppSnackBar.showSuccess(context, l10n.dishesDeletedSuccessfully);
           if (widget.onDelete != null) widget.onDelete!();
         }
         if (state.status == DeleteDishStatus.isError) {
           LoadingOverlay.hide(overlayEntry);
-          AppSnackBar.showError(context, 'Failed to delete dish');
+          AppSnackBar.showError(context, l10n.dishesFailedDelete);
         }
       },
       child: Card(
@@ -200,7 +203,7 @@ class _DishCardState extends State<DishCard> {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Change image',
+                                l10n.commonChangeImage,
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   color: LightTheme.primaryColor,
                                   fontWeight: FontWeight.w500,
@@ -249,8 +252,8 @@ class _DishCardState extends State<DishCard> {
                         ),
                         child: Text(
                           widget.dish.isAvailable == true
-                              ? 'Available'
-                              : 'Unavailable',
+                              ? l10n.commonAvailable
+                              : l10n.commonUnavailable,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,

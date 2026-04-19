@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/archive_list_bloc/archive_list_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_drawer_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/bloc/orders_list_bloc/orders_list_bloc.dart';
@@ -90,8 +91,9 @@ class _CategoryBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<OrdersCategoryCubit, OrdersCategoryState>(
       builder: (context, state) {
+        final l10n = context.l10n;
         final chips = <_ChipData>[
-          _ChipData(label: 'Kitchen', page: const KitchenPage()),
+          _ChipData(label: l10n.ordersKitchen, page: const KitchenPage()),
         ];
 
         if (state.status == OrdersCategoryStatus.loaded) {
@@ -105,8 +107,8 @@ class _CategoryBar extends StatelessWidget {
           }
         }
 
-        chips.add(_ChipData(label: 'Archive', page: const ArchivePage()));
-        chips.add(_ChipData(label: 'Deleted', page: const DeletedPage()));
+        chips.add(_ChipData(label: l10n.ordersArchive, page: const ArchivePage()));
+        chips.add(_ChipData(label: l10n.ordersDeleted, page: const DeletedPage()));
         return Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8),

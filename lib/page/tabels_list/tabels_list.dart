@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/tabels_list_delete_cubit/tabels_list_delete_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/components/tabel_card.dart';
@@ -54,6 +55,7 @@ class _TabelsListState extends State<TabelsList>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       floatingActionButton: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -82,7 +84,7 @@ class _TabelsListState extends State<TabelsList>
                   }
                 },
                 icon: const Icon(Icons.table_bar),
-                label: const Text('Nuovo tavolo'),
+                label: Text(l10n.tablesNewTable),
               ),
             ),
           ),
@@ -97,7 +99,7 @@ class _TabelsListState extends State<TabelsList>
                
                 },
                 icon: const Icon(Icons.qr_code),
-                label: const Text('Ordina tavoli'),
+                label: Text(l10n.tablesSortTables),
               ),
             ),
           ),
@@ -114,7 +116,10 @@ class _TabelsListState extends State<TabelsList>
       body: BlocConsumer<TabelsListCubit, TabelsListState>(
         listener: (context, state) {
           if (state.status == TabelsListStatus.error) {
-            AppSnackBar.showError(context, state.errorMessage ?? 'Error');
+            AppSnackBar.showError(
+              context,
+              state.errorMessage ?? l10n.commonError,
+            );
           }
         },
         builder: (context, state) {
@@ -129,7 +134,7 @@ class _TabelsListState extends State<TabelsList>
                   ? ListView(
                       children: [
                         const SizedBox(height: 200),
-                        const Center(child: Text('No tavoli')),
+                        Center(child: Text(l10n.tablesNoTables)),
                       ],
                     )
                   : ListView.builder(
@@ -170,17 +175,17 @@ class _TabelsListState extends State<TabelsList>
             return Center(
               child: Column(
                 children: [
-                  Text(state.errorMessage ?? 'Error'),
+                  Text(state.errorMessage ?? l10n.commonError),
                   ElevatedButton(
                     onPressed: () =>
                         context.read<TabelsListCubit>().getTabelsList(),
-                    child: const Text('Retry'),
+                    child: Text(l10n.commonRetry),
                   ),
                 ],
               ),
             );
           }
-          return const Center(child: Text('Tavoli'));
+          return Center(child: Text(l10n.commonTables));
         },
       ),
     );

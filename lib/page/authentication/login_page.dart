@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/authentication/bloc/login_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
@@ -26,14 +27,12 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  String? _validateEmail(String? value) {
+  bool _isValidEmail(String? value) {
     if (value != null && value.isNotEmpty) {
       final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-      if (!emailRegex.hasMatch(value)) {
-        return 'Please enter a valid email address';
-      }
+      return emailRegex.hasMatch(value);
     }
-    return null;
+    return true;
   }
 
   void _handleLogin(LoginCubit loginCubit) {
@@ -55,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final loginCubit = context.read<LoginCubit>();
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -67,9 +67,9 @@ class _LoginPageState extends State<LoginPage> {
                 listener: (context, state) {
                   if (state.status == LoginStatus.loaded) {
                     context.read<AuthCubit>().login(state.accessToken ?? "");
-                    AppSnackBar.showSuccess(context, 'Login successful!');
+                    AppSnackBar.showSuccess(context, l10n.authLoginSuccessful);
                   } else if (state.status == LoginStatus.error) {
-                    AppSnackBar.showError(context, 'Bad credentials');
+                    AppSnackBar.showError(context, l10n.authBadCredentials);
                   }
                 },
                 builder: (context, state) {
@@ -87,13 +87,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Welcome Back',
+                        l10n.authWelcomeBack,
                         style: theme.textTheme.headlineLarge,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Sign in to continue',
+                        l10n.authSignInContinue,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSurface.withValues(
                             alpha: 0.6,
@@ -105,23 +105,26 @@ class _LoginPageState extends State<LoginPage> {
                       // Email Field
                       InputField(
                         controller: _emailController,
-                        initialValue: 'ziadkhaled_822@hotmail.com',
-                        label: 'Email',
-                        hint: 'Enter your email',
+                        initialValue: l10n.authDemoEmail,
+                        label: l10n.authEmailLabel,
+                        hint: l10n.authEmailHint,
                         prefixIcon: Icons.email_outlined,
                         isRequired: true,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        validator: _validateEmail,
+                        validator: (value) {
+                          if (_isValidEmail(value)) return null;
+                          return l10n.authValidEmailAddress;
+                        },
                         isDisabled: isLoading,
                       ),
                       const SizedBox(height: 16),
                       // Password Field
                       InputField(
                         controller: _passwordController,
-                        initialValue: 'ziad',
-                        label: 'Password',
-                        hint: 'Enter your password',
+                        initialValue: l10n.authDemoPassword,
+                        label: l10n.authPasswordLabel,
+                        hint: l10n.authPasswordHint,
                         prefixIcon: Icons.lock_outlined,
                         isRequired: true,
                         obscureText: _obscurePassword,
@@ -171,8 +174,8 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               )
-                            : const Text(
-                                'Login',
+                            : Text(
+                                l10n.authLogin,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -191,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextButton.styleFrom(
                           foregroundColor: LightTheme.primaryColor,
                         ),
-                        child: const Text('Forgot Password?'),
+                        child: Text(l10n.authForgotPassword),
                       ),
                     ],
                   );

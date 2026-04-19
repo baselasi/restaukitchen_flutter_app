@@ -6,6 +6,7 @@ import 'package:restaukitchen_app/core/bloc/get_ingredients_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_assignments.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/core/models/dish.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
 
@@ -134,7 +135,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
     if (_dimensionAssignments != null &&
         _dimensionAssignments!.isNotEmpty &&
         _selectedDimension == null) {
-      AppSnackBar.showError(context, 'Please choose a dimension');
+      AppSnackBar.showError(context, context.l10n.orderFormPleaseChooseDimension);
       return;
     }
     FocusScope.of(context).unfocus();
@@ -163,7 +164,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
   String _formatPrice(String? rawPrice) {
     final parsed = num.tryParse(rawPrice ?? '');
     if (parsed == null) return '';
-    return '€${parsed.toStringAsFixed(2)}';
+    return '${context.l10n.commonCurrencyEuro}${parsed.toStringAsFixed(2)}';
   }
 
   String _ingredientKey(Ingredient ingredient) {
@@ -205,6 +206,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final screenHeight = MediaQuery.sizeOf(context).height;
     final maxSheetHeight = screenHeight * widget.heightFactor.clamp(0.35, 0.98);
 
@@ -215,7 +217,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
         }
         if (state.status == GetDishStatus.error) {
           return Center(
-            child: Text(state.errorMessage ?? 'Failed to load dish'),
+            child: Text(state.errorMessage ?? l10n.commonFailedLoadDish),
           );
         }
         if (state.status == GetDishStatus.loaded) {
@@ -225,7 +227,10 @@ class _AddDishSheetState extends State<_AddDishSheet> {
                 setState(() {});
               }
               if (state.status == GetIngredientsStatus.error) {
-                AppSnackBar.showError(context, state.errorMessage ?? 'Failed to load ingredients');
+                AppSnackBar.showError(
+                  context,
+                  state.errorMessage ?? l10n.commonFailedLoadIngredients,
+                );
               }
             },
             child: AnimatedPadding(
@@ -323,7 +328,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
                                 if (_ingredientsForSelectedDimension
                                     .isNotEmpty) ...[
                                   Text(
-                                    'Selected Ingredients',
+                                    l10n.ingredientsSelectedTitle,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.titleMedium,
@@ -385,10 +390,10 @@ class _AddDishSheetState extends State<_AddDishSheet> {
                                   onTapOutside: (_) =>
                                       FocusScope.of(context).unfocus(),
                                   onChanged: (value) => _note = value,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Note',
-                                    hintText: 'Add note for this dish',
-                                    border: OutlineInputBorder(),
+                                  decoration: InputDecoration(
+                                    labelText: l10n.commonNote,
+                                    hintText: l10n.orderFormAddNoteForDish,
+                                    border: const OutlineInputBorder(),
                                   ),
                                 ),
                                 const SizedBox(height: 20),
@@ -426,7 +431,7 @@ class _AddDishSheetState extends State<_AddDishSheet> {
                                 Expanded(
                                   child: PrimaryButton(
                                     onPressed: _submit,
-                                    text: 'Add',
+                                    text: l10n.commonAdd,
                                   ),
                                 ),
                               ],

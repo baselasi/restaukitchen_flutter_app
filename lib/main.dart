@@ -72,7 +72,8 @@ class MyApp extends StatelessWidget {
             ],
             supportedLocales: AppLocalizations.supportedLocales,
             debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)!.commonAppTitle,
             theme: LightTheme.theme,
             home: BlocConsumer<AuthCubit, AuthState>(
               builder: (context, state) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/combination_page/bloc/combination_get_cubit/combination_get_cubit.dart';
 import 'package:restaukitchen_app/page/combination_page/repository/combination_page_repo.dart';
 import 'package:restaukitchen_app/page/order_combinations_form/select_combinations_dishes_page.dart';
@@ -141,6 +142,7 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     final iconMuted = _iconColor;
+    final l10n = context.l10n;
 
     final urgency = widget.urgencyLabel?.trim();
     final note = widget.note?.trim();
@@ -184,7 +186,7 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '\$${widget.combinationIndice.combinationPrice.toStringAsFixed(2)}',
+                            '${l10n.commonCurrencyDollar}${widget.combinationIndice.combinationPrice.toStringAsFixed(2)}',
                             style: TextStyle(
                               color: primary,
                               fontSize: 16,
@@ -228,7 +230,7 @@ class _CombinationIndiceCardState extends State<CombinationIndiceCard> {
                               ),
                             if (note != null && note.isNotEmpty)
                               Text(
-                                'Note: $note',
+                                l10n.commonNoteWithValue(note),
                                 style: TextStyle(
                                   color: secondary,
                                   fontSize: 13,

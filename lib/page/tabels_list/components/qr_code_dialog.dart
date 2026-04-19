@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/qr_dialog_cubit/qr_code_dialog_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
 
@@ -31,6 +32,7 @@ class _QrCodeDialogState extends State<QrCodeDialog> {
   }
 
   Widget _buildQrContent(QrCodeDialogState state, double qrSize) {
+    final l10n = context.l10n;
     switch (state.status) {
       case QrCodeDialogStatus.loading:
       case QrCodeDialogStatus.initial:
@@ -43,7 +45,7 @@ class _QrCodeDialogState extends State<QrCodeDialog> {
               Icon(Icons.error_outline, size: 48, color: Colors.red.shade400),
               const SizedBox(height: 8),
               Text(
-                state.errorMessage ?? 'Failed to load QR code',
+                state.errorMessage ?? l10n.commonFailedLoadQrCode,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red.shade600),
               ),
@@ -65,6 +67,7 @@ class _QrCodeDialogState extends State<QrCodeDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final size = MediaQuery.of(context).size;
     final qrSize = size.shortestSide * 0.75;
 
@@ -79,7 +82,7 @@ class _QrCodeDialogState extends State<QrCodeDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Table ${widget.tableNumber}',
+                l10n.commonTableLabel(widget.tableNumber.toString()),
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
@@ -104,7 +107,7 @@ class _QrCodeDialogState extends State<QrCodeDialog> {
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Close'),
+                  child: Text(l10n.commonClose),
                 ),
               ),
             ],

@@ -4,6 +4,7 @@ import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension_cubit.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimensions_dialog.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
@@ -172,6 +173,7 @@ class _DimensionInputState extends State<DimensionInput> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return BlocConsumer<GetDimensionsCubit, GetDimensionsState>(
       builder: (context, dimesionGetstate) {
         if (dimesionGetstate.status == GetDimensionsStatus.loading) {
@@ -180,7 +182,7 @@ class _DimensionInputState extends State<DimensionInput> {
         if (dimesionGetstate.status == GetDimensionsStatus.error) {
           return Center(
             child: Text(
-              dimesionGetstate.errorMessage ?? 'Error loading dimensions',
+              dimesionGetstate.errorMessage ?? l10n.commonFailedLoadDimensions,
             ),
           );
         }
@@ -227,7 +229,7 @@ class _DimensionInputState extends State<DimensionInput> {
                                     : LightTheme.primaryColor,
                               ),
                               Text(
-                                "ADD DIMENSION",
+                                l10n.dimensionsAddTitle.toUpperCase(),
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(
                                       color: emtyDimensions
@@ -281,7 +283,7 @@ class _DimensionInputState extends State<DimensionInput> {
         if (state.status == GetDimensionsStatus.error) {
           AppSnackBar.showError(
             context,
-            state.errorMessage ?? 'Error loading dimensions',
+            state.errorMessage ?? l10n.commonFailedLoadDimensions,
           );
         }
       },

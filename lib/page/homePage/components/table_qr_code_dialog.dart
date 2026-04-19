@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/homePage/bloc/get_table_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/bloc/qr_dialog_cubit/qr_code_dialog_cubit.dart';
 import 'package:restaukitchen_app/page/tabels_list/repository/tables_repo.dart';
@@ -45,6 +46,7 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
   }
 
   Widget _buildQrContent(QrCodeDialogState state, double qrSize) {
+    final l10n = context.l10n;
     switch (state.status) {
       case QrCodeDialogStatus.loading:
       case QrCodeDialogStatus.initial:
@@ -57,7 +59,7 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
               Icon(Icons.error_outline, size: 48, color: Colors.red.shade400),
               const SizedBox(height: 8),
               Text(
-                state.errorMessage ?? 'Failed to load QR code',
+                state.errorMessage ?? l10n.commonFailedLoadQrCode,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red.shade600),
               ),
@@ -79,6 +81,7 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final size = MediaQuery.of(context).size;
     final qrSize = size.shortestSide * 0.75;
 
@@ -93,7 +96,7 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Generate QR Code',
+                l10n.commonGenerateQrCode,
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
@@ -105,7 +108,7 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
                     child: InputField(
                       controller: _tableNumberController,
                       keyboardType: TextInputType.number,
-                      label: 'Table number',
+                      label: l10n.tablesTableNumberInputLabel,
                       isNumeric: true,
                     ),
                   ),
@@ -132,7 +135,7 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
                   if (state.status == GetTableStatus.error) {
                     AppSnackBar.showError(
                       context,
-                      state.errorMessage ?? 'Error loading table',
+                      state.errorMessage ?? l10n.tablesErrorLoadingTable,
                     );
                   }
                 },
@@ -196,7 +199,7 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'QR preview placeholder',
+                              l10n.tablesQrPreviewPlaceholder,
                               style: TextStyle(color: Colors.grey.shade700),
                             ),
                           ],
@@ -235,7 +238,7 @@ class _TableQrCodeDialogState extends State<TableQrCodeDialog> {
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Close'),
+                  child: Text(l10n.commonClose),
                 ),
               ),
             ],

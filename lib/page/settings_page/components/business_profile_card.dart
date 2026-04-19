@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/restaurant_form/bloc/retaurant_form_cubit/retaurant_form_cubit.dart';
 import 'package:restaukitchen_app/page/restaurant_form/restaurant_form.dart';
 import 'package:restaukitchen_app/page/settings_page/bloc/change_restaurant_image_cubit/change_restaurant_image_cubit.dart';
@@ -60,7 +61,7 @@ class BusinessProfileCard extends StatelessWidget {
               if (state.status == RestaurantInfoStatus.error) {
                 return Center(
                   child: Text(
-                    state.errorMessage ?? 'Error loading restaurant info',
+                    state.errorMessage ?? context.l10n.settingsErrorLoadingRestaurantInfo,
                   ),
                 );
               }

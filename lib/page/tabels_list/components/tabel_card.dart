@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:restaukitchen_app/core/services/api_service.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/menu_scroll_bar_cubit/menu_scroll_bar_cubit.dart';
 import 'package:restaukitchen_app/page/new_order/bloc/new_order_cubit/new_order_cubit.dart';
@@ -57,6 +58,7 @@ class _TabelCardState extends State<TabelCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = context.l10n;
 
     return BlocConsumer<TabelsListDeleteCubit, TabelsListDeleteState>(
       listener: (context, state) {
@@ -92,14 +94,14 @@ class _TabelCardState extends State<TabelCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Table ${widget.tabel.number}',
+                            l10n.commonTableLabel(widget.tabel.number.toString()),
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            '${widget.tabel.numberOfSeats} seats',
+                            l10n.tablesSeatsCount(widget.tabel.numberOfSeats),
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurface.withValues(
                                 alpha: 0.6,

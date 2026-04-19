@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/components/form/dimensionInput/dimension.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/post_dimesions_cubit.dart';
 import 'package:restaukitchen_app/page/dimension_list/repository/dimensions_repo.dart';
 
@@ -66,6 +67,7 @@ class _AddDimensionSheetState extends State<AddDimensionSheet> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final trimmedName = _nameController.text.trim();
+    final l10n = context.l10n;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -101,7 +103,9 @@ class _AddDimensionSheetState extends State<AddDimensionSheet> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    widget.name != null ? 'Edit Dimension' : 'Create Dimension',
+                    widget.name != null
+                        ? l10n.dimensionsEditTitle
+                        : l10n.dimensionsCreateTitle,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -109,8 +113,8 @@ class _AddDimensionSheetState extends State<AddDimensionSheet> {
                   const SizedBox(height: 6),
                   Text(
                     widget.name != null
-                        ? 'Edit the name and settings of your dimension.'
-                        : 'Add a name for your new dimension.',
+                        ? l10n.dimensionsEditDescription
+                        : l10n.dimensionsCreateDescription,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: const Color(0xFF6B7280),
                     ),
@@ -120,8 +124,8 @@ class _AddDimensionSheetState extends State<AddDimensionSheet> {
                     controller: _nameController,
                     autofocus: true,
                     textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(
-                      labelText: 'Dimension name',
+                    decoration: InputDecoration(
+                      labelText: l10n.dimensionsNameLabel,
                     ),
                     onChanged: (_) => setState(() {}),
                     onSubmitted: (value) {
@@ -141,7 +145,7 @@ class _AddDimensionSheetState extends State<AddDimensionSheet> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cancel'),
+                          child: Text(l10n.commonCancel),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -156,8 +160,8 @@ class _AddDimensionSheetState extends State<AddDimensionSheet> {
                           },
                           child: Text(
                             widget.name != null
-                                ? 'Save Dimension'
-                                : 'Create Dimension',
+                                ? l10n.dimensionsSaveTitle
+                                : l10n.dimensionsCreateTitle,
                           ),
                         ),
                       ),
@@ -173,7 +177,7 @@ class _AddDimensionSheetState extends State<AddDimensionSheet> {
             Navigator.of(context).pop(state.dimension);
           }
           if (state.status == PostDimensionsStatus.error) {
-            AppSnackBar.showError(context, state.errorMessage ?? 'Error');
+            AppSnackBar.showError(context, state.errorMessage ?? l10n.commonError);
           }
         },
       ),

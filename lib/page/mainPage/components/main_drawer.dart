@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/routes.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/mainPage/bloc/main_page_cubit.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
@@ -28,20 +29,20 @@ class MainDrawer extends StatelessWidget {
     }
   }
 
-  String _getPageLabel(Pages page) {
+  String _getPageLabel(BuildContext context, Pages page) {
     switch (page) {
       case Pages.home:
-        return 'Home';
+        return context.l10n.commonHome;
       case Pages.menus:
-        return 'Menus';
+        return context.l10n.commonMenus;
       case Pages.orders:
-        return 'Orders';
+        return context.l10n.commonOrders;
       case Pages.tables:
-        return 'Tables';
+        return context.l10n.commonTables;
       case Pages.combinations:
-        return 'Combinations';
+        return context.l10n.commonCombinations;
       case Pages.settings:
-        return 'Settings';
+        return context.l10n.commonSettings;
     }
   }
 
@@ -148,7 +149,7 @@ class MainDrawer extends StatelessWidget {
                                           ),
                                           const SizedBox(width: 12),
                                           Text(
-                                            _getPageLabel(page),
+                                            _getPageLabel(context, page),
                                             style: TextStyle(
                                               color: isSelected
                                                   ? LightTheme.primaryColor
@@ -252,7 +253,7 @@ class MainDrawer extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 12),
                                     Text(
-                                      _getPageLabel(Pages.settings),
+                                      _getPageLabel(context, Pages.settings),
                                       style: TextStyle(
                                         color: currentPage == Pages.settings
                                             ? LightTheme.primaryColor

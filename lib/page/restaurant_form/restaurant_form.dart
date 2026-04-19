@@ -4,6 +4,7 @@ import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/components/form/input_field.dart';
 import 'package:restaukitchen_app/core/components/form/primary_button.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/restaurant_form/bloc/retaurant_form_cubit/retaurant_form_cubit.dart';
 import 'package:restaukitchen_app/page/restaurant_form/component/city_autocomplite.dart';
 import 'package:restaukitchen_app/page/restaurant_form/component/countries_select.dart';
@@ -103,8 +104,9 @@ class _RestaurantFormState extends State<RestaurantForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: 'Edit Restaurant'),
+      appBar: DetailsAppBar(pageTitle: l10n.restaurantEditTitle),
       body: SafeArea(
         child: BlocConsumer<RestaurantFormCubit, RestaurantFormState>(
           builder: (context, state) {
@@ -125,8 +127,8 @@ class _RestaurantFormState extends State<RestaurantForm> {
                             const SizedBox(height: 16),
                             InputField(
                               controller: _nameController,
-                              label: 'Restaurant Name',
-                              hint: 'Enter restaurant name',
+                              label: l10n.restaurantNameLabel,
+                              hint: l10n.restaurantNameHint,
                               isRequired: true,
                               textInputAction: TextInputAction.next,
                             ),
@@ -152,7 +154,7 @@ class _RestaurantFormState extends State<RestaurantForm> {
                             DropdownButtonFormField<String>(
                               initialValue: _selectedCurrency,
                               decoration: InputDecoration(
-                                labelText: 'Currency *',
+                                labelText: '${l10n.restaurantCurrencyLabel} *',
                                 labelStyle: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium,
@@ -171,7 +173,7 @@ class _RestaurantFormState extends State<RestaurantForm> {
                               },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please select a currency';
+                                  return l10n.restaurantSelectCurrency;
                                 }
                                 return null;
                               },
@@ -179,16 +181,16 @@ class _RestaurantFormState extends State<RestaurantForm> {
                             const SizedBox(height: 16),
                             InputField(
                               controller: _addressController,
-                              label: 'Address',
-                              hint: 'Enter address',
+                              label: l10n.restaurantAddressLabel,
+                              hint: l10n.restaurantAddressHint,
                               isRequired: true,
                               textInputAction: TextInputAction.next,
                             ),
                             const SizedBox(height: 16),
                             InputField(
                               controller: _descriptionController,
-                              label: 'Description',
-                              hint: 'Enter description',
+                              label: l10n.commonDescription,
+                              hint: l10n.restaurantDescriptionHint,
                               isRequired: true,
                               maxLines: 5,
                             ),
@@ -200,7 +202,10 @@ class _RestaurantFormState extends State<RestaurantForm> {
                       top: false,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16, bottom: 8),
-                        child: PrimaryButton(text: 'Save', onPressed: _submit),
+                        child: PrimaryButton(
+                          text: l10n.commonSave,
+                          onPressed: _submit,
+                        ),
                       ),
                     ),
                   ],
@@ -213,7 +218,7 @@ class _RestaurantFormState extends State<RestaurantForm> {
               Navigator.of(context).pop(true);
             }
             if (state.status == RestaurantFormStatus.error) {
-              AppSnackBar.showError(context, 'Error updating restaurant');
+              AppSnackBar.showError(context, l10n.restaurantErrorUpdating);
             }
           },
         ),

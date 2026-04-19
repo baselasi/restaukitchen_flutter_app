@@ -7,6 +7,7 @@ import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
 import 'package:restaukitchen_app/core/models/ingredients.dart';
 import 'package:restaukitchen_app/core/repository/ingredients_repo.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/page/dimension_list/bloc/get_dimensions_cubit.dart';
 import 'package:restaukitchen_app/page/ingredients_list/bloc/delete_ingredient_cubit.dart';
 import 'package:restaukitchen_app/page/ingredients_list/bloc/new_ingredient_form_cubit.dart';
@@ -32,8 +33,9 @@ class _IngredientsListState extends State<IngredientsList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: 'Ingredients List'),
+      appBar: DetailsAppBar(pageTitle: l10n.ingredientsListTitle),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final ingredient = await Navigator.of(context).push(
@@ -68,7 +70,7 @@ class _IngredientsListState extends State<IngredientsList> {
           }
           if (state.status == GetIngredientsStatus.error) {
             return Center(
-              child: Text(state.errorMessage ?? 'Error loading ingredients'),
+              child: Text(state.errorMessage ?? l10n.ingredientsErrorLoading),
             );
           }
           if (state.status == GetIngredientsStatus.loaded) {
@@ -128,7 +130,7 @@ class _IngredientCard extends StatelessWidget {
   final Function(String) onDelete;
   final Ingredient ingredient;
 
-  String _buildPriceRange() {
+  String _buildPriceRange(BuildContext context) {
     final prices =
         ingredient.dimensionAssignments
             .where((assignment) => assignment.deleted != true)
@@ -137,14 +139,17 @@ class _IngredientCard extends StatelessWidget {
             .toList()
           ..sort();
 
-    if (prices.isEmpty) return 'No price set';
-    if (prices.length == 1) return '\$${prices.first.toStringAsFixed(2)}';
-    return '\$${prices.first.toStringAsFixed(2)} - \$${prices.last.toStringAsFixed(2)}';
+    if (prices.isEmpty) return context.l10n.commonNoPriceSet;
+    if (prices.length == 1) {
+      return '${context.l10n.commonCurrencyDollar}${prices.first.toStringAsFixed(2)}';
+    }
+    return '${context.l10n.commonCurrencyDollar}${prices.first.toStringAsFixed(2)} ${context.l10n.commonHyphen} ${context.l10n.commonCurrencyDollar}${prices.last.toStringAsFixed(2)}';
   }
 
   @override
   Widget build(BuildContext context) {
-    final priceRange = _buildPriceRange();
+    final l10n = context.l10n;
+    final priceRange = _buildPriceRange(context);
 
     return BlocConsumer<DeleteIngredientCubit, DeleteIngredientState>(
       builder: (context, state) {
@@ -234,7 +239,7 @@ class _IngredientCard extends StatelessWidget {
                     },
                     icon: const Icon(Icons.edit_outlined),
                     color: const Color(0xFF1D4ED8),
-                    tooltip: 'Edit ingredient',
+                    tooltip: l10n.ingredientsEditTooltip,
                   ),
                   if (state.status == DeleteIngredientStatus.loading)
                     const Center(child: CircularProgressIndicator()),
@@ -247,7 +252,7 @@ class _IngredientCard extends StatelessWidget {
                       },
                       icon: const Icon(Icons.delete_outline),
                       color: const Color(0xFFDC2626),
-                      tooltip: 'Delete ingredient',
+                      tooltip: l10n.ingredientsDeleteTooltip,
                     ),
                 ],
               ),
@@ -262,7 +267,7 @@ class _IngredientCard extends StatelessWidget {
         if (state.status == DeleteIngredientStatus.error) {
           AppSnackBar.showError(
             context,
-            state.errorMessage ?? 'Error deleting ingredient',
+            state.errorMessage ?? l10n.ingredientsErrorDeleting,
           );
         }
       },

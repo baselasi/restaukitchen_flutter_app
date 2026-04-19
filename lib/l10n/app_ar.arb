@@ -1,0 +1,363 @@
+{
+  "@@locale": "ar",
+
+  "@@common": {},
+  "commonAppTitle": "Flutter Demo",
+  "@commonAppTitle": {},
+  "commonHome": "الرئيسية",
+  "commonMenus": "القوائم",
+  "commonOrders": "الطلبات",
+  "commonTables": "الطاولات",
+  "commonCombinations": "التركيبات",
+  "commonSettings": "الإعدادات",
+  "commonCategories": "الفئات",
+  "commonIngredients": "المكونات",
+  "commonDimensions": "الأحجام",
+  "commonSave": "حفظ",
+  "commonCancel": "إلغاء",
+  "commonClose": "إغلاق",
+  "commonContinue": "متابعة",
+  "commonRetry": "إعادة المحاولة",
+  "commonAdd": "إضافة",
+  "commonAddDish": "إضافة طبق",
+  "commonAddDishes": "إضافة أطباق",
+  "commonAddIngredients": "إضافة مكونات",
+  "commonEdit": "تعديل",
+  "commonDelete": "حذف",
+  "commonRemove": "إزالة",
+  "commonCreate": "إنشاء",
+  "commonUpdate": "تحديث",
+  "commonConfirm": "تأكيد",
+  "commonDone": "تم",
+  "commonArchive": "أرشفة",
+  "commonPrint": "طباعة",
+  "commonLoading": "جارٍ التحميل...",
+  "commonLoadingEllipsis": "...",
+  "commonRequiredField": "هذا الحقل مطلوب",
+  "commonValidNumber": "يرجى إدخال رقم صالح",
+  "commonError": "خطأ",
+  "commonErrorOccurred": "حدث خطأ ما",
+  "commonAreYouSure": "هل أنت متأكد؟",
+  "commonDescription": "الوصف",
+  "commonAddDescription": "أضف وصفًا",
+  "commonNote": "ملاحظة",
+  "commonNotAvailable": "غير متاح",
+  "commonNoPriceSet": "لم يتم تحديد سعر",
+  "commonSelectDimension": "اختر الحجم",
+  "commonNoDimensionsAvailable": "لا توجد أحجام متاحة",
+  "commonSelectCategory": "اختر الفئة",
+  "commonGenerateQrCode": "إنشاء رمز QR",
+  "commonFailedLoadQrCode": "تعذر تحميل رمز QR",
+  "commonFailedLoadCombination": "تعذر تحميل التركيبة",
+  "commonNoCombinationDataFound": "لم يتم العثور على بيانات التركيبة",
+  "commonFailedLoadDish": "تعذر تحميل الطبق",
+  "commonFailedLoadIngredients": "تعذر تحميل المكونات",
+  "commonFailedLoadDimensions": "تعذر تحميل الأحجام",
+  "commonChangeImage": "تغيير الصورة",
+  "commonNewOrder": "طلب جديد",
+  "commonCreateOrder": "إنشاء الطلب",
+  "commonSaveOrder": "حفظ الطلب",
+  "commonNoDishesAvailable": "لا توجد أطباق متاحة",
+  "commonNoMenus": "لا توجد قوائم",
+  "commonAvailable": "متاح",
+  "commonUnavailable": "غير متاح",
+  "commonFree": "فارغ",
+  "commonReserved": "محجوز",
+  "commonOccupied": "مشغول",
+  "commonReceived": "تم الاستلام",
+  "commonOnFire": "قيد التحضير",
+  "commonDoneStatus": "جاهز",
+  "commonEnglish": "الإنجليزية",
+  "commonItalian": "الإيطالية",
+  "commonFrench": "الفرنسية",
+  "commonSpanish": "الإسبانية",
+  "commonArabic": "العربية",
+  "commonMonthJan": "يناير",
+  "commonMonthFeb": "فبراير",
+  "commonMonthMar": "مارس",
+  "commonMonthApr": "أبريل",
+  "commonMonthMay": "مايو",
+  "commonMonthJun": "يونيو",
+  "commonMonthJul": "يوليو",
+  "commonMonthAug": "أغسطس",
+  "commonMonthSep": "سبتمبر",
+  "commonMonthOct": "أكتوبر",
+  "commonMonthNov": "نوفمبر",
+  "commonMonthDec": "ديسمبر",
+  "commonCurrencyDollar": "$",
+  "commonCurrencyEuro": "€",
+  "commonEmDash": "—",
+  "commonHyphen": "-",
+  "commonCurrencyLebanesePound": "ل.ل.",
+  "commonPriceLabel": "السعر: {price}",
+  "@commonPriceLabel": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "commonTableLabel": "الطاولة {number}",
+  "@commonTableLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "commonCourseLabel": "الدورة {number}",
+  "@commonCourseLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "commonQuantityLeading": "x{quantity}",
+  "@commonQuantityLeading": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "commonQuantityTrailing": "{quantity}x",
+  "@commonQuantityTrailing": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "commonNoteWithValue": "ملاحظة: {note}",
+  "@commonNoteWithValue": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@@auth": {},
+  "authValidEmailAddress": "يرجى إدخال بريد إلكتروني صالح",
+  "authLoginSuccessful": "تم تسجيل الدخول بنجاح!",
+  "authBadCredentials": "بيانات الاعتماد غير صحيحة",
+  "authWelcomeBack": "مرحبًا بعودتك",
+  "authSignInContinue": "سجّل الدخول للمتابعة",
+  "authEmailLabel": "البريد الإلكتروني",
+  "authEmailHint": "أدخل بريدك الإلكتروني",
+  "authPasswordLabel": "كلمة المرور",
+  "authPasswordHint": "أدخل كلمة المرور",
+  "authLogin": "تسجيل الدخول",
+  "authForgotPassword": "هل نسيت كلمة المرور؟",
+  "authDemoEmail": "ziadkhaled_822@hotmail.com",
+  "authDemoPassword": "ziad",
+
+  "@@home": {},
+  "homeTableAvailability": "توفر الطاولات",
+  "homeOpen": "مفتوحة",
+  "homeTotalTables": "{count, plural, zero{لا توجد طاولات} one{طاولة واحدة} two{طاولتان} few{{count} طاولات} many{{count} طاولة} other{{count} طاولة}}",
+  "@homeTotalTables": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeOpenOrders": "{count, plural, zero{لا توجد طلبات مفتوحة} one{طلب مفتوح واحد} two{طلبان مفتوحان} few{{count} طلبات مفتوحة} many{{count} طلبًا مفتوحًا} other{{count} طلب مفتوح}}",
+  "@homeOpenOrders": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "@@settings": {},
+  "settingsLogout": "تسجيل الخروج",
+  "settingsCatalogue": "الكتالوج",
+  "settingsMenusSubtitle": "إعداد قوائم موسمية مختلفة",
+  "settingsCategoriesSubtitle": "تنظيم الأطباق ضمن أقسام القائمة",
+  "settingsIngredientsSubtitle": "معلومات الحساسية والمخزون والمورّد",
+  "settingsDimensionsSubtitle": "أحجام الحصص ووحدات القياس",
+  "settingsErrorLoadingRestaurantInfo": "خطأ في تحميل معلومات المطعم",
+
+  "@@restaurant": {},
+  "restaurantEditTitle": "تعديل المطعم",
+  "restaurantNameLabel": "اسم المطعم",
+  "restaurantNameHint": "أدخل اسم المطعم",
+  "restaurantCountryLabel": "البلد",
+  "restaurantLoadingCountries": "جارٍ تحميل البلدان...",
+  "restaurantSelectCountry": "اختر بلدًا",
+  "restaurantSelectCountryRequired": "يرجى اختيار بلد",
+  "restaurantCityLabel": "المدينة",
+  "restaurantSearchCity": "ابحث عن مدينة",
+  "restaurantSelectCountryFirstHint": "اختر بلدًا أولًا",
+  "restaurantSelectCountryFirstError": "يرجى اختيار بلد أولًا",
+  "restaurantSelectCityRequired": "يرجى اختيار مدينة",
+  "restaurantChooseCityFromList": "يرجى اختيار مدينة من القائمة",
+  "restaurantFailedLoadCountries": "تعذر تحميل البلدان",
+  "restaurantFailedLoadCities": "تعذر تحميل المدن",
+  "restaurantNoCitiesFound": "لم يتم العثور على مدن",
+  "restaurantCurrencyLabel": "العملة",
+  "restaurantSelectCurrency": "يرجى اختيار عملة",
+  "restaurantAddressLabel": "العنوان",
+  "restaurantAddressHint": "أدخل العنوان",
+  "restaurantDescriptionHint": "أدخل الوصف",
+  "restaurantErrorUpdating": "خطأ أثناء تحديث المطعم",
+
+  "@@tables": {},
+  "tablesNewTable": "طاولة جديدة",
+  "tablesSortTables": "ترتيب الطاولات",
+  "tablesNoTables": "لا توجد طاولات",
+  "tablesTotalCoversTitle": "إجمالي الأغطية",
+  "tablesTotalCoversHint": "أدخل إجمالي الأغطية",
+  "tablesTableNumberLabel": "رقم الطاولة",
+  "tablesTableSeatsLabel": "عدد مقاعد الطاولة",
+  "tablesTableNumberInputLabel": "رقم الطاولة",
+  "tablesStatusLabel": "الحالة",
+  "tablesErrorLoadingTable": "خطأ في تحميل الطاولة",
+  "tablesQrPreviewPlaceholder": "معاينة رمز QR",
+  "tablesSeatsCount": "{count, plural, zero{لا مقاعد} one{مقعد واحد} two{مقعدان} few{{count} مقاعد} many{{count} مقعدًا} other{{count} مقعد}}",
+  "@tablesSeatsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "@@menus": {},
+  "menusListTitle": "قائمة القوائم",
+  "menusUpdatedRecently": "تم التحديث مؤخرًا",
+  "menusEditTooltip": "تعديل القائمة",
+  "menusDeleteTooltip": "حذف القائمة",
+  "menusFailedDelete": "تعذر حذف القائمة",
+  "menusEditTitle": "تعديل القائمة",
+  "menusCreateTitle": "إنشاء قائمة",
+  "menusEditDescription": "عدّل اسم قائمتك.",
+  "menusCreateDescription": "أضف اسمًا لقائمتك الجديدة.",
+  "menusNameLabel": "اسم القائمة",
+  "menusFailedCreate": "تعذر إنشاء القائمة",
+  "menusItemsCount": "{count, plural, zero{لا عناصر} one{عنصر واحد} two{عنصران} few{{count} عناصر} many{{count} عنصرًا} other{{count} عنصر}}",
+  "@menusItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "menusCombinationMenuBadge": "قائمة مركبة",
+
+  "@@dishes": {},
+  "dishesDeleteTitle": "حذف الطبق",
+  "dishesDeleteConfirmation": "هل أنت متأكد من حذف \"{dishName}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+  "@dishesDeleteConfirmation": {
+    "placeholders": {
+      "dishName": {
+        "type": "String"
+      }
+    }
+  },
+  "dishesDeletedSuccessfully": "تم حذف الطبق بنجاح",
+  "dishesFailedDelete": "تعذر حذف الطبق",
+  "dishesCreatedSuccessfully": "تم إنشاء الطبق بنجاح",
+  "dishesNewDish": "طبق جديد",
+  "dishesEssentials": "الأساسيات",
+  "dishesNameLabel": "الاسم",
+  "dishesAvailability": "التوفر",
+  "dishesDimensionPricing": "الحجم والتسعير",
+
+  "@@categories": {},
+  "categoriesListTitle": "قائمة الفئات",
+  "categoriesFailedLoad": "تعذر تحميل الفئات",
+  "categoriesEditTooltip": "تعديل الفئة",
+  "categoriesDeleteTooltip": "حذف الفئة",
+  "categoriesFailedDelete": "تعذر حذف الفئة",
+  "categoriesEditTitle": "تعديل الفئة",
+  "categoriesCreateTitle": "إنشاء فئة",
+  "categoriesEditDescription": "عدّل اسم الفئة.",
+  "categoriesCreateDescription": "أضف اسمًا لفئتك الجديدة.",
+  "categoriesNameLabel": "اسم الفئة",
+  "categoriesUpdateTitle": "تحديث الفئة",
+  "categoriesFailedCreate": "تعذر إنشاء الفئة",
+
+  "@@ingredients": {},
+  "ingredientsListTitle": "قائمة المكونات",
+  "ingredientsErrorLoading": "خطأ في تحميل المكونات",
+  "ingredientsEditTooltip": "تعديل المكوّن",
+  "ingredientsDeleteTooltip": "حذف المكوّن",
+  "ingredientsErrorDeleting": "خطأ أثناء حذف المكوّن",
+  "ingredientsCreateTitle": "إنشاء مكوّن",
+  "ingredientsNameLabel": "الاسم",
+  "ingredientsErrorLoadingDimensions": "خطأ في تحميل الأحجام",
+  "ingredientsNoIngredientsAvailable": "لا توجد مكونات متاحة",
+  "ingredientsFailedAdd": "تعذر إضافة المكونات",
+  "ingredientsSelectedTitle": "المكونات المحددة",
+
+  "@@dimensions": {},
+  "dimensionsListTitle": "قائمة الأحجام",
+  "dimensionsStandard": "حجم قياسي",
+  "dimensionsCustom": "حجم مخصص",
+  "dimensionsEditTooltip": "تعديل الحجم",
+  "dimensionsDeleteTooltip": "حذف الحجم",
+  "dimensionsErrorDeleting": "خطأ أثناء حذف الحجم",
+  "dimensionsEditTitle": "تعديل الحجم",
+  "dimensionsCreateTitle": "إنشاء حجم",
+  "dimensionsEditDescription": "عدّل اسم وإعدادات الحجم.",
+  "dimensionsCreateDescription": "أضف اسمًا لحجمك الجديد.",
+  "dimensionsNameLabel": "اسم الحجم",
+  "dimensionsSaveTitle": "حفظ الحجم",
+  "dimensionsAddTitle": "إضافة حجم",
+  "dimensionsCombinationNameLabel": "اسم التركيبة",
+  "dimensionsCombinationNameHint": "أدخل اسمًا لهذه التركيبة",
+  "dimensionsNext": "التالي",
+  "dimensionsPriceHint": "0.00",
+
+  "@@combinations": {},
+  "combinationsNoCombinations": "لا توجد تركيبات",
+  "combinationsEditPreviewTitle": "تعديل التركيبة",
+  "combinationsAddMenuTitle": "إضافة قائمة",
+  "combinationsGroupNameLabel": "اسم المجموعة",
+  "combinationsErrorCreatingGroup": "خطأ أثناء إنشاء المجموعة",
+  "combinationsNoDishesInMenu": "لا توجد أطباق في هذه القائمة",
+  "combinationsNoPlatesForSelectedDimension": "لا توجد أطباق متاحة للحجم المحدد",
+  "combinationsDeletedSuccessfully": "تم حذف التركيبة بنجاح",
+  "combinationsErrorDeleting": "خطأ أثناء حذف التركيبة",
+
+  "@@orderForm": {},
+  "orderFormSelectDimension": "اختر الحجم",
+  "orderFormAddNoteForDish": "أضف ملاحظة لهذا الطبق",
+  "orderFormAddNoteForOrder": "أضف ملاحظة لهذا الطلب",
+  "orderFormPleaseChooseDimension": "يرجى اختيار حجم",
+  "orderFormNoDishesInCourse": "لا توجد أطباق في هذه الدورة",
+  "orderFormCreateNewCourse": "إنشاء دورة جديدة",
+
+  "@@orders": {},
+  "ordersKitchen": "المطبخ",
+  "ordersArchive": "الأرشيف",
+  "ordersDeleted": "المحذوفة",
+  "ordersNoOrdersYet": "لا توجد طلبات حتى الآن",
+  "ordersNoArchivedOrders": "لا توجد طلبات مؤرشفة",
+  "ordersNoDeletedOrders": "لا توجد طلبات محذوفة",
+  "ordersNoDishesInOrder": "لا توجد أطباق في هذا الطلب.",
+  "ordersTotalLabel": "الإجمالي: {currency}{amount}",
+  "@ordersTotalLabel": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "ordersCombinationDishBullet": "• {name}",
+  "@ordersCombinationDishBullet": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
+}

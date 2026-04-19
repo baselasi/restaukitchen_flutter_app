@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restaukitchen_app/core/bloc/get_category_cubit.dart';
 import 'package:restaukitchen_app/core/components/appBar/details_app_bar.dart';
 import 'package:restaukitchen_app/core/dialogs/snack_bar.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/core/models/category.dart';
 import 'package:restaukitchen_app/core/repository/category_repo.dart';
 import 'package:restaukitchen_app/page/categories_list/bloc/delete_category_cubit/delete_category_cubit..dart';
@@ -25,8 +26,9 @@ class _CategoriesListState extends State<CategoriesList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: DetailsAppBar(pageTitle: 'Categories List'),
+      appBar: DetailsAppBar(pageTitle: l10n.categoriesListTitle),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await showAddCategorySheet(context);
@@ -61,7 +63,7 @@ class _CategoriesListState extends State<CategoriesList> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state.status == CategorySelectorStatus.error) {
-            return const Center(child: Text('Failed to load categories'));
+            return Center(child: Text(l10n.categoriesFailedLoad));
           }
           return const SizedBox.shrink();
         },
@@ -77,6 +79,7 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return BlocConsumer<DeleteCategoryCubit, DeleteCategoryState>(
       builder: (context, state) {
         return Material(
@@ -134,7 +137,7 @@ class _CategoryCard extends StatelessWidget {
                     },
                     icon: const Icon(Icons.edit_outlined),
                     color: const Color(0xFF1D4ED8),
-                    tooltip: 'Edit category',
+                    tooltip: l10n.categoriesEditTooltip,
                   ),
                   if (state.status == DeleteCategoryStatus.loading)
                     Center(child: CircularProgressIndicator()),
@@ -147,7 +150,7 @@ class _CategoryCard extends StatelessWidget {
                       },
                       icon: const Icon(Icons.delete_outline),
                       color: const Color(0xFFDC2626),
-                      tooltip: 'Delete category',
+                      tooltip: l10n.categoriesDeleteTooltip,
                     ),
                 ],
               ),
@@ -162,7 +165,7 @@ class _CategoryCard extends StatelessWidget {
         if (state.status == DeleteCategoryStatus.error) {
           AppSnackBar.showError(
             context,
-            state.error ?? 'Failed to delete category',
+            state.error ?? l10n.categoriesFailedDelete,
           );
         }
       },

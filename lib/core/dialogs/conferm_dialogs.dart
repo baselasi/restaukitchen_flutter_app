@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaukitchen_app/l10n/l10n.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class ConfirmDialog {
@@ -7,15 +8,16 @@ class ConfirmDialog {
   static Future<bool?> show({
     required BuildContext context,
     String? title,
-    String message = 'Are you sure?',
-    String confirmText = 'Confirm',
-    String cancelText = 'Cancel',
+    String? message,
+    String? confirmText,
+    String? cancelText,
     Color? confirmButtonColor,
     Color? cancelButtonColor,
   }) async {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
+        final l10n = context.l10n;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -30,7 +32,7 @@ class ConfirmDialog {
                 )
               : null,
           content: Text(
-            message,
+            message ?? l10n.commonAreYouSure,
             style: const TextStyle(
               fontSize: 16,
             ),
@@ -43,7 +45,7 @@ class ConfirmDialog {
                 foregroundColor: cancelButtonColor ?? Colors.grey[700],
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
-              child: Text(cancelText),
+              child: Text(cancelText ?? l10n.commonCancel),
             ),
             // Confirm Button
             ElevatedButton(
@@ -56,7 +58,7 @@ class ConfirmDialog {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: Text(confirmText),
+              child: Text(confirmText ?? l10n.commonConfirm),
             ),
           ],
         );

@@ -2,16 +2,26 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:restaukitchen_app/core/bloc/auth_cubit.dart';
+import 'package:restaukitchen_app/core/bloc/language_cubit.dart';
 import 'package:restaukitchen_app/core/services/sevices_loactor.dart';
 import 'package:restaukitchen_app/page/authentication/bloc/login_cubit.dart';
 import 'package:restaukitchen_app/page/authentication/login_page.dart';
 import 'package:restaukitchen_app/page/mainPage/bloc/main_page_cubit.dart';
 import 'package:restaukitchen_app/page/mainPage/main_page.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:restaukitchen_app/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: HydratedStorageDirectory(
+      (await getApplicationDocumentsDirectory()).path,
+    ),
+  );
 
   // Setup service locator
   await setupServiceLocator();
@@ -30,12 +40,15 @@ void main() async {
     return true;
   };
 
-  runZonedGuarded(() {
-    runApp(const MyApp());
-  }, (Object error, StackTrace stack) {
-    debugPrint('Zone uncaught error: $error');
-    debugPrintStack(stackTrace: stack);
-  });
+  runZonedGuarded(
+    () {
+      runApp(const MyApp());
+    },
+    (Object error, StackTrace stack) {
+      debugPrint('Zone uncaught error: $error');
+      debugPrintStack(stackTrace: stack);
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -47,25 +60,35 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<LoginCubit>(create: (context) => LoginCubit()),
           BlocProvider<AuthCubit>(create: (context) => AuthCubit()),
+          BlocProvider<LanguageCubit>(create: (context) => LanguageCubit()),
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          theme: LightTheme.theme,
-          home: BlocConsumer<AuthCubit, AuthState>(
-            builder: (context, state) {
-              if (state.status == AuthStatus.unauthenticated) {
-                return const LoginPage();
-              }
-              if (state.status == AuthStatus.authenticated) {
-                return BlocProvider<MainPageCubit>(
-                  create: (context) => MainPageCubit(),
-                  child: const MainPage(),
-                );
-              }
-              return const SizedBox.shrink();
-            },
-            listener: (context, state) {},
+        child: BlocBuilder<LanguageCubit, LanguageState>(
+          builder: (context, state) => MaterialApp(
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            theme: LightTheme.theme,
+            home: BlocConsumer<AuthCubit, AuthState>(
+              builder: (context, state) {
+                if (state.status == AuthStatus.unauthenticated) {
+                  return const LoginPage();
+                }
+                if (state.status == AuthStatus.authenticated) {
+                  return BlocProvider<MainPageCubit>(
+                    create: (context) => MainPageCubit(),
+                    child: const MainPage(),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+              listener: (context, state) {},
+            ),
           ),
         ),
       ),

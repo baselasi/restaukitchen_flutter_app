@@ -1,0 +1,21 @@
+# Project Stack
+- Flutter (Dart)
+- BLoC for state management
+- l10n with gen-l10n (ARB files)
+
+# Localization
+- Never hardcode strings in widgets
+- Always use context.l10n.keyName (via BuildContext extension)
+- All new strings must be added to lib/l10n/app_en.arb first
+- Key naming: {section}{Element} in camelCase (homeTitle, authLoginButton)
+
+# Flutter L10n Rules
+
+When generating or editing ARB files:
+- All user-facing strings must be in lib/l10n/app_en.arb
+- Never hardcode strings in widgets — always use AppLocalizations.of(context)
+- Key naming: {section}{Element} in camelCase
+- Sections: common, auth, home, profile, (etc per screen)
+- Use @@section_name: {} as section separators
+- Never duplicate strings — check existing keys before adding
+- Always add @key metadata block after any key with placeholders

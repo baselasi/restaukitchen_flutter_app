@@ -13,9 +13,13 @@ class QrCodeDialogCubit extends Cubit<QrCodeDialogState> {
     emit(QrCodeDialogState.loading());
     try {
       final imageBytes = await _tablesRepo.getTabelQrCode(tabelId);
-      emit(QrCodeDialogState.success(imageBytes));
+      if (!isClosed) {
+        emit(QrCodeDialogState.success(imageBytes));
+      }
     } catch (e) {
-      emit(QrCodeDialogState.error(e.toString()));
+      if (!isClosed) {
+        emit(QrCodeDialogState.error(e.toString()));
+      }
     }
   }
 }

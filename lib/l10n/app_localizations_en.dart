@@ -39,6 +39,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonDimensions => 'Dimensions';
 
   @override
+  String get commonSilverware => 'Silverware';
+
+  @override
   String get commonSave => 'Save';
 
   @override
@@ -91,6 +94,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonPrint => 'Print';
+
+  @override
+  String get commonEmpty => 'Empty';
 
   @override
   String get commonLoading => 'Loading...';
@@ -541,7 +547,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menusNameLabel => 'Menu name';
 
   @override
+  String get silverwareListTitle => 'Silverware List';
+
+  @override
   String get menusFailedCreate => 'Failed to create menu';
+
+  @override
+  String get silverwareEditTitle => 'Edit Silverware';
+
+  @override
+  String get silverwareCreateTitle => 'Create Silverware';
+
+  @override
+  String get silverwareEditDescription =>
+      'Edit the name of your silverware item.';
+
+  @override
+  String get silverwareCreateDescription =>
+      'Add a name for your new silverware item.';
+
+  @override
+  String get silverwareNameLabel => 'Silverware name';
+
+  @override
+  String get silverwareEmptyMessage => 'No silverware items were found.';
 
   @override
   String menusItemsCount(int count) {

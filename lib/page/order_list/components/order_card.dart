@@ -6,7 +6,6 @@ import 'package:restaukitchen_app/page/order_list/bloc/orders_actions_cubit/orde
 import 'package:restaukitchen_app/page/order_list/bloc/status_cubit/status_cubit.dart';
 import 'package:restaukitchen_app/page/order_list/models/course.dart';
 import 'package:restaukitchen_app/page/order_list/models/order.dart';
-import 'package:restaukitchen_app/page/restaurant_form/bloc/retaurant_form_cubit/retaurant_form_cubit.dart';
 
 class OrderCard extends StatefulWidget {
   final Order order;
@@ -66,7 +65,6 @@ class _OrderCardState extends State<OrderCard>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final l10n = context.l10n;
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),

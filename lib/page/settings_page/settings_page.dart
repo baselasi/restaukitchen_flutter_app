@@ -14,9 +14,13 @@ import 'package:restaukitchen_app/page/categories_list/categories_list.dart';
 import 'package:restaukitchen_app/page/dimension_list/dimension_list.dart';
 import 'package:restaukitchen_app/page/ingredients_list/ingredients_list.dart';
 import 'package:restaukitchen_app/page/menusPage/bloc/menus_page_bloc.dart';
+import 'package:restaukitchen_app/page/menusPage/bloc/delete_dish_cubit.dart';
 import 'package:restaukitchen_app/page/menus_list/menus_list.dart';
 import 'package:restaukitchen_app/page/settings_page/bloc/restaurant_info_cubit/restaurant_info_cubit.dart';
 import 'package:restaukitchen_app/page/settings_page/components/business_profile_card.dart';
+import 'package:restaukitchen_app/page/silverware_list/bloc/silverware_list_cubit/silverware_list_cubit.dart';
+import 'package:restaukitchen_app/page/silverware_list/repository/silverware_repo.dart';
+import 'package:restaukitchen_app/page/silverware_list/silverware_list.dart';
 import 'package:restaukitchen_app/theme/light_theme.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -140,6 +144,28 @@ class _CatalogueSection extends StatelessWidget {
           );
         },
       ),
+      // _CatalogueItem(
+      //   title: l10n.commonSilverware,
+      //   subtitle: "",
+      //   icon: Icons.straighten_rounded,
+      //   onTap: (context) {
+      //     Navigator.of(context).push(
+      //       PageTransition(
+      //         type: PageTransitionType.rightToLeft,
+      //         child: MultiBlocProvider(
+      //           providers: [
+      //             BlocProvider(
+      //               create: (context) =>
+      //                   SilverwareListCubit(silverwareRepo: SilverwareRepo()),
+      //             ),
+      //             BlocProvider(create: (context) => DeleteDishCubit()),
+      //           ],
+      //           child: const SilverwareList(),
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // ),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

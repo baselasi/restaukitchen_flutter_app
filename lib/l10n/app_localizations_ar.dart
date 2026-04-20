@@ -39,6 +39,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonDimensions => 'الأحجام';
 
   @override
+  String get commonSilverware => 'أدوات المائدة';
+
+  @override
   String get commonSave => 'حفظ';
 
   @override
@@ -91,6 +94,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonPrint => 'طباعة';
+
+  @override
+  String get commonEmpty => 'فارغ';
 
   @override
   String get commonLoading => 'جارٍ التحميل...';
@@ -549,7 +555,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get menusNameLabel => 'اسم القائمة';
 
   @override
+  String get silverwareListTitle => 'قائمة أدوات المائدة';
+
+  @override
   String get menusFailedCreate => 'تعذر إنشاء القائمة';
+
+  @override
+  String get silverwareEditTitle => 'تعديل أدوات المائدة';
+
+  @override
+  String get silverwareCreateTitle => 'إنشاء أدوات المائدة';
+
+  @override
+  String get silverwareEditDescription => 'عدّل اسم عنصر أدوات المائدة.';
+
+  @override
+  String get silverwareCreateDescription =>
+      'أضف اسمًا لعنصر أدوات المائدة الجديد.';
+
+  @override
+  String get silverwareNameLabel => 'اسم أدوات المائدة';
+
+  @override
+  String get silverwareEmptyMessage =>
+      'لم يتم العثور على أي عناصر أدوات مائدة.';
 
   @override
   String menusItemsCount(int count) {

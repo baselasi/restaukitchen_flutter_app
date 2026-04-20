@@ -160,6 +160,12 @@ abstract class AppLocalizations {
   /// **'Dimensions'**
   String get commonDimensions;
 
+  /// No description provided for @commonSilverware.
+  ///
+  /// In en, this message translates to:
+  /// **'Silverware'**
+  String get commonSilverware;
+
   /// No description provided for @commonSave.
   ///
   /// In en, this message translates to:
@@ -267,6 +273,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Print'**
   String get commonPrint;
+
+  /// No description provided for @commonEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get commonEmpty;
 
   /// No description provided for @commonLoading.
   ///
@@ -1078,11 +1090,53 @@ abstract class AppLocalizations {
   /// **'Menu name'**
   String get menusNameLabel;
 
+  /// No description provided for @silverwareListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Silverware List'**
+  String get silverwareListTitle;
+
   /// No description provided for @menusFailedCreate.
   ///
   /// In en, this message translates to:
   /// **'Failed to create menu'**
   String get menusFailedCreate;
+
+  /// No description provided for @silverwareEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Silverware'**
+  String get silverwareEditTitle;
+
+  /// No description provided for @silverwareCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Silverware'**
+  String get silverwareCreateTitle;
+
+  /// No description provided for @silverwareEditDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit the name of your silverware item.'**
+  String get silverwareEditDescription;
+
+  /// No description provided for @silverwareCreateDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a name for your new silverware item.'**
+  String get silverwareCreateDescription;
+
+  /// No description provided for @silverwareNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Silverware name'**
+  String get silverwareNameLabel;
+
+  /// No description provided for @silverwareEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No silverware items were found.'**
+  String get silverwareEmptyMessage;
 
   /// No description provided for @menusItemsCount.
   ///

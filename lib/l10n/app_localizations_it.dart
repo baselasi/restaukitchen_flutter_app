@@ -39,6 +39,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get commonDimensions => 'Dimensioni';
 
   @override
+  String get commonSilverware => 'Posate';
+
+  @override
   String get commonSave => 'Salva';
 
   @override
@@ -91,6 +94,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get commonPrint => 'Stampa';
+
+  @override
+  String get commonEmpty => 'Vuoto';
 
   @override
   String get commonLoading => 'Caricamento...';
@@ -544,7 +550,30 @@ class AppLocalizationsIt extends AppLocalizations {
   String get menusNameLabel => 'Nome menu';
 
   @override
+  String get silverwareListTitle => 'Lista posate';
+
+  @override
   String get menusFailedCreate => 'Impossibile creare il menu';
+
+  @override
+  String get silverwareEditTitle => 'Modifica posate';
+
+  @override
+  String get silverwareCreateTitle => 'Crea posate';
+
+  @override
+  String get silverwareEditDescription =>
+      'Modifica il nome del tuo articolo di posate.';
+
+  @override
+  String get silverwareCreateDescription =>
+      'Aggiungi un nome per il tuo nuovo articolo di posate.';
+
+  @override
+  String get silverwareNameLabel => 'Nome posate';
+
+  @override
+  String get silverwareEmptyMessage => 'Nessun articolo di posate trovato.';
 
   @override
   String menusItemsCount(int count) {
